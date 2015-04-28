@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CropMap</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+
+    <string name="no_result">对不起，没有搜索到相关数据！</string>
+    <string name="error_network">搜索失败,请检查网络连接！</string>
+
+    <!-- Start -->
+    <string name="sign_in">登&#160;&#160;&#160;录</string>
+    <string name="sign_up">注&#160;&#160;&#160;册</string>
+
+    <string name="guide_enter">尽情享受吧</string>
+    
+    <!-- Sing Up -->
+    <string name="signup_title">注&#160;&#160;&#160;册</string>
+    <string name="signup_send_verifycode">发送验证码</string>
+    <string name="signup_comfirm">确&#160;&#160;&#160;认</string>
+    <string name="signup_phone_hint">请输入手机号码</string>
+    <string name="singup_verifycode_hint">请输入验证码</string>
+    <string name="signup_password_hint">请输入密码</string>
+
+</resources>

@@ -1,0 +1,42 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "19.1.0"
+
+    defaultConfig {
+        applicationId "com.hltc.mtmap"
+        minSdkVersion 11
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(dir: "$buildDir/native-libs", include: 'native-libs.jar')
+    compile 'com.android.support:appcompat-v7:22.+'
+    compile 'de.hdodenhof:circleimageview:1.2.2'
+    compile 'com.jiechic.library:xUtils:2.6.14'
+    compile project(':library-ArcMenu')
+    compile project(':library-ClusterMarker')
+}
+
+task nativeLibsToJar(type: Zip, description: 'create a jar archive of the native libs') {
+    destinationDir file("$buildDir/native-libs")
+    baseName 'native-libs'
+    extension 'jar'
+    from fileTree(dir: 'libs', include: '**/*.so')
+    into 'lib/'
+}
+
+tasks.withType(JavaCompile) {
+    compileTask -> compileTask.dependsOn nativeLibsToJar
+}
