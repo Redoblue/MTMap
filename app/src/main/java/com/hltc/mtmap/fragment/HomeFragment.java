@@ -1,7 +1,6 @@
 package com.hltc.mtmap.fragment;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -15,19 +14,23 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amp.apis.libc.Cluster;
 import com.amp.apis.libc.ClusterClickListener;
 import com.amp.apis.libc.ClusterItem;
 import com.amp.apis.libc.ClusterOverlay;
-
 import com.amp.apis.libc.ClusterRender;
 import com.capricorn.ArcMenu;
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.bean.ConstantUtils;
+import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.bean.RegionItem;
+import com.hltc.mtmap.orm.models.MTGrain;
+import com.hltc.mtmap.orm.models.MTSite;
+import com.hltc.mtmap.orm.models.MTUser;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ToastUtils;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -51,6 +54,8 @@ public class HomeFragment extends Fragment {
     private MapView mMapView;
     private ArcMenu mArcMenu;
 
+    private DaoManager daoManager;
+    private ClusterOverlay overlay;
     //Test by Tab ABC
     private int clusterRadius = 80;
     private int currentCategory = 0;
@@ -62,6 +67,7 @@ public class HomeFragment extends Fragment {
 
         findViewById(view);
         mMapView.onCreate(savedInstanceState);
+        daoManager = DaoManager.getDaoManager(getActivity());
 
         initAmap();
         initArcMenu();
@@ -96,6 +102,22 @@ public class HomeFragment extends Fragment {
                     ToastUtils.showShort(getActivity(), "Positon: " + position);
                 }
             });
+        }
+    }
+
+    private void fillDataFromDb() {
+        List<MTGrain> grains = daoManager.getAllVisibleGrains();
+        for (MTGrain grain : grains) {
+            long siteId = grain.getSiteId();
+            MTSite site = daoManager.getDaoSession().getMTSiteDao().load(siteId);
+            LatLng latLng = new LatLng(site.getLatitude(), site.getLongitude());
+
+            long userId = grain.getUserId();
+            MTUser user = daoManager.getDaoSession().getMTUserDao().load(userId);
+            String url = user.getAvatarURL();
+
+            RegionItem item = new RegionItem(latLng, url);
+            overlay.addClusterItem(item);
         }
     }
 
@@ -134,17 +156,12 @@ public class HomeFragment extends Fragment {
     private AMap.OnMapLoadedListener mapLoadedListener = new AMap.OnMapLoadedListener() {
         @Override
         public void onMapLoaded() {
-            ClusterOverlay clusterOverlay = new
+            overlay = new
                     ClusterOverlay(mAmap, AMapUtils.dp2px(getActivity(), clusterRadius), getActivity());
-            clusterOverlay.setClusterRenderer(clusterRender);
-            clusterOverlay.setOnClusterClickListener(clusterClickListener);
+            overlay.setClusterRenderer(clusterRender);
+            overlay.setOnClusterClickListener(clusterClickListener);
 
-            //TODO
-            for (int i = 0; i < ConstantUtils.latlngs.length; i++) {
-                Drawable drawable = getResources().getDrawable(R.drawable.cluster_pic);
-                RegionItem regionItem = new RegionItem(ConstantUtils.latlngs[i], drawable);
-                clusterOverlay.addClusterItem(regionItem);
-            }
+            fillDataFromDb();
         }
     };
 
@@ -159,7 +176,8 @@ public class HomeFragment extends Fragment {
             if (num == 1) {
                 CircleImageView civ = (CircleImageView) view.findViewById(R.id.iv_cluster);
                 ClusterItem item = cluster.getClusterItems().get(0);
-                civ.setImageDrawable(item.getDrawable());
+//                civ.setImageDrawable(item.getDrawable());
+                ImageLoader.getInstance().displayImage(item.getPicUrl(), civ);
             } else {
                 TextView tv = (TextView) view.findViewById(R.id.tv_cluster);
                 tv.setText(String.valueOf(num));
@@ -178,5 +196,20 @@ public class HomeFragment extends Fragment {
             }
         }
     };
+
+
+    /*********************************** CursorLoader *********************************/
+
+//    public static class MTGrainCursorLoader extends CursorLoader {
+//
+//        public MTGrainCursorLoader(Context context) {
+//            super(context);
+//        }
+//
+//        @Override
+//        public Cursor loadInBackground() {
+//            return super.loadInBackground();
+//        }
+//    }
 
 }

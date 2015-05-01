@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "com.hltc.mtmap"
-        minSdkVersion 11
+        minSdkVersion 15
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -25,6 +25,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.+'
     compile 'de.hdodenhof:circleimageview:1.2.2'
     compile 'com.jiechic.library:xUtils:2.6.14'
+    compile 'org.freemarker:freemarker:2.3.22'
     compile project(':library-ArcMenu')
     compile project(':library-ClusterMarker')
 }

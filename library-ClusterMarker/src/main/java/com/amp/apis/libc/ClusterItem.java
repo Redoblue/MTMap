@@ -15,5 +15,7 @@ public interface ClusterItem {
 	 */
 	public LatLng getPosition();
 
-	public Drawable getDrawable();
+//	public Drawable getDrawable();
+    public String getPicUrl();
 }
+

@@ -1,16 +1,15 @@
 package com.hltc.mtmap.bean;
 
-import android.graphics.drawable.Drawable;
 import com.amap.api.maps.model.LatLng;
 import com.amp.apis.libc.ClusterItem;
 
 public class RegionItem implements ClusterItem {
     private LatLng mLatLng;
-    private Drawable mDrawable;
+    private String mPicUrl;
 
-    public RegionItem(LatLng latLng, Drawable drawable) {
+    public RegionItem(LatLng latLng, String url) {
         mLatLng = latLng;
-        mDrawable = drawable;
+        mPicUrl = url;
     }
 
     @Override
@@ -20,8 +19,7 @@ public class RegionItem implements ClusterItem {
     }
 
     @Override
-    public Drawable getDrawable() {
-        return mDrawable;
+    public String getPicUrl() {
+        return mPicUrl;
     }
-
 }

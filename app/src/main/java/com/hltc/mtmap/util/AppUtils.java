@@ -43,4 +43,8 @@ public class AppUtils {
         NetworkInfo ni = cm.getActiveNetworkInfo();
         return ni != null && ni.isConnectedOrConnecting();
     }
+
+    public static void syncDataToDb() {
+
+    }
 }

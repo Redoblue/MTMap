@@ -9,11 +9,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.fragment.AddFragment;
 import com.hltc.mtmap.fragment.FriendFragment;
@@ -76,16 +78,19 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private List<ImageView> imageViewList;
     private List<TextView> textViewsList;
 
-    private MyApplication application;
+    public MyApplication application;
+    public DaoManager daoManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
         findViewById();
         fgManager = getSupportFragmentManager();
         application = (MyApplication) getApplication();
+        daoManager = DaoManager.getDaoManager(this);
         initListsAndListeners();
 
         if (!AppUtils.isNetworkConnected(this)) {
