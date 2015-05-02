@@ -5,6 +5,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
 import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.bean.LocalUserInfo;
+
+import org.json.JSONObject;
 
 import java.io.File;
 
@@ -44,7 +47,4 @@ public class AppUtils {
         return ni != null && ni.isConnectedOrConnecting();
     }
 
-    public static void syncDataToDb() {
-
-    }
 }

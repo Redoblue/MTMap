@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:background="@drawable/background_blur">
+
+    <include layout="@layout/bar_btb" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.2" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="15dp">
+
+        <EditText
+            style="@style/WhiteBackground"
+            android:layout_width="match_parent"
+            android:id="@+id/et_signin_phone"
+            android:inputType="phone"
+            android:layout_marginBottom="15dp" />
+
+        <EditText
+            style="@style/WhiteBackground"
+            android:layout_width="match_parent"
+            android:id="@+id/et_signin_passwd"
+            android:inputType="text"
+            android:layout_marginBottom="15dp" />
+
+        <com.dd.processbutton.iml.ActionProcessButton
+            xmlns:custom="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/btn_process_signin"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="@string/sign_in"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            custom:pb_colorComplete="@color/green_complete"
+            custom:pb_colorNormal="@color/green_normal"
+            custom:pb_colorPressed="@color/green_pressed"
+            custom:pb_colorProgress="@color/purple_progress"
+            custom:pb_textComplete="@string/signin_btn_complete"
+            custom:pb_textProgress="@string/signin_btn_process" />
+
+    </LinearLayout>
+</LinearLayout>

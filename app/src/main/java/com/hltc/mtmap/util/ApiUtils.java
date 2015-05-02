@@ -5,11 +5,12 @@ package com.hltc.mtmap.util;
  */
 public class ApiUtils {
 
-    public static final String URL_ROOT = "http://192.168.1.102:8080/maitian/v1";
+    public static final String URL_ROOT = "http://120.25.237.104:8080/maitian/v1";
 
     public static final String URL_REQ_VCODE = "user/register/verify_code.json";
     public static final String URL_VAL_VCODE = "user/register/verify.json";
     public static final String URL_CRE_ACCOUNT = "user/register/new_user.json";
+    public static final String URL_SIG_IN = "user/login/login.json";
 
     public static final String KEY_SOURCE = "source";
     public static final String KEY_PHONE = "phone_number";
@@ -21,6 +22,7 @@ public class ApiUtils {
     public static final String KEY_TMP_TOKEN = "tmp_token";
     public static final String KEY_TOKEN = "token";
     public static final String KEY_PASSWD = "pwd";
+    public static final String KEY_UNIQUE_INFO = "unique_info";
 
     public static final String KEY_USR_ID = "userId";
     public static final String KEY_USR_NICKNAME = "nickName";
@@ -40,5 +42,9 @@ public class ApiUtils {
 
     public static String getCreateAccountUrl() {
         return URL_ROOT + "/" + URL_CRE_ACCOUNT;
+    }
+
+    public static String getSigninUrl() {
+        return URL_ROOT + "/" + URL_SIG_IN;
     }
 }

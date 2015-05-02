@@ -6,6 +6,10 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.SpannedString;
+import android.text.style.AbsoluteSizeSpan;
 import android.view.View;
 
 import java.io.ByteArrayOutputStream;
@@ -51,5 +55,13 @@ public class ViewUtils {
         } else {
             return null;
         }
+    }
+
+    // 设置hint字体大小
+    public static SpannedString getHint(String str) {
+        SpannableString ss = new SpannableString(str);
+        AbsoluteSizeSpan ass = new AbsoluteSizeSpan(20, true);
+        ss.setSpan(ass, 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return new SpannedString(ss);
     }
 }

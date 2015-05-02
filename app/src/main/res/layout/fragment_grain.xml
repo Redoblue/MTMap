@@ -6,10 +6,9 @@
     android:background="#FFD700"
     android:orientation="vertical" >
     
-    <TextView 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="friend page"
-    />
+    <com.lorentzos.flingswipe.SwipeFlingAdapterView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.lorentzos.flingswipe.SwipeFlingAdapterView>
 
 </LinearLayout>

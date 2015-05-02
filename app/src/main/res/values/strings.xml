@@ -15,11 +15,14 @@
     <string name="guide_enter">尽情享受吧</string>
     
     <!-- Sing Up -->
-    <string name="signup_title">注&#160;&#160;&#160;册</string>
     <string name="signup_send_verifycode">发送验证码</string>
-    <string name="signup_comfirm">确&#160;&#160;&#160;认</string>
-    <string name="signup_phone_hint">请输入手机号码</string>
+    <string name="signup_comfirm">确&#160;&#160;&#160;定</string>
+    <string name="hint_phone">请输入手机号码</string>
     <string name="singup_verifycode_hint">请输入验证码</string>
-    <string name="signup_password_hint">请输入密码</string>
+    <string name="hint_password">请输入密码</string>
 
+    <!-- Sign In-->
+    <string name="signin_bar_right">忘记密码</string>
+    <string name="signin_btn_process">登录中</string>
+    <string name="signin_btn_complete">登录成功</string>
 </resources>

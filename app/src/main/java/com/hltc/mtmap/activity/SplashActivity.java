@@ -56,37 +56,26 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
 
     @Override
     public void onAnimationStart(Animation animation) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        }).start();
-        AppUtils.syncDataToDb();
     }
 
     @Override
     public void onAnimationEnd(Animation animation) {
         // 查询是否第一次使用本软件
-//        if (AppUtils.isFirstTimeToUse(mContext)) {
-//            LogUtils.d("第一次使用分支");
-//            Intent intent = new Intent(mContext, GuideActivity.class);
-//            startActivity(intent);
-//        } else {    //判断登录状态，是则进入主界面，否则进入登录界面
-//            if (AppUtils.isSignedIn(mContext)) {
-//                LogUtils.d("已登录分支");
-//                Intent intent = new Intent(mContext, MainActivity.class);
-//                startActivity(intent);
-//            } else {
-//                LogUtils.d("未登录分支");
-//                Intent intent = new Intent(mContext, StartActivity.class);
-//                startActivity(intent);
-//            }
-//        }
-        //TODO
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        AppManager.getAppManager().finishActivity(this);
+        if (AppUtils.isFirstTimeToUse(mContext)) {
+            LogUtils.d("第一次使用分支");
+            Intent intent = new Intent(mContext, GuideActivity.class);
+            startActivity(intent);
+        } else {    //判断登录状态，是则进入主界面，否则进入登录界面
+            if (AppUtils.isSignedIn(mContext)) {
+                LogUtils.d("已登录分支");
+                Intent intent = new Intent(mContext, MainActivity.class);
+                startActivity(intent);
+            } else {
+                LogUtils.d("未登录分支");
+                Intent intent = new Intent(mContext, StartActivity.class);
+                startActivity(intent);
+            }
+        }
     }
 
     @Override
@@ -112,6 +101,7 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
     /**
      * 图片的名字是由显示的时间区间构成的，如“开始时间-结束时间.png”
      * 通过解析文件名字，就可以得到这个文件显示的时间
+     *
      * @param time
      * @return
      */

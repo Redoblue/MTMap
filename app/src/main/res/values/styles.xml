@@ -19,10 +19,10 @@
 
     <style name="BlueButton">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_height">48dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">#ffffff</item>
-        <item name="android:background">@drawable/btn_blue</item>
+        <item name="android:background">@drawable/selector_btn_blue</item>
         <item name="android:paddingLeft">15dp</item>
         <item name="android:paddingRight">15dp</item>
         <item name="android:gravity">center</item>
@@ -30,10 +30,10 @@
 
     <style name="GreenButton">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">50dp</item>
+        <item name="android:layout_height">48dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">#ffffff</item>
-        <item name="android:background">@drawable/btn_green</item>
+        <item name="android:background">@drawable/selector_btn_green</item>
         <item name="android:paddingLeft">15dp</item>
         <item name="android:paddingRight">15dp</item>
         <item name="android:gravity">center</item>
@@ -41,10 +41,10 @@
 
     <style name="WhiteBackground">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_height">46dp</item>
         <item name="android:textSize">22sp</item>
         <item name="android:textColor">@color/darkgrey</item>
-        <item name="android:background">@drawable/whitebg</item>
+        <item name="android:background">@drawable/shape_et_bg</item>
         <item name="android:paddingLeft">15dp</item>
         <item name="android:paddingRight">15dp</item>
         <item name="android:gravity">center_vertical</item>
