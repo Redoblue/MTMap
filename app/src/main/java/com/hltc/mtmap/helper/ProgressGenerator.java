@@ -45,6 +45,7 @@ public class ProgressGenerator {
 
     public void stop() {
         ifStop = true;
+        mProgress = 0;
     }
 
     private Random random = new Random();

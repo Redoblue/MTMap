@@ -34,8 +34,7 @@
             android:inputType="text"
             android:layout_marginBottom="15dp" />
 
-        <com.dd.processbutton.iml.ActionProcessButton
-            xmlns:custom="http://schemas.android.com/apk/res-auto"
+        <com.dd.processbutton.iml.ActionProcessButton xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:id="@+id/btn_process_signin"
             android:layout_width="match_parent"
             android:layout_height="48dp"

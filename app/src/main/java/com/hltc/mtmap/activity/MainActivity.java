@@ -4,10 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -32,18 +29,18 @@ import java.util.List;
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
     private static final int[] TAB_NORMAL = {
-            R.drawable.ic_tab_home_normal,
-            R.drawable.ic_tab_friend_normal,
-            R.drawable.ic_tab_add_normal,
+            R.drawable.ic_tab_map_normal,
+            R.drawable.ic_tab_grain_normal,
+            R.drawable.ic_tab_publish_normal,
             R.drawable.ic_tab_message_normal,
-            R.drawable.ic_tab_me_normal
+            R.drawable.ic_tab_private_normal
     };
     private static final int[] TAB_PRESSED = {
-            R.drawable.ic_tab_home_pressed,
-            R.drawable.ic_tab_friend_pressed,
-            R.drawable.ic_tab_add_pressed,
+            R.drawable.ic_tab_map_pressed,
+            R.drawable.ic_tab_grain_pressed,
+            R.drawable.ic_tab_publish_pressed,
             R.drawable.ic_tab_message_pressed,
-            R.drawable.ic_tab_me_pressed
+            R.drawable.ic_tab_private_pressed
     };
 
     private static final int TAB_HOME = 0;
@@ -63,16 +60,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private RelativeLayout tabAdd;
     private RelativeLayout tabMessage;
     private RelativeLayout tabMe;
-    private ImageView imgHome;
-    private ImageView imgFriend;
-    private ImageView imgAdd;
+    private ImageView imgMap;
+    private ImageView imgGrain;
+    private ImageView imgPublish;
     private ImageView imgMessage;
-    private ImageView imgMe;
-    private TextView tvHome;
-    private TextView tvFriend;
-    private TextView tvAdd;
+    private ImageView imgPrivate;
+    private TextView tvMap;
+    private TextView tvGrain;
+    private TextView tvPublish;
     private TextView tvMessage;
-    private TextView tvMe;
+    private TextView tvPrivate;
     private List<Fragment> fragmentList;
     private List<RelativeLayout> tabLayoutList;
     private List<ImageView> imageViewList;
@@ -110,45 +107,45 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         tabMessage = (RelativeLayout) findViewById(R.id.tab_message_layout);
         tabMe = (RelativeLayout) findViewById(R.id.tab_me_layout);
 
-        imgHome = (ImageView) findViewById(R.id.img_home);
-        imgFriend = (ImageView) findViewById(R.id.img_friend);
-        imgAdd = (ImageView) findViewById(R.id.img_add);
-        imgMessage = (ImageView) findViewById(R.id.img_message);
-        imgMe = (ImageView) findViewById(R.id.img_me);
+        imgMap = (ImageView) findViewById(R.id.iv_main_map);
+        imgGrain = (ImageView) findViewById(R.id.iv_main_grain);
+        imgPublish = (ImageView) findViewById(R.id.iv_main_publish);
+        imgMessage = (ImageView) findViewById(R.id.iv_main_message);
+        imgPrivate = (ImageView) findViewById(R.id.iv_main_private);
 
-        tvHome = (TextView) findViewById(R.id.tv_home);
-        tvFriend = (TextView) findViewById(R.id.tv_friend);
-        tvAdd = (TextView) findViewById(R.id.tv_add);
-        tvMessage = (TextView) findViewById(R.id.tv_message);
-        tvMe = (TextView) findViewById(R.id.tv_me);
+        tvMap = (TextView) findViewById(R.id.tv_main_map);
+        tvGrain = (TextView) findViewById(R.id.tv_main_grain);
+        tvPublish = (TextView) findViewById(R.id.tv_main_publish);
+        tvMessage = (TextView) findViewById(R.id.tv_main_message);
+        tvPrivate = (TextView) findViewById(R.id.tv_main_private);
     }
 
     private void initListsAndListeners() {
-        fragmentList = new ArrayList<Fragment>(TAB_ITEM_NUM);
+        fragmentList = new ArrayList<>(TAB_ITEM_NUM);
         for (int i = 0; i < TAB_ITEM_NUM; i++) {
             fragmentList.add(i, null);
         }
 
-        tabLayoutList = new ArrayList<RelativeLayout>(TAB_ITEM_NUM);
+        tabLayoutList = new ArrayList<>(TAB_ITEM_NUM);
         tabLayoutList.add(tabHome);
         tabLayoutList.add(tabFriend);
         tabLayoutList.add(tabAdd);
         tabLayoutList.add(tabMessage);
         tabLayoutList.add(tabMe);
 
-        imageViewList = new ArrayList<ImageView>(TAB_ITEM_NUM);
-        imageViewList.add(imgHome);
-        imageViewList.add(imgFriend);
-        imageViewList.add(imgAdd);
+        imageViewList = new ArrayList<>(TAB_ITEM_NUM);
+        imageViewList.add(imgMap);
+        imageViewList.add(imgGrain);
+        imageViewList.add(imgPublish);
         imageViewList.add(imgMessage);
-        imageViewList.add(imgMe);
+        imageViewList.add(imgPrivate);
 
-        textViewsList = new ArrayList<TextView>(TAB_ITEM_NUM);
-        textViewsList.add(tvHome);
-        textViewsList.add(tvFriend);
-        textViewsList.add(tvAdd);
+        textViewsList = new ArrayList<>(TAB_ITEM_NUM);
+        textViewsList.add(tvMap);
+        textViewsList.add(tvGrain);
+        textViewsList.add(tvPublish);
         textViewsList.add(tvMessage);
-        textViewsList.add(tvMe);
+        textViewsList.add(tvPrivate);
 
         for (RelativeLayout layout : tabLayoutList) {
             layout.setOnClickListener(this);
@@ -187,8 +184,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         imageViewList.get(index).setImageResource(TAB_PRESSED[index]);
         textViewsList.get(index).setTextColor(BLUE);
-//        tabLayoutList.get(index).setBackgroundResource(R.drawable.ic_tabbar_bg_click);
-        tabLayoutList.get(index).setBackgroundColor(getResources().getColor(R.color.grey));
+
         if (fragmentList.get(index) == null) {
             fragmentList.set(index, getFragmentByIndex(index));
             transaction.add(R.id.content, fragmentList.get(index));
@@ -226,7 +222,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public void clearChioce() {
         for (int i = 0; i < TAB_ITEM_NUM; i++) {
             imageViewList.get(i).setImageResource(TAB_NORMAL[i]);
-            tabLayoutList.get(i).setBackgroundColor(WHITE);
+//            tabLayoutList.get(i).setBackgroundColor(WHITE);
             textViewsList.get(i).setTextColor(GRAY);
         }
     }

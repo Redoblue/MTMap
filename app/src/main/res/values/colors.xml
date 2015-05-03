@@ -10,4 +10,6 @@
     <color name="btn_un_border">#CCCCCC</color>
     <color name="transparent">#00000000</color>
 
+    <color name="green_normal">#ff33e5b5</color>
+    <color name="green_pressed">#ff00cc99</color>
 </resources>

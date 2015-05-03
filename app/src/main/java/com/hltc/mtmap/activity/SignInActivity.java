@@ -99,6 +99,7 @@ public class SignInActivity extends Activity implements View.OnClickListener, Pr
                 break;
             case R.id.btn_process_signin:
                 mSignInProcessButton.setEnabled(false);
+//                mSignInProcessButton.setClickable(true);
                 mPasswdEditText.setEnabled(false);
                 mGenerator.start(mSignInProcessButton);
                 httpSignIn();
@@ -110,6 +111,7 @@ public class SignInActivity extends Activity implements View.OnClickListener, Pr
     @Override
     public void onComplete() {
         mSignInProcessButton.setEnabled(true);
+//        mSignInProcessButton.setClickable(true);
         mPasswdEditText.setEnabled(true);
     }
 

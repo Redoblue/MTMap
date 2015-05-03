@@ -1,66 +1,57 @@
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        >
+        android:layout_weight="1">
+
         <FrameLayout
             android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-        </FrameLayout>
+            android:layout_height="match_parent"></FrameLayout>
 
         <com.capricorn.ArcMenu
             android:id="@+id/arc_menu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="#FFFFFF"
-        >
+        android:layout_height="48dp"
+        android:background="@color/white">
 
         <RelativeLayout
             android:id="@+id/tab_home_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            >
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/img_home"
+                    android:id="@+id/iv_main_map"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ic_tab_home_normal"
-                    />
+                    android:src="@drawable/ic_tab_map_normal" />
 
                 <TextView
-                    android:id="@+id/tv_home"
+                    android:id="@+id/tv_main_map"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="Home"
-                    android:textColor="#7597B3"
-                    />
+                    android:text="地图"
+                    android:textSize="10sp"
+                    android:textColor="#7597B3" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -68,32 +59,29 @@
             android:id="@+id/tab_friend_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            >
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/img_friend"
+                    android:id="@+id/iv_main_grain"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ic_tab_friend_normal"
-                    />
+                    android:src="@drawable/ic_tab_grain_normal" />
 
                 <TextView
-                    android:id="@+id/tv_friend"
+                    android:id="@+id/tv_main_grain"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="Friend"
-                    android:textColor="#7597B3"
-                    />
+                    android:text="麦粒"
+                    android:textSize="10sp"
+                    android:textColor="#7597B3" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -101,32 +89,29 @@
             android:id="@+id/tab_add_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            >
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/img_add"
+                    android:id="@+id/iv_main_publish"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ic_tab_add_normal"
-                    />
+                    android:src="@drawable/ic_tab_publish_normal" />
 
                 <TextView
-                    android:id="@+id/tv_add"
+                    android:id="@+id/tv_main_publish"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="Add"
-                    android:textColor="#7597B3"
-                    />
+                    android:text="发布"
+                    android:textSize="10sp"
+                    android:textColor="#7597B3" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -134,32 +119,29 @@
             android:id="@+id/tab_message_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            >
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/img_message"
+                    android:id="@+id/iv_main_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ic_tab_message_normal"
-                    />
+                    android:src="@drawable/ic_tab_message_normal" />
 
                 <TextView
-                    android:id="@+id/tv_message"
+                    android:id="@+id/tv_main_message"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="Message"
-                    android:textColor="#7597B3"
-                    />
+                    android:text="消息"
+                    android:textSize="10sp"
+                    android:textColor="#7597B3" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -167,32 +149,29 @@
             android:id="@+id/tab_me_layout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            >
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/img_me"
+                    android:id="@+id/iv_main_private"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ic_tab_add_normal"
-                    />
+                    android:src="@drawable/ic_tab_private_normal" />
 
                 <TextView
-                    android:id="@+id/tv_me"
+                    android:id="@+id/tv_main_private"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="Me"
-                    android:textColor="#7597B3"
-                    />
+                    android:text="个人"
+                    android:textSize="10sp"
+                    android:textColor="#7597B3" />
             </LinearLayout>
         </RelativeLayout>
 
