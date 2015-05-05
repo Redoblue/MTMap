@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.hltc.mtmap.R;
 
-public class MeFragment extends Fragment {
+public class PrivateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -38,6 +38,7 @@
         <activity android:name=".activity.StartActivity" />
         <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.SignInActivity" />
+        <activity android:name=".activity.PublishActivity" />
     </application>
 
 </manifest>

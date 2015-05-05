@@ -3,7 +3,7 @@
 
     <color name="grey">#ebebeb</color>
     <color name="black">#000000</color>
-    <color name="darkgrey">#666666</color>
+    <color name="darkgrey">#909090</color>
     <color name="white">#FFFFFF</color>
     <color name="red">#FF0000</color>
     <color name="half_transparent">#10000000</color>
@@ -12,4 +12,6 @@
 
     <color name="green_normal">#ff33e5b5</color>
     <color name="green_pressed">#ff00cc99</color>
+    <color name="green_main">#5db84d</color>
+    
 </resources>

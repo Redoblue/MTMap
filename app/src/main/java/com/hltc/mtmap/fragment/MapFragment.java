@@ -36,19 +36,15 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class HomeFragment extends Fragment {
+public class MapFragment extends Fragment {
 
     private static final int[] ITEM_DRAWABLES = {
-            R.drawable.composer_camera,
-            R.drawable.composer_music,
-            R.drawable.composer_place,
-            R.drawable.composer_sleep,
-            R.drawable.composer_thought,
-            R.drawable.composer_with
+            R.drawable.arc_all,
+            R.drawable.transparent,
+            R.drawable.arc_amuse,
+            R.drawable.transparent,
+            R.drawable.arc_food
     };
-
-    private static final int ARC_ITEM_NUM = 6;
-    private static final String TABLE_ID = "55214201e4b098078fdb272d";
 
     private AMap mAmap;
     private MapView mMapView;
@@ -88,7 +84,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void initArcMenu() {
-        for (int i = 0; i < ARC_ITEM_NUM; i++) {
+        for (int i = 0; i < ITEM_DRAWABLES.length; i++) {
             ImageView item = new ImageView(getActivity());
             item.setImageResource(ITEM_DRAWABLES[i]);
 

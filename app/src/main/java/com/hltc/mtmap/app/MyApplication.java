@@ -14,11 +14,12 @@ public class MyApplication extends Application {
     private boolean login = false;    //登录状态
     private long loginUid = 0;    //登录用户的id
 
-    private Context mContext;
+    private static Context mContext;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        mContext = getApplicationContext();
 
         initImageLoader();
     }
@@ -29,19 +30,7 @@ public class MyApplication extends Application {
         ImageLoader.getInstance().init(configuration);
     }
 
-    public void cleanCookie() {
-        removeProperty(AppConfig.CONF_COOKIE);
-    }
-
-    public String getProperty(String key) {
-        return AppConfig.getAppConfig(this).get(key);
-    }
-
-    public void setProperty(String key, String value) {
-        AppConfig.getAppConfig(this).set(key, value);
-    }
-
-    public void removeProperty(String... key) {
-        AppConfig.getAppConfig(this).remove(key);
+    public static Context getContext() {
+        return mContext;
     }
 }

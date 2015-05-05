@@ -1,5 +1,8 @@
 package com.hltc.mtmap.activity;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -7,17 +10,16 @@ import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.fragment.AddFragment;
-import com.hltc.mtmap.fragment.FriendFragment;
-import com.hltc.mtmap.fragment.HomeFragment;
-import com.hltc.mtmap.fragment.MeFragment;
+import com.hltc.mtmap.fragment.PublishFragment;
+import com.hltc.mtmap.fragment.GrainFragment;
+import com.hltc.mtmap.fragment.MapFragment;
+import com.hltc.mtmap.fragment.PrivateFragment;
 import com.hltc.mtmap.fragment.MessageFragment;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.ToastUtils;
@@ -31,49 +33,45 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private static final int[] TAB_NORMAL = {
             R.drawable.ic_tab_map_normal,
             R.drawable.ic_tab_grain_normal,
-            R.drawable.ic_tab_publish_normal,
+            R.drawable.transparent,
             R.drawable.ic_tab_message_normal,
             R.drawable.ic_tab_private_normal
     };
     private static final int[] TAB_PRESSED = {
             R.drawable.ic_tab_map_pressed,
             R.drawable.ic_tab_grain_pressed,
-            R.drawable.ic_tab_publish_pressed,
+            R.drawable.transparent,
             R.drawable.ic_tab_message_pressed,
             R.drawable.ic_tab_private_pressed
     };
 
-    private static final int TAB_HOME = 0;
-    private static final int TAB_FRIEND = 1;
-    private static final int TAB_ADD = 2;
-    private static final int TAB_MESSAGE = 3;
-    private static final int TAB_ME = 4;
+    private int[] ids = {
+            R.id.tab_item_map,
+            R.id.tab_item_grain,
+            R.id.tab_item_publish,
+            R.id.tab_item_message,
+            R.id.tab_item_private
+    };
 
     private static final int TAB_ITEM_NUM = 5;
-    private static final int WHITE = 0xFFFFFFFF;
-    private static final int GRAY = 0xFF7597B3;
-    private static final int BLUE = 0xFF0AB2FB;
-    private FragmentManager fgManager;
+    private static final int TAB_MAP = 0;
+    private static final int TAB_GRAIN = 1;
+    private static final int TAB_PUBLISH = 2;
+    private static final int TAB_MESSAGE = 3;
+    private static final int TAB_PRIVATE = 4;
 
-    private RelativeLayout tabHome;
-    private RelativeLayout tabFriend;
-    private RelativeLayout tabAdd;
-    private RelativeLayout tabMessage;
-    private RelativeLayout tabMe;
-    private ImageView imgMap;
-    private ImageView imgGrain;
-    private ImageView imgPublish;
-    private ImageView imgMessage;
-    private ImageView imgPrivate;
-    private TextView tvMap;
-    private TextView tvGrain;
-    private TextView tvPublish;
-    private TextView tvMessage;
-    private TextView tvPrivate;
+
+    private FragmentManager fgManager;
+    private int currentTabIndex = 0;
+
+    private TextView tabMap;
+    private TextView tabGrain;
+    private TextView tabPublish;
+    private TextView tabMessage;
+    private TextView tabPrivate;
+
     private List<Fragment> fragmentList;
-    private List<RelativeLayout> tabLayoutList;
-    private List<ImageView> imageViewList;
-    private List<TextView> textViewsList;
+    private List<TextView> tabItemList;
 
     public MyApplication application;
     public DaoManager daoManager;
@@ -88,7 +86,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         fgManager = getSupportFragmentManager();
         application = (MyApplication) getApplication();
         daoManager = DaoManager.getDaoManager(this);
-        initListsAndListeners();
+        initView();
 
         if (!AppUtils.isNetworkConnected(this)) {
             ToastUtils.showShort(this, R.string.network_not_connected);
@@ -101,54 +99,28 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void findViewById() {
-        tabHome = (RelativeLayout) findViewById(R.id.tab_home_layout);
-        tabFriend = (RelativeLayout) findViewById(R.id.tab_friend_layout);
-        tabAdd = (RelativeLayout) findViewById(R.id.tab_add_layout);
-        tabMessage = (RelativeLayout) findViewById(R.id.tab_message_layout);
-        tabMe = (RelativeLayout) findViewById(R.id.tab_me_layout);
-
-        imgMap = (ImageView) findViewById(R.id.iv_main_map);
-        imgGrain = (ImageView) findViewById(R.id.iv_main_grain);
-        imgPublish = (ImageView) findViewById(R.id.iv_main_publish);
-        imgMessage = (ImageView) findViewById(R.id.iv_main_message);
-        imgPrivate = (ImageView) findViewById(R.id.iv_main_private);
-
-        tvMap = (TextView) findViewById(R.id.tv_main_map);
-        tvGrain = (TextView) findViewById(R.id.tv_main_grain);
-        tvPublish = (TextView) findViewById(R.id.tv_main_publish);
-        tvMessage = (TextView) findViewById(R.id.tv_main_message);
-        tvPrivate = (TextView) findViewById(R.id.tv_main_private);
+        tabMap = (TextView) findViewById(R.id.tab_item_map);
+        tabGrain = (TextView) findViewById(R.id.tab_item_grain);
+        tabPublish = (TextView) findViewById(R.id.tab_item_publish);
+        tabMessage = (TextView) findViewById(R.id.tab_item_message);
+        tabPrivate = (TextView) findViewById(R.id.tab_item_private);
     }
 
-    private void initListsAndListeners() {
+    private void initView() {
         fragmentList = new ArrayList<>(TAB_ITEM_NUM);
         for (int i = 0; i < TAB_ITEM_NUM; i++) {
             fragmentList.add(i, null);
         }
 
-        tabLayoutList = new ArrayList<>(TAB_ITEM_NUM);
-        tabLayoutList.add(tabHome);
-        tabLayoutList.add(tabFriend);
-        tabLayoutList.add(tabAdd);
-        tabLayoutList.add(tabMessage);
-        tabLayoutList.add(tabMe);
+        tabItemList = new ArrayList<>(TAB_ITEM_NUM);
+        tabItemList.add(tabMap);
+        tabItemList.add(tabGrain);
+        tabItemList.add(tabPublish);
+        tabItemList.add(tabMessage);
+        tabItemList.add(tabPrivate);
 
-        imageViewList = new ArrayList<>(TAB_ITEM_NUM);
-        imageViewList.add(imgMap);
-        imageViewList.add(imgGrain);
-        imageViewList.add(imgPublish);
-        imageViewList.add(imgMessage);
-        imageViewList.add(imgPrivate);
-
-        textViewsList = new ArrayList<>(TAB_ITEM_NUM);
-        textViewsList.add(tvMap);
-        textViewsList.add(tvGrain);
-        textViewsList.add(tvPublish);
-        textViewsList.add(tvMessage);
-        textViewsList.add(tvPrivate);
-
-        for (RelativeLayout layout : tabLayoutList) {
-            layout.setOnClickListener(this);
+        for (TextView item : tabItemList) {
+            item.setOnClickListener(this);
         }
 
         setChioceItem(0); // 首先看到首页
@@ -156,24 +128,18 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.tab_home_layout:
-                setChioceItem(TAB_HOME);
+        for (int i = 0; i < ids.length; i++) {
+            if (ids[i] == view.getId()) {
+                if (i == 2) {
+                    Intent intent = new Intent(this, PublishActivity.class);
+//                    intent.putExtra("FROM_TAB", currentTabIndex);
+                    startActivity(intent);
+                    break;
+                }
+                currentTabIndex = i;
+                setChioceItem(i);
                 break;
-            case R.id.tab_friend_layout:
-                setChioceItem(TAB_FRIEND);
-                break;
-            case R.id.tab_add_layout:
-                setChioceItem(TAB_ADD);
-                break;
-            case R.id.tab_message_layout:
-                setChioceItem(TAB_MESSAGE);
-                break;
-            case R.id.tab_me_layout:
-                setChioceItem(TAB_ME);
-                break;
-            default:
-                break;
+            }
         }
     }
 
@@ -182,8 +148,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         clearChioce();
         hideFragments(transaction);
 
-        imageViewList.get(index).setImageResource(TAB_PRESSED[index]);
-        textViewsList.get(index).setTextColor(BLUE);
+        Drawable drawable = getResources().getDrawable(TAB_PRESSED[index]);
+        drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+        tabItemList.get(index).setCompoundDrawables(null, drawable, null, null);
+        tabItemList.get(index).setTextColor(index == 2 ? Color.WHITE :
+                getResources().getColor(R.color.green_main));
 
         if (fragmentList.get(index) == null) {
             fragmentList.set(index, getFragmentByIndex(index));
@@ -196,16 +165,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     private Fragment getFragmentByIndex(int index) {
         switch (index) {
-            case TAB_HOME:
-                return new HomeFragment();
-            case TAB_FRIEND:
-                return new FriendFragment();
-            case TAB_ADD:
-                return new AddFragment();
+            case TAB_MAP:
+                return new MapFragment();
+            case TAB_GRAIN:
+                return new GrainFragment();
+            case TAB_PUBLISH:
+                return new PublishFragment();
             case TAB_MESSAGE:
                 return new MessageFragment();
-            case TAB_ME:
-                return new MeFragment();
+            case TAB_PRIVATE:
+                return new PrivateFragment();
             default:
                 return null;
         }
@@ -221,9 +190,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
     public void clearChioce() {
         for (int i = 0; i < TAB_ITEM_NUM; i++) {
-            imageViewList.get(i).setImageResource(TAB_NORMAL[i]);
-//            tabLayoutList.get(i).setBackgroundColor(WHITE);
-            textViewsList.get(i).setTextColor(GRAY);
+            Drawable drawable = getResources().getDrawable(TAB_NORMAL[i]);
+            drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
+            tabItemList.get(i).setCompoundDrawables(null, drawable, null, null);
+            tabItemList.get(i).setTextColor(
+                    i == 2 ? Color.WHITE : getResources().getColor(R.color.darkgrey));
         }
     }
 
@@ -232,5 +203,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             return;
         }
         //通过结构查询是否有更新的图片，并得到列表，然后使用HttpUtils进行下载
+    }
+
+
+    /************************* Life Cycle ************************/
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setChioceItem(currentTabIndex);
     }
 }

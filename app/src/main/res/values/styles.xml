@@ -49,4 +49,24 @@
         <item name="android:paddingRight">15dp</item>
         <item name="android:gravity">center_vertical</item>
     </style>
+
+    <style name="item_tab">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingTop">6dp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:textColor">@color/darkgrey</item>
+    </style>
+
+    <style name="item_publish">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:drawableTop">@drawable/btn_publish_food</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:text">吃喝</item>
+        <item name="android:textSize">20sp</item>
+    </style>
 </resources>

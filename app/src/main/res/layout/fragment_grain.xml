@@ -1,37 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:background="@drawable/background_blur"
-    android:weightSum="1"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.lorentzos.flingswipe.SwipeFlingAdapterView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.8"
-        app:rotation_degrees="16"
-        app:max_visible="4"
-        app:min_adapter_stack="6" />
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.2"
-        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="20dp"
         android:orientation="horizontal">
+
         <Button
             android:id="@+id/btn_grain_ignore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="60dp"
-            android:layout_marginEnd="60dp"/>
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="start"
+            android:layout_marginEnd="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/grain_ignore" />
+
         <Button
             android:id="@+id/btn_grain_favourite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
-            android:layout_marginStart="60dp"/>
-        </LinearLayout>
-</LinearLayout>
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="end"
+            android:layout_marginLeft="40dp"
+            android:layout_marginStart="40dp"
+            android:background="@drawable/grain_favourite" />
+    </LinearLayout>
+
+    <com.lorentzos.flingswipe.SwipeFlingAdapterView
+        android:id="@+id/view_grain_swipe"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:max_visible="3"
+        app:min_adapter_stack="6"
+        app:rotation_degrees="16"
+        tools:context=".activity/MainActivity" />
+
+    <include
+        android:id="@+id/bar_grain"
+        layout="@layout/bar_green" />
+
+
+</FrameLayout>

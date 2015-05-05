@@ -42,7 +42,7 @@
         android:text="10086"
         android:textSize="12sp"
         android:layout_alignParentRight="true"
-        android:drawableLeft="@drawable/composer_camera"
+        android:drawableLeft="@mipmap/ic_launcher"
         android:drawablePadding="5dp"
         android:padding="3dp"
         android:background="#2ed667"

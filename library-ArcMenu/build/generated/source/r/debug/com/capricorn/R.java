@@ -42,8 +42,9 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static int composer_button_normal=0x7f020001;
         public static int composer_button_pressed=0x7f020002;
         public static int composer_icn_plus=0x7f020003;
-        public static int composer_icn_plus_normal=0x7f020004;
-        public static int composer_icn_plus_pressed=0x7f020005;
+        public static int composer_icn_plus_bak=0x7f020004;
+        public static int composer_icn_plus_normal=0x7f020005;
+        public static int composer_icn_plus_pressed=0x7f020006;
     }
     public static final class id {
         public static int control_hint=0x7f040002;

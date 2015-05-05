@@ -6,7 +6,7 @@
     android:weightSum="1"
     android:background="@drawable/background_blur">
 
-    <include layout="@layout/bar_btb" />
+    <include layout="@layout/bar_transparent" />
 
     <TextView
         android:layout_width="wrap_content"

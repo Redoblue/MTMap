@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="75dp"
+    android:layout_width="320dp"
+    android:layout_height="390dp">
+
+    <ImageView
+        android:id="@+id/iv_swipe_pic"
+        android:layout_width="match_parent"
+        android:layout_height="320dp"
+        android:src="@drawable/pic_1"
+        android:background="@color/white"/>
+
+    <TextView
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/iv_swipe_pic"
+        android:background="@color/darkgrey"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/separator"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@color/white">
+
+        <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/civ_swipe_avatar"
+            android:src="@drawable/cluster_pic"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_margin="10dp"/>
+            <!--app:border_color="@color/darkgrey"-->
+            <!--app:border_width="1dp" />-->
+        <TextView
+            android:id="@+id/tv_swipe_comment"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_margin="15dp"
+            android:text="你好啊，案桌"
+            android:textSize="12sp"
+            android:maxLines="3"/>
+    </LinearLayout>
+</RelativeLayout>
