@@ -17,5 +17,5 @@ public interface ClusterClickListener {
 	 * @param clusterItems
 	 *            聚合点所包含的元素
 	 */
-	public void onClick(Marker marker, List<ClusterItem> clusterItems);
+	void onClick(Marker marker, List<ClusterItem> clusterItems);
 }

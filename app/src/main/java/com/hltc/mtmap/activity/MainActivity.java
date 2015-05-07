@@ -3,24 +3,22 @@ package com.hltc.mtmap.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.fragment.PublishFragment;
 import com.hltc.mtmap.fragment.GrainFragment;
 import com.hltc.mtmap.fragment.MapFragment;
-import com.hltc.mtmap.fragment.PrivateFragment;
 import com.hltc.mtmap.fragment.MessageFragment;
+import com.hltc.mtmap.fragment.PrivateFragment;
+import com.hltc.mtmap.fragment.PublishFragment;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.ToastUtils;
 
@@ -74,7 +72,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private List<TextView> tabItemList;
 
     public MyApplication application;
-    public DaoManager daoManager;
+//    public DaoManager daoManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +83,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         findViewById();
         fgManager = getSupportFragmentManager();
         application = (MyApplication) getApplication();
-        daoManager = DaoManager.getDaoManager(this);
+//        daoManager = DaoManager.getDaoManager(this);
         initView();
 
         if (!AppUtils.isNetworkConnected(this)) {

@@ -14,7 +14,6 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
-import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amp.apis.libc.Cluster;
 import com.amp.apis.libc.ClusterClickListener;
@@ -23,11 +22,7 @@ import com.amp.apis.libc.ClusterOverlay;
 import com.amp.apis.libc.ClusterRender;
 import com.capricorn.ArcMenu;
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.bean.RegionItem;
-import com.hltc.mtmap.orm.models.MTGrain;
-import com.hltc.mtmap.orm.models.MTSite;
-import com.hltc.mtmap.orm.models.MTUser;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ToastUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -50,7 +45,7 @@ public class MapFragment extends Fragment {
     private MapView mMapView;
     private ArcMenu mArcMenu;
 
-    private DaoManager daoManager;
+//    private DaoManager daoManager;
     private ClusterOverlay overlay;
     //Test by Tab ABC
     private int clusterRadius = 80;
@@ -63,7 +58,7 @@ public class MapFragment extends Fragment {
 
         findViewById(view);
         mMapView.onCreate(savedInstanceState);
-        daoManager = DaoManager.getDaoManager(getActivity());
+//        daoManager = DaoManager.getDaoManager(getActivity());
 
         initAmap();
         initArcMenu();
@@ -102,19 +97,19 @@ public class MapFragment extends Fragment {
     }
 
     private void fillDataFromDb() {
-        List<MTGrain> grains = daoManager.getAllVisibleGrains();
-        for (MTGrain grain : grains) {
-            long siteId = grain.getSiteId();
-            MTSite site = daoManager.getDaoSession().getMTSiteDao().load(siteId);
-            LatLng latLng = new LatLng(site.getLatitude(), site.getLongitude());
-
-            long userId = grain.getUserId();
-            MTUser user = daoManager.getDaoSession().getMTUserDao().load(userId);
-            String url = user.getAvatarURL();
-
-            RegionItem item = new RegionItem(latLng, url);
-            overlay.addClusterItem(item);
-        }
+//        List<MTGrain> grains = daoManager.getAllVisibleGrains();
+//        for (MTGrain grain : grains) {
+//            long siteId = grain.getSiteId();
+//            MTSite site = daoManager.getDaoSession().getMTSiteDao().load(siteId);
+//            LatLng latLng = new LatLng(site.getLatitude(), site.getLongitude());
+//
+//            long userId = grain.getUserId();
+//            MTUser user = daoManager.getDaoSession().getMTUserDao().load(userId);
+//            String url = user.getAvatarURL();
+//
+//            RegionItem item = new RegionItem(latLng, url);
+//            overlay.addClusterItem(item);
+//        }
     }
 
 

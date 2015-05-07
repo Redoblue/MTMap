@@ -17,17 +17,13 @@ import java.io.File;
 public class AppUtils {
 
     public static boolean isFirstTimeToUse(Context context) {
-        File file = new File(context.getDir(AppConfig.APP_CONFIG, context.MODE_PRIVATE).getPath()
+        File file = new File(context.getDir(AppConfig.APP_CONFIG, Context.MODE_PRIVATE).getPath()
                 + File.separator + AppConfig.APP_CONFIG);
         if (!file.exists()) {
             return true;
         } else {
             String value = AppConfig.getAppConfig(context).get(AppConfig.CONF_FIRST_USE);
-            if (value == null || value.equals("true")) {
-                return true;
-            } else {
-                return false;
-            }
+            return value == null || value.equals("true");
         }
     }
 
