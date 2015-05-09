@@ -17,7 +17,7 @@ import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.fragment.GrainFragment;
 import com.hltc.mtmap.fragment.MapFragment;
 import com.hltc.mtmap.fragment.MessageFragment;
-import com.hltc.mtmap.fragment.PrivateFragment;
+import com.hltc.mtmap.fragment.ProfileFragment;
 import com.hltc.mtmap.fragment.PublishFragment;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.ToastUtils;
@@ -172,7 +172,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             case TAB_MESSAGE:
                 return new MessageFragment();
             case TAB_PRIVATE:
-                return new PrivateFragment();
+                return new ProfileFragment();
             default:
                 return null;
         }
@@ -192,7 +192,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
             tabItemList.get(i).setCompoundDrawables(null, drawable, null, null);
             tabItemList.get(i).setTextColor(
-                    i == 2 ? Color.WHITE : getResources().getColor(R.color.darkgrey));
+                    i == 2 ? Color.WHITE : getResources().getColor(R.color.dark_grey));
         }
     }
 

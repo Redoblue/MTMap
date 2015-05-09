@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center">
+
+    <Button
+        android:id="@+id/btn_profile_settings"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/grain_favourite"
+        />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/civ_profile_header_pic"
+        android:layout_width="98dp"
+        android:layout_height="98dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/profile_header_pic"
+        app:border_color="@color/white"
+        app:border_width="4dp"/>
+
+    <TextView
+        android:id="@+id/tv_profile_header_text"
+        android:textSize="16sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:layout_below="@id/civ_profile_header_pic"
+        android:text="小苹果"
+        android:textColor="@color/white" />
+
+</RelativeLayout>

@@ -1,7 +1,6 @@
 package com.hltc.mtmap.fragment;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.CommonAdapter;
 import com.hltc.mtmap.adapter.CommonViewHolder;
 import com.hltc.mtmap.bean.SwipeGrainItem;
-import com.lorentzos.flingswipe.FlingCardListener;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
 import java.util.ArrayList;
@@ -48,7 +46,7 @@ public class GrainFragment extends Fragment {
 			item.setComment("我只是一个card而已 " + i);
 			mSwipeItems.add(item);
 		}
-		mSwipeAdapter = new SwipeViewAdapter(getActivity(), mSwipeItems, R.layout.item_grain_card);
+		mSwipeAdapter = new SwipeViewAdapter(getActivity(), mSwipeItems, R.layout.grain_card_item);
 		mSwipeView.setAdapter(mSwipeAdapter);
 		mSwipeView.setFlingListener(flingListener);
 	}

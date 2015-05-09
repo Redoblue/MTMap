@@ -22,7 +22,7 @@ public class AMapUtils {
         return (int) (dp * scale + 0.5f);
     }
 
-    public int px2dp(Context context, float px) {
+    public static int px2dp(Context context, float px) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (px / scale + 0.5f);
     }

@@ -161,7 +161,7 @@ public class MapFragment extends Fragment {
         public BitmapDescriptor getBitmapDescriptor(Cluster cluster) {
             LayoutInflater inflater = (LayoutInflater)
                     getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.cluster, null);
+            View view = inflater.inflate(R.layout.map_cluster_view, null);
             RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.layout_cluster);
             int num = cluster.getClusterCount();
             if (num == 1) {
