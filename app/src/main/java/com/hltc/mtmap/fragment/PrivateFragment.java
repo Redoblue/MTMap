@@ -12,7 +12,7 @@ public class PrivateFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_me, container, false);
+        View view = inflater.inflate(R.layout.fragment_private, container, false);
         return view;
     }
 }
