@@ -13,6 +13,7 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/library-ArcMenu" />
             <option value="$PROJECT_DIR$/library-ClusterMarker" />
+            <option value="$PROJECT_DIR$/library-PullZoomView" />
           </set>
         </option>
       </GradleProjectSettings>

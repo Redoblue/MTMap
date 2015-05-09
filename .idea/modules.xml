@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/library-ArcMenu/library-ArcMenu.iml" filepath="$PROJECT_DIR$/library-ArcMenu/library-ArcMenu.iml" />
       <module fileurl="file://$PROJECT_DIR$/library-ClusterMarker/library-ClusterMarker.iml" filepath="$PROJECT_DIR$/library-ClusterMarker/library-ClusterMarker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/library-PullZoomView/library-PullZoomView.iml" filepath="$PROJECT_DIR$/library-PullZoomView/library-PullZoomView.iml" />
     </modules>
   </component>
 </project>

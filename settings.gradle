@@ -1,1 +1,1 @@
-include ':app', ':library-ArcMenu', ':library-ClusterMarker'
+include ':app', ':library-ArcMenu', ':library-ClusterMarker', ':library-PullZoomView'
