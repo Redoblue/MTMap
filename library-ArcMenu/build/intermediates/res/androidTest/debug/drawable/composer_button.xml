@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/composer_button_pressed" android:state_pressed="true"/>
+    <item android:drawable="@drawable/composer_button_normal"/>
+
+</selector><!-- From: file:/home/redoblue/Workspace/MTMap/library-ArcMenu/src/main/res/drawable/composer_button.xml --><!-- From: file:/home/redoblue/Workspace/MTMap/library-ArcMenu/build/intermediates/bundles/debug/res/drawable/composer_button.xml -->
