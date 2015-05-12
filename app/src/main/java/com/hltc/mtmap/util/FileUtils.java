@@ -2,7 +2,11 @@ package com.hltc.mtmap.util;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Environment;
+import android.util.Log;
+
+import com.hltc.mtmap.app.AppConfig;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -10,6 +14,7 @@ import java.util.List;
 
 /**
  * The type File utils.
+ *
  * @author Redoblue
  * @version 1.0
  * @created 2015 -4-15
@@ -19,9 +24,9 @@ public class FileUtils {
     /**
      * Write void.
      *
-     * @param context the context
+     * @param context  the context
      * @param fileName the file name
-     * @param content the content
+     * @param content  the content
      */
     public static void write(Context context, String fileName, String content) {
         if (content == null) {
@@ -39,7 +44,7 @@ public class FileUtils {
     /**
      * Read string.
      *
-     * @param context the context
+     * @param context  the context
      * @param fileName the file name
      * @return the string
      */
@@ -80,7 +85,7 @@ public class FileUtils {
      * Create file.
      *
      * @param folderPath the folder path
-     * @param fileName the file name
+     * @param fileName   the file name
      * @return the file
      */
     public static File createFile(String folderPath, String fileName) {
@@ -94,8 +99,8 @@ public class FileUtils {
     /**
      * Write file.
      *
-     * @param buffer the buffer
-     * @param folder the folder
+     * @param buffer   the buffer
+     * @param folder   the folder
      * @param fileName the file name
      * @return the boolean
      */
@@ -152,7 +157,7 @@ public class FileUtils {
      * Gets app cache dir.
      *
      * @param context the context
-     * @param dir the dir
+     * @param dir     the dir
      * @return the app cache
      */
     public static String getAppCache(Context context, String dir) {
@@ -210,5 +215,80 @@ public class FileUtils {
 
     public static boolean checkFileExistence(String path) {
         return new File(path).exists();
+    }
+
+
+    public static void saveBitmap(Bitmap bm, String picName) {
+        Log.e("", "保存图片");
+        try {
+            if (!isFileExist("")) {
+                File tempf = createSDDir("");
+            }
+            File f = new File(AppConfig.DEFAULT_APP_ROOT_PATH + "photo/", picName + ".JPEG");
+            if (f.exists()) {
+                f.delete();
+            }
+            FileOutputStream out = new FileOutputStream(f);
+            bm.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            out.flush();
+            out.close();
+            Log.e("", "已经保存");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static File createSDDir(String dirName) throws IOException {
+        File dir = new File(AppConfig.DEFAULT_APP_ROOT_PATH + "photo/" + dirName);
+        if (Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+
+            System.out.println("createSDDir:" + dir.getAbsolutePath());
+            System.out.println("createSDDir:" + dir.mkdir());
+        }
+        return dir;
+    }
+
+    public static boolean isFileExist(String fileName) {
+        File file = new File(AppConfig.DEFAULT_APP_ROOT_PATH + "photo/" + fileName);
+        file.isFile();
+        return file.exists();
+    }
+
+    public static void delFile(String fileName) {
+        File file = new File(AppConfig.DEFAULT_APP_ROOT_PATH + "photo/" + fileName);
+        if (file.isFile()) {
+            file.delete();
+        }
+        file.exists();
+    }
+
+    public static void deleteDir() {
+        File dir = new File(AppConfig.DEFAULT_APP_ROOT_PATH + "photo/");
+        if (dir == null || !dir.exists() || !dir.isDirectory())
+            return;
+
+        for (File file : dir.listFiles()) {
+            if (file.isFile())
+                file.delete(); // 删除所有文件
+            else if (file.isDirectory())
+                deleteDir(); // 递规的方式删除文件夹
+        }
+        dir.delete();// 删除目录本身
+    }
+
+    public static boolean fileIsExists(String path) {
+        try {
+            File f = new File(path);
+            if (!f.exists()) {
+                return false;
+            }
+        } catch (Exception e) {
+
+            return false;
+        }
+        return true;
     }
 }

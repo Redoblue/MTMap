@@ -39,6 +39,10 @@
         <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.SignInActivity" />
         <activity android:name=".activity.PublishActivity" />
+        <activity android:name=".activity.CreateGrainActivity" />
+        <activity android:name=".activity.PhotoActivity" />
+        <activity android:name=".activity.PhotoGridActivity" />
+        <activity android:name=".activity.GalleryActivity" />
     </application>
 
 </manifest>

@@ -130,7 +130,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             if (ids[i] == view.getId()) {
                 if (i == 2) {
                     Intent intent = new Intent(this, PublishActivity.class);
-//                    intent.putExtra("FROM_TAB", currentTabIndex);
                     startActivity(intent);
                     break;
                 }

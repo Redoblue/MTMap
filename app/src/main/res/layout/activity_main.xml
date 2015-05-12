@@ -11,13 +11,8 @@
         <FrameLayout
             android:id="@+id/content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></FrameLayout>
+            android:layout_height="match_parent"/>
 
-        <com.capricorn.ArcMenu
-            android:id="@+id/arc_menu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
     </RelativeLayout>
 
     <LinearLayout
@@ -26,41 +21,41 @@
         android:background="@color/white">
 
         <TextView
-            style="@style/item_tab"
             android:id="@+id/tab_item_map"
+            style="@style/item_tab"
             android:drawableTop="@drawable/ic_tab_map_normal"
             android:text="地图" />
 
         <TextView
-            style="@style/item_tab"
             android:id="@+id/tab_item_grain"
+            style="@style/item_tab"
             android:drawableTop="@drawable/ic_tab_message_normal"
-            android:paddingRight="20dp"
             android:paddingEnd="20dp"
+            android:paddingRight="20dp"
             android:text="麦粒" />
 
         <TextView
             android:id="@+id/tab_item_publish"
             android:layout_width="60dp"
             android:layout_height="match_parent"
-            android:drawableTop="@drawable/transparent"
             android:background="@drawable/ic_tab_publish"
+            android:drawableTop="@drawable/transparent"
             android:gravity="center_horizontal"
+            android:paddingTop="7dp"
             android:text="发布"
-            android:textSize="10sp"
             android:textColor="@color/white"
-            android:paddingTop="7dp"/>
+            android:textSize="10sp" />
 
         <TextView
-            style="@style/item_tab"
             android:id="@+id/tab_item_message"
+            style="@style/item_tab"
             android:drawableTop="@drawable/ic_tab_message_normal"
             android:paddingLeft="20dp"
-            android:paddingStart="20dp"
             android:text="消息" />
+
         <TextView
-            style="@style/item_tab"
             android:id="@+id/tab_item_private"
+            style="@style/item_tab"
             android:drawableTop="@drawable/ic_tab_private_normal"
             android:text="个人" />
     </LinearLayout>

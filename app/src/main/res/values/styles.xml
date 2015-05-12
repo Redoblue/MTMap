@@ -16,6 +16,18 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    <style name="AnimPublishActivityTheme">
+        <item name="android:windowAnimationStyle">@style/PublishActivityAnimTheme</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="PublishActivityAnimTheme" parent="@android:style/Animation.Activity">
+        <item name="android:activityOpenEnterAnimation">@anim/abc_fade_in</item>
+        <item name="android:activityOpenExitAnimation">@anim/abc_fade_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/abc_fade_out</item>
+        <item name="android:activityCloseExitAnimation">@anim/abc_fade_out</item>
+    </style>
 
     <style name="BlueButton">
         <item name="android:layout_width">wrap_content</item>
@@ -62,7 +74,7 @@
 
     <style name="item_publish">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:drawableTop">@drawable/btn_publish_food</item>
         <item name="android:drawablePadding">10dp</item>
         <item name="android:gravity">center_horizontal</item>

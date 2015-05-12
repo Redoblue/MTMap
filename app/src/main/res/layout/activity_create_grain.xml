@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/layout_create_grain_map"
+        android:layout_width="match_parent"
+        android:layout_height="210dp">
+
+
+        <com.amap.api.maps.MapView
+            android:id="@+id/create_grain_view_map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_blur" />
+
+        <include
+            android:id="@+id/layout_create_grain_green"
+            layout="@layout/bar_green"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true" />
+
+        <RelativeLayout
+            android:id="@+id/layout_create_grain_adjust_map"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_alignParentBottom="true"
+            android:background="#40000000">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:text="点击地图调整位置"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/create_grain_btn_fullscreen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:background="@null"
+                android:gravity="center"
+                android:text="放大" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/create_grain_et_address"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@null"
+                android:drawableLeft="@drawable/create_grain_img_location"
+                android:drawablePadding="10dp"
+                android:gravity="center_vertical"
+                android:hint="选择一个地址吧"
+                android:maxLines="1"
+                android:paddingLeft="20dp"
+                android:paddingRight="10dp" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/separator" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:paddingLeft="54dp"
+                            android:text="公开"
+                            android:textSize="18sp" />
+
+                        <Switch
+                            android:id="@+id/create_grain_st_public"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginRight="30dp"
+                            android:textOff="否"
+                            android:textOn="是" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/separator" />
+
+                    <EditText
+                        android:id="@+id/create_grain_et_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="120dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/grey"
+                        android:gravity="start|top"
+                        android:hint="发表一下吃货的心情吧！"
+                        android:paddingLeft="20dp"
+                        android:paddingTop="10dp" />
+
+                    <com.hltc.mtmap.widget.AddPhotoGridView
+                        android:id="@+id/create_grain_gv_photos"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="5dp"
+                        android:horizontalSpacing="3dp"
+                        android:numColumns="4"
+                        android:scrollbars="none"
+                        android:verticalSpacing="5dp" />
+                </LinearLayout>
+
+                <ListView
+                    android:id="@+id/create_grain_lv_results"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#666666"
+                    android:visibility="invisible" />
+            </FrameLayout>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
