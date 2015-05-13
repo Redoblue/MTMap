@@ -22,17 +22,29 @@ import com.hltc.mtmap.util.FileUtils;
 
 public class PhotoActivity extends Activity {
 
-    private ArrayList<View> listViews = null;
-    private ViewPager pager;
-    private MyPageAdapter adapter;
-    private int count;
-
     public List<Bitmap> bmp = new ArrayList<>();
     public List<String> drr = new ArrayList<>();
     public List<String> del = new ArrayList<>();
     public int max;
-
     RelativeLayout photo_relativeLayout;
+    private ArrayList<View> listViews = null;
+    private ViewPager pager;
+    private MyPageAdapter adapter;
+    private int count;
+    private OnPageChangeListener pageChangeListener = new OnPageChangeListener() {
+
+        public void onPageSelected(int arg0) {// 页面选择响应函数
+            count = arg0;
+        }
+
+        public void onPageScrolled(int arg0, float arg1, int arg2) {// 滑动中。。。
+
+        }
+
+        public void onPageScrollStateChanged(int arg0) {// 滑动状态改变
+
+        }
+    };
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,21 +130,6 @@ public class PhotoActivity extends Activity {
                 LayoutParams.FILL_PARENT));
         listViews.add(img);// 添加view
     }
-
-    private OnPageChangeListener pageChangeListener = new OnPageChangeListener() {
-
-        public void onPageSelected(int arg0) {// 页面选择响应函数
-            count = arg0;
-        }
-
-        public void onPageScrolled(int arg0, float arg1, int arg2) {// 滑动中。。。
-
-        }
-
-        public void onPageScrollStateChanged(int arg0) {// 滑动状态改变
-
-        }
-    };
 
     class MyPageAdapter extends PagerAdapter {
 

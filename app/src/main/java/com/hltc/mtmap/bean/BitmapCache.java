@@ -17,8 +17,8 @@ import android.widget.ImageView;
 
 public class BitmapCache extends Activity {
 
-    public Handler h = new Handler();
     public final String TAG = getClass().getSimpleName();
+    public Handler h = new Handler();
     private HashMap<String, SoftReference<Bitmap>> imageCache = new HashMap<String, SoftReference<Bitmap>>();
 
     public void put(String path, Bitmap bmp) {

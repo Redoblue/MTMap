@@ -19,13 +19,13 @@ import com.hltc.mtmap.adapter.ImageBucketAdapter;
 import com.hltc.mtmap.helper.AlbumHelper;
 
 public class TestPicActivity extends Activity {
+    public static final String EXTRA_IMAGE_LIST = "imagelist";
+    public static Bitmap bimap;
     // ArrayList<Entity> dataList;//用来装载数据源的列表
     List<ImageBucket> dataList;
     GridView gridView;
     ImageBucketAdapter adapter;// 自定义的适配器
     AlbumHelper helper;
-    public static final String EXTRA_IMAGE_LIST = "imagelist";
-    public static Bitmap bimap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

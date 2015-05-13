@@ -22,10 +22,10 @@
 
     <ImageView
         android:id="@+id/isselected"
-        android:layout_margin="3dp"
         android:layout_width="26dp"
         android:layout_height="26dp"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:layout_margin="3dp" />
 
 </RelativeLayout>

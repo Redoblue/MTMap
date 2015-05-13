@@ -21,12 +21,12 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:gravity="center"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="8dp"         
-            android:textColor="@drawable/text_while"
+            android:layout_marginRight="8dp"
+            android:gravity="center"
             android:text="取消"
+            android:textColor="@drawable/text_while"
             android:textSize="20sp" />
               
     </RelativeLayout>

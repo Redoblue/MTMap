@@ -24,17 +24,19 @@ import com.hltc.mtmap.bean.ImageItem;
  * @author Administrator
  */
 public class AlbumHelper {
+    private static AlbumHelper instance;
     final String TAG = getClass().getSimpleName();
     Context context;
     ContentResolver cr;
-
     // 缩略图列表
     HashMap<String, String> thumbnailList = new HashMap<>();
     // 专辑列表
     List<HashMap<String, String>> albumList = new ArrayList<>();
     HashMap<String, ImageBucket> bucketList = new HashMap<>();
-
-    private static AlbumHelper instance;
+    /**
+     * 是否创建了图片集
+     */
+    boolean hasBuildImagesBucketList = false;
 
     private AlbumHelper() {
     }
@@ -159,11 +161,6 @@ public class AlbumHelper {
 
         }
     }
-
-    /**
-     * 是否创建了图片集
-     */
-    boolean hasBuildImagesBucketList = false;
 
     /**
      * 得到图片集

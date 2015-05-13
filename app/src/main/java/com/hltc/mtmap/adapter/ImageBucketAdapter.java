@@ -70,13 +70,6 @@ public class ImageBucketAdapter extends BaseAdapter {
         return arg0;
     }
 
-    class Holder {
-        private ImageView iv;
-        private ImageView selected;
-        private TextView name;
-        private TextView count;
-    }
-
     @Override
     public View getView(int arg0, View arg1, ViewGroup arg2) {
         // TODO Auto-generated method stub
@@ -106,6 +99,13 @@ public class ImageBucketAdapter extends BaseAdapter {
             Log.e(TAG, "no images in bucket " + item.bucketName);
         }
         return arg1;
+    }
+
+    class Holder {
+        private ImageView iv;
+        private ImageView selected;
+        private TextView name;
+        private TextView count;
     }
 
 }

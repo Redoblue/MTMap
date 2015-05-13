@@ -26,18 +26,16 @@ import butterknife.OnClick;
 
 public class GalleryActivity extends Activity {
 
+    public static final String EXTRA_IMAGE_LIST = "imagelist";
+    public static Bitmap bimap;
     @InjectView(R.id.btn_photo_bucket_back)
     Button backButton;
     @InjectView(R.id.gv_photo_bucket_gallery)
     GridView gridview;
-
     // ArrayList<Entity> dataList;//用来装载数据源的列表
     List<ImageBucket> dataList;
     ImageBucketAdapter adapter;// 自定义的适配器
     AlbumHelper helper;
-
-    public static final String EXTRA_IMAGE_LIST = "imagelist";
-    public static Bitmap bimap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

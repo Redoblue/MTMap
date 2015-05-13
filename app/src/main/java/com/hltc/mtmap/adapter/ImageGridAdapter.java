@@ -23,14 +23,11 @@ import com.hltc.mtmap.bean.ImageItem;
 
 public class ImageGridAdapter extends BaseAdapter {
 
-	private TextCallback textcallback = null;
 	final String TAG = getClass().getSimpleName();
+	public Map<String, String> map = new HashMap<String, String>();
 	Activity act;
 	List<ImageItem> dataList;
-	public Map<String, String> map = new HashMap<String, String>();
 	BitmapCache cache;
-	private Handler mHandler;
-	private int selectTotal = 0;
 	BitmapCache.ImageCallback callback = new BitmapCache.ImageCallback() {
 		@Override
 		public void imageLoad(ImageView imageView, Bitmap bitmap,
@@ -47,20 +44,19 @@ public class ImageGridAdapter extends BaseAdapter {
 			}
 		}
 	};
-
-	public static interface TextCallback {
-		public void onListen(int count);
-	}
-
-	public void setTextCallback(TextCallback listener) {
-		textcallback = listener;
-	}
+	private TextCallback textcallback = null;
+	private Handler mHandler;
+	private int selectTotal = 0;
 
 	public ImageGridAdapter(Activity act, List<ImageItem> list, Handler mHandler) {
 		this.act = act;
 		dataList = list;
 		cache = new BitmapCache();
 		this.mHandler = mHandler;
+	}
+
+	public void setTextCallback(TextCallback listener) {
+		textcallback = listener;
 	}
 
 	@Override
@@ -82,12 +78,6 @@ public class ImageGridAdapter extends BaseAdapter {
 	public long getItemId(int position) {
 		// TODO Auto-generated method stub
 		return position;
-	}
-
-	class Holder {
-		private ImageView iv;
-		private ImageView selected;
-		private TextView text;
 	}
 
 	@Override
@@ -112,7 +102,7 @@ public class ImageGridAdapter extends BaseAdapter {
 		cache.displayBmp(holder.iv, item.thumbnailPath, item.imagePath,
 				callback);
 		if (item.isSelected) {
-			holder.selected.setImageResource(R.drawable.icon_data_select);  
+			holder.selected.setImageResource(R.drawable.icon_data_select);
 			holder.text.setBackgroundResource(R.drawable.bgd_relatly_line);
 		} else {
 			holder.selected.setImageResource(-1);
@@ -160,5 +150,15 @@ public class ImageGridAdapter extends BaseAdapter {
 		});
 
 		return convertView;
+	}
+
+	public static interface TextCallback {
+		public void onListen(int count);
+	}
+
+	class Holder {
+		private ImageView iv;
+		private ImageView selected;
+		private TextView text;
 	}
 }
