@@ -15,6 +15,7 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 import com.amp.apis.libc.Cluster;
 import com.amp.apis.libc.ClusterClickListener;
 import com.amp.apis.libc.ClusterItem;
@@ -22,6 +23,7 @@ import com.amp.apis.libc.ClusterOverlay;
 import com.amp.apis.libc.ClusterRender;
 import com.capricorn.ArcMenu;
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.bean.RegionItem;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ToastUtils;
@@ -29,6 +31,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MapFragment extends Fragment {
@@ -40,23 +44,69 @@ public class MapFragment extends Fragment {
             R.drawable.transparent,
             R.drawable.arc_food
     };
+    @InjectView(R.id.map)
+    MapView mMapView;
+    @InjectView(R.id.arc_menu)
+    ArcMenu mArcMenu;
 
     private AMap mAmap;
-    private MapView mMapView;
-    private ArcMenu mArcMenu;
 
-//    private DaoManager daoManager;
+    //    private DaoManager daoManager;
     private ClusterOverlay overlay;
     //Test by Tab ABC
     private int clusterRadius = 80;
     private int currentCategory = 0;
+    private ClusterRender clusterRender = new ClusterRender() {
+        @Override
+        public BitmapDescriptor getBitmapDescriptor(Cluster cluster) {
+            LayoutInflater inflater = (LayoutInflater)
+                    getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.map_cluster_view, null);
+            RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.layout_cluster);
+            int num = cluster.getClusterCount();
+            if (num == 1) {
+                CircleImageView civ = (CircleImageView) view.findViewById(R.id.iv_cluster);
+                ClusterItem item = cluster.getClusterItems().get(0);
+//                civ.setImageDrawable(item.getDrawable());
+                ImageLoader.getInstance().displayImage(item.getPicUrl(), civ);
+            } else {
+                TextView tv = (TextView) view.findViewById(R.id.tv_cluster);
+                tv.setText(String.valueOf(num));
+                tv.setBackgroundResource(R.drawable.cluster_num_bg);
+            }
+            return BitmapDescriptorFactory.fromView(layout);
+        }
+    };
+    private ClusterClickListener clusterClickListener = new ClusterClickListener() {
+        @Override
+        public void onClick(Marker marker, List<ClusterItem> clusterItems) {
+            for (ClusterItem item : clusterItems) {
+                RegionItem regionItem = (RegionItem) item;
+                //TODO
+            }
+        }
+    };
+    /**
+     * *************************** interfaces ***************************
+     */
+    private AMap.OnMapLoadedListener mapLoadedListener = new AMap.OnMapLoadedListener() {
+        @Override
+        public void onMapLoaded() {
+            overlay = new
+                    ClusterOverlay(mAmap, AMapUtils.dp2px(getActivity(), clusterRadius), getActivity());
+            overlay.setClusterRenderer(clusterRender);
+            overlay.setOnClusterClickListener(clusterClickListener);
+
+            fillDataFromDb();
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
+        ButterKnife.inject(this, view);
 
-        findViewById(view);
         mMapView.onCreate(savedInstanceState);
 //        daoManager = DaoManager.getDaoManager(getActivity());
 
@@ -66,16 +116,12 @@ public class MapFragment extends Fragment {
         return view;
     }
 
-    private void findViewById(View view) {
-        mMapView = (MapView) view.findViewById(R.id.map);
-        mArcMenu = (ArcMenu) view.findViewById(R.id.arc_menu);
-    }
-
     private void initAmap() {
         if (mAmap == null) {
             mAmap = mMapView.getMap();
-            mAmap.setOnMapLoadedListener(mapLoadedListener);
         }
+        mAmap.setOnMapLoadedListener(mapLoadedListener);
+        addPinToMap();
     }
 
     private void initArcMenu() {
@@ -112,6 +158,14 @@ public class MapFragment extends Fragment {
 //        }
     }
 
+    private void addPinToMap() {
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_location));
+        markerOptions.draggable(true);
+        Marker marker = mAmap.addMarker(markerOptions);
+        marker.setPositionByPixels(400, 300);
+//        mMarker.setPosition(latlng);
+    }
 
     /**
      * ************************** Lifecycle ***************************
@@ -141,52 +195,11 @@ public class MapFragment extends Fragment {
         mMapView.onDestroy();
     }
 
-    /**
-     * *************************** interfaces ***************************
-     */
-    private AMap.OnMapLoadedListener mapLoadedListener = new AMap.OnMapLoadedListener() {
-        @Override
-        public void onMapLoaded() {
-            overlay = new
-                    ClusterOverlay(mAmap, AMapUtils.dp2px(getActivity(), clusterRadius), getActivity());
-            overlay.setClusterRenderer(clusterRender);
-            overlay.setOnClusterClickListener(clusterClickListener);
-
-            fillDataFromDb();
-        }
-    };
-
-    private ClusterRender clusterRender = new ClusterRender() {
-        @Override
-        public BitmapDescriptor getBitmapDescriptor(Cluster cluster) {
-            LayoutInflater inflater = (LayoutInflater)
-                    getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View view = inflater.inflate(R.layout.map_cluster_view, null);
-            RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.layout_cluster);
-            int num = cluster.getClusterCount();
-            if (num == 1) {
-                CircleImageView civ = (CircleImageView) view.findViewById(R.id.iv_cluster);
-                ClusterItem item = cluster.getClusterItems().get(0);
-//                civ.setImageDrawable(item.getDrawable());
-                ImageLoader.getInstance().displayImage(item.getPicUrl(), civ);
-            } else {
-                TextView tv = (TextView) view.findViewById(R.id.tv_cluster);
-                tv.setText(String.valueOf(num));
-                tv.setBackgroundResource(R.drawable.cluster_num_bg);
-            }
-            return BitmapDescriptorFactory.fromView(layout);
-        }
-    };
-
-    private ClusterClickListener clusterClickListener = new ClusterClickListener() {
-        @Override
-        public void onClick(Marker marker, List<ClusterItem> clusterItems) {
-            for (ClusterItem item : clusterItems) {
-                RegionItem regionItem = (RegionItem) item;
-                //TODO
-            }
-        }
-    };
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
 
 
     /*********************************** CursorLoader *********************************/

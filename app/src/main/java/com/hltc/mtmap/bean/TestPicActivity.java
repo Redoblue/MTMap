@@ -14,7 +14,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.PhotoGridActivity;
+import com.hltc.mtmap.activity.PhotoActivity;
 import com.hltc.mtmap.adapter.ImageBucketAdapter;
 import com.hltc.mtmap.helper.AlbumHelper;
 
@@ -85,7 +85,7 @@ public class TestPicActivity extends Activity {
                  */
                 // adapter.notifyDataSetChanged();
                 Intent intent = new Intent(TestPicActivity.this,
-                        PhotoGridActivity.class);
+                        PhotoActivity.class);
                 intent.putExtra(TestPicActivity.EXTRA_IMAGE_LIST,
                         (Serializable) dataList.get(position).imageList);
                 startActivity(intent);

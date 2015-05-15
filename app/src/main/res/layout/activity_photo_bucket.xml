@@ -11,7 +11,7 @@
         android:background="@color/green_main">
 
         <Button
-            android:id="@+id/btn_photo_bucket_back"
+            android:id="@+id/btn_gallery_back"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_centerVertical="true"

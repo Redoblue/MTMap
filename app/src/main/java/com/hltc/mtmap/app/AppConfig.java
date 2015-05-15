@@ -22,10 +22,9 @@ import java.util.Properties;
  */
 public class AppConfig {
 
-    public static final String APP_NAME = "CropMap";
+    public static final String APP_NAME = "MTMap";
     public static final String APP_DB_NAME = "crop_map";
     public static final String APP_CONFIG = "config";
-    public static final String CONF_COOKIE = "cookie";
     public static final String CONF_FIRST_USE = "first_use";
     public static final String CONF_TOKEN = "token.value";
     public static final String CONF_TOKEN_EXPIRESIN = "token.expires_in";
@@ -40,11 +39,10 @@ public class AppConfig {
 
     public static final String DEFAULT_APP_ROOT_PATH =
             Environment.getExternalStorageDirectory() + File.separator + APP_NAME + File.separator;
-
+    private static AppConfig config;
     private Context mContext;
     private LocalUserInfo mUserInfo;
     private TokenInfo mTokenInfo;
-    private static AppConfig config;
 
     public static AppConfig getAppConfig(Context context) {
         if (config == null) {
@@ -58,6 +56,9 @@ public class AppConfig {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
+    public String getToken() {
+        return get(CONF_TOKEN);
+    }
 
     /**
      * *************************** Token ******************************
@@ -66,22 +67,12 @@ public class AppConfig {
         set(CONF_TOKEN, token);
     }
 
-    public String getToken() {
-        return get(CONF_TOKEN);
-    }
-
-    public void setExpiresIn(long expiresIn) {
-        set(CONF_TOKEN_EXPIRESIN, String.valueOf(expiresIn));
-    }
-
     public long getExpiresIn() {
         return StringUtils.toLong(get(CONF_TOKEN_EXPIRESIN));
     }
 
-    public void setTokenInfo(TokenInfo tokenInfo) {
-        mTokenInfo = tokenInfo;
-        this.setToken(mTokenInfo.getToken());
-        this.setExpiresIn(mTokenInfo.getExpiresIn());
+    public void setExpiresIn(long expiresIn) {
+        set(CONF_TOKEN_EXPIRESIN, String.valueOf(expiresIn));
     }
 
     public TokenInfo getTokenInfo() {
@@ -91,6 +82,12 @@ public class AppConfig {
             mTokenInfo.setExpiresIn(getExpiresIn());
         }
         return mTokenInfo;
+    }
+
+    public void setTokenInfo(TokenInfo tokenInfo) {
+        mTokenInfo = tokenInfo;
+        this.setToken(mTokenInfo.getToken());
+        this.setExpiresIn(mTokenInfo.getExpiresIn());
     }
 
     /**
@@ -153,18 +150,6 @@ public class AppConfig {
         set(CONF_USR_COVER_URL, coverURL);
     }
 
-    public void setUserInfo(LocalUserInfo userInfo) {
-        mUserInfo = userInfo;
-
-        this.setUsrId(mUserInfo.getId());
-        this.setUsrNickname(mUserInfo.getNickname());
-        this.setUsrCreateTime(mUserInfo.getCreateTime());
-        this.setUsrAvatarURL(mUserInfo.getAvatarURL());
-        this.setUsrRawAvatarURL(mUserInfo.getRawAvatarURL());
-        this.setUsrPhone(mUserInfo.getPhone());
-        this.setUsrCoverURL(mUserInfo.getCoverURL());
-    }
-
     public LocalUserInfo getUserInfo() {
         if (mUserInfo == null && !StringUtils.isEmpty(String.valueOf(getUsrId()))) {
             mUserInfo = new LocalUserInfo();
@@ -179,6 +164,17 @@ public class AppConfig {
         return mUserInfo;
     }
 
+    public void setUserInfo(LocalUserInfo userInfo) {
+        mUserInfo = userInfo;
+
+        this.setUsrId(mUserInfo.getId());
+        this.setUsrNickname(mUserInfo.getNickname());
+        this.setUsrCreateTime(mUserInfo.getCreateTime());
+        this.setUsrAvatarURL(mUserInfo.getAvatarURL());
+        this.setUsrRawAvatarURL(mUserInfo.getRawAvatarURL());
+        this.setUsrPhone(mUserInfo.getPhone());
+        this.setUsrCoverURL(mUserInfo.getCoverURL());
+    }
 
     /**
      * ************************** Operating funcs **********************

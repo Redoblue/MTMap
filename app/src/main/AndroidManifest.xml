@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.hltc.mtmap">
 
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -40,9 +41,10 @@
         <activity android:name=".activity.SignInActivity" />
         <activity android:name=".activity.PublishActivity" />
         <activity android:name=".activity.CreateGrainActivity" />
+        <activity android:name=".activity.DeletePhotoActivity" />
         <activity android:name=".activity.PhotoActivity" />
-        <activity android:name=".activity.PhotoGridActivity" />
         <activity android:name=".activity.GalleryActivity" />
+        <activity android:name=".activity.DonePublishActivity" />
     </application>
 
 </manifest>

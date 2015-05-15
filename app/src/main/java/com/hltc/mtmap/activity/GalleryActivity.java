@@ -28,18 +28,18 @@ public class GalleryActivity extends Activity {
 
     public static final String EXTRA_IMAGE_LIST = "imagelist";
     public static Bitmap bimap;
-    @InjectView(R.id.btn_photo_bucket_back)
+
+    @InjectView(R.id.btn_gallery_back)
     Button backButton;
     @InjectView(R.id.gv_photo_bucket_gallery)
     GridView gridview;
-    // ArrayList<Entity> dataList;//用来装载数据源的列表
-    List<ImageBucket> dataList;
+
+    List<ImageBucket> dataList;//用来装载数据源的列表
     ImageBucketAdapter adapter;// 自定义的适配器
     AlbumHelper helper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         AppManager.getAppManager().addActivity(this);
         setContentView(R.layout.activity_photo_bucket);
@@ -56,14 +56,7 @@ public class GalleryActivity extends Activity {
      * 初始化数据
      */
     private void initData() {
-        // /**
-        // * 这里，我们假设已经从网络或者本地解析好了数据，所以直接在这里模拟了10个实体类，直接装进列表中
-        // */
-        // dataList = new ArrayList<Entity>();
-        // for(int i=-0;i<10;i++){
-        // Entity entity = new Entity(R.drawable.picture, false);
-        // dataList.add(entity);
-        // }
+        // 获取相册信息
         dataList = helper.getImagesBucketList(false);
         bimap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_addpic_unfocused);
     }
@@ -74,27 +67,13 @@ public class GalleryActivity extends Activity {
     private void initView() {
         adapter = new ImageBucketAdapter(GalleryActivity.this, dataList);
         gridview.setAdapter(adapter);
-
         gridview.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                /**
-                 * 根据position参数，可以获得跟GridView的子View相绑定的实体类，然后根据它的isSelected状态，
-                 * 来判断是否显示选中效果。 至于选中效果的规则，下面适配器的代码中会有说明
-                 */
-                // if(dataList.get(position).isSelected()){
-                // dataList.get(position).setSelected(false);
-                // }else{
-                // dataList.get(position).setSelected(true);
-                // }
-                /**
-                 * 通知适配器，绑定的数据发生了改变，应当刷新视图
-                 */
-                // adapter.notifyDataSetChanged();
                 Intent intent = new Intent(GalleryActivity.this,
-                        PhotoGridActivity.class);
+                        PhotoActivity.class);
                 intent.putExtra(GalleryActivity.EXTRA_IMAGE_LIST,
                         (Serializable) dataList.get(position).imageList);
                 startActivity(intent);
@@ -104,7 +83,7 @@ public class GalleryActivity extends Activity {
         });
     }
 
-    @OnClick(R.id.btn_photo_bucket_back)
+    @OnClick(R.id.btn_gallery_back)
     public void goBack() {
         AppManager.getAppManager().finishActivity(this);
     }

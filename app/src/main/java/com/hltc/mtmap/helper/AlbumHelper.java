@@ -28,9 +28,7 @@ public class AlbumHelper {
     final String TAG = getClass().getSimpleName();
     Context context;
     ContentResolver cr;
-    // 缩略图列表
     HashMap<String, String> thumbnailList = new HashMap<>();
-    // 专辑列表
     List<HashMap<String, String>> albumList = new ArrayList<>();
     HashMap<String, ImageBucket> bucketList = new HashMap<>();
     /**
@@ -64,10 +62,8 @@ public class AlbumHelper {
      * 得到缩略图
      */
     private void getThumbnail() {
-        String[] projection = {Thumbnails._ID, Thumbnails.IMAGE_ID,
-                Thumbnails.DATA};
-        Cursor cursor = cr.query(Thumbnails.EXTERNAL_CONTENT_URI, projection,
-                null, null, null);
+        String[] projection = {Thumbnails._ID, Thumbnails.IMAGE_ID, Thumbnails.DATA};
+        Cursor cursor = cr.query(Thumbnails.EXTERNAL_CONTENT_URI, projection, null, null, null);
         getThumbnailColumnData(cursor);
     }
 
@@ -90,14 +86,6 @@ public class AlbumHelper {
                 _id = cur.getInt(_idColumn);
                 image_id = cur.getInt(image_idColumn);
                 image_path = cur.getString(dataColumn);
-
-                // Do something with the values.
-                // Log.i(TAG, _id + " image_id:" + image_id + " path:"
-                // + image_path + "---");
-                // HashMap<String, String> hash = new HashMap<String, String>();
-                // hash.put("image_id", image_id + "");
-                // hash.put("path", image_path);
-                // thumbnailList.add(hash);
                 thumbnailList.put("" + image_id, image_path);
             } while (cur.moveToNext());
         }
@@ -156,9 +144,7 @@ public class AlbumHelper {
                 hash.put("artist", artist);
                 hash.put("numOfSongs", numOfSongs + "");
                 albumList.add(hash);
-
             } while (cur.moveToNext());
-
         }
     }
 
@@ -211,7 +197,7 @@ public class AlbumHelper {
                 if (bucket == null) {
                     bucket = new ImageBucket();
                     bucketList.put(bucketId, bucket);
-                    bucket.imageList = new ArrayList<ImageItem>();
+                    bucket.imageList = new ArrayList<>();
                     bucket.bucketName = bucketName;
                 }
                 bucket.count++;
@@ -220,15 +206,12 @@ public class AlbumHelper {
                 imageItem.imagePath = path;
                 imageItem.thumbnailPath = thumbnailList.get(_id);
                 bucket.imageList.add(imageItem);
-
             } while (cur.moveToNext());
         }
 
-        Iterator<Entry<String, ImageBucket>> itr = bucketList.entrySet()
-                .iterator();
+        Iterator<Entry<String, ImageBucket>> itr = bucketList.entrySet().iterator();
         while (itr.hasNext()) {
-            Entry<String, ImageBucket> entry = (Entry<String, ImageBucket>) itr
-                    .next();
+            Entry<String, ImageBucket> entry = itr.next();
             ImageBucket bucket = entry.getValue();
             Log.d(TAG, entry.getKey() + ", " + bucket.bucketName + ", "
                     + bucket.count + " ---------- ");
@@ -250,15 +233,13 @@ public class AlbumHelper {
      * @return
      */
     public List<ImageBucket> getImagesBucketList(boolean refresh) {
-        if (refresh || (!refresh && !hasBuildImagesBucketList)) {
+        if (refresh || !hasBuildImagesBucketList) {
             buildImagesBucketList();
         }
-        List<ImageBucket> tmpList = new ArrayList<ImageBucket>();
-        Iterator<Entry<String, ImageBucket>> itr = bucketList.entrySet()
-                .iterator();
-        while (itr.hasNext()) {
-            Entry<String, ImageBucket> entry = (Entry<String, ImageBucket>) itr
-                    .next();
+        List<ImageBucket> tmpList = new ArrayList<>();
+        Iterator<Entry<String, ImageBucket>> it = bucketList.entrySet().iterator();
+        while (it.hasNext()) {
+            Entry<String, ImageBucket> entry = it.next();
             tmpList.add(entry.getValue());
         }
         return tmpList;
@@ -283,5 +264,4 @@ public class AlbumHelper {
         }
         return path;
     }
-
 }
