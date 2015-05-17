@@ -38,10 +38,12 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         public final static Property Date = new Property(2, java.util.Date.class, "date", false, "DATE");
         public final static Property IsPublic = new Property(3, boolean.class, "isPublic", false, "IS_PUBLIC");
         public final static Property IsIngored = new Property(4, boolean.class, "isIngored", false, "IS_INGORED");
-        public final static Property SiteId = new Property(5, long.class, "siteId", false, "SITE_ID");
-        public final static Property CategoryId = new Property(6, long.class, "categoryId", false, "CATEGORY_ID");
-        public final static Property UserId = new Property(7, long.class, "userId", false, "USER_ID");
-    }
+        public final static Property Latitude = new Property(5, double.class, "latitude", false, "LATITUDE");
+        public final static Property Longitude = new Property(6, double.class, "longitude", false, "LONGITUDE");
+        public final static Property SiteId = new Property(7, long.class, "siteId", false, "SITE_ID");
+        public final static Property CategoryId = new Property(8, long.class, "categoryId", false, "CATEGORY_ID");
+        public final static Property UserId = new Property(9, long.class, "userId", false, "USER_ID");
+    };
 
     private DaoSession daoSession;
 
@@ -67,9 +69,11 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
                 "'DATE' INTEGER NOT NULL ," + // 2: date
                 "'IS_PUBLIC' INTEGER NOT NULL ," + // 3: isPublic
                 "'IS_INGORED' INTEGER NOT NULL ," + // 4: isIngored
-                "'SITE_ID' INTEGER NOT NULL ," + // 5: siteId
-                "'CATEGORY_ID' INTEGER NOT NULL ," + // 6: categoryId
-                "'USER_ID' INTEGER NOT NULL );"); // 7: userId
+                "'LATITUDE' REAL NOT NULL ," + // 5: latitude
+                "'LONGITUDE' REAL NOT NULL ," + // 6: longitude
+                "'SITE_ID' INTEGER NOT NULL ," + // 7: siteId
+                "'CATEGORY_ID' INTEGER NOT NULL ," + // 8: categoryId
+                "'USER_ID' INTEGER NOT NULL );"); // 9: userId
     }
 
     /** Drops the underlying database table. */
@@ -87,9 +91,11 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         stmt.bindLong(3, entity.getDate().getTime());
         stmt.bindLong(4, entity.getIsPublic() ? 1l: 0l);
         stmt.bindLong(5, entity.getIsIngored() ? 1l: 0l);
-        stmt.bindLong(6, entity.getSiteId());
-        stmt.bindLong(7, entity.getCategoryId());
-        stmt.bindLong(8, entity.getUserId());
+        stmt.bindDouble(6, entity.getLatitude());
+        stmt.bindDouble(7, entity.getLongitude());
+        stmt.bindLong(8, entity.getSiteId());
+        stmt.bindLong(9, entity.getCategoryId());
+        stmt.bindLong(10, entity.getUserId());
     }
 
     @Override
@@ -113,9 +119,11 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
             new java.util.Date(cursor.getLong(offset + 2)), // date
             cursor.getShort(offset + 3) != 0, // isPublic
             cursor.getShort(offset + 4) != 0, // isIngored
-            cursor.getLong(offset + 5), // siteId
-            cursor.getLong(offset + 6), // categoryId
-            cursor.getLong(offset + 7) // userId
+            cursor.getDouble(offset + 5), // latitude
+            cursor.getDouble(offset + 6), // longitude
+            cursor.getLong(offset + 7), // siteId
+            cursor.getLong(offset + 8), // categoryId
+            cursor.getLong(offset + 9) // userId
         );
         return entity;
     }
@@ -128,9 +136,11 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         entity.setDate(new java.util.Date(cursor.getLong(offset + 2)));
         entity.setIsPublic(cursor.getShort(offset + 3) != 0);
         entity.setIsIngored(cursor.getShort(offset + 4) != 0);
-        entity.setSiteId(cursor.getLong(offset + 5));
-        entity.setCategoryId(cursor.getLong(offset + 6));
-        entity.setUserId(cursor.getLong(offset + 7));
+        entity.setLatitude(cursor.getDouble(offset + 5));
+        entity.setLongitude(cursor.getDouble(offset + 6));
+        entity.setSiteId(cursor.getLong(offset + 7));
+        entity.setCategoryId(cursor.getLong(offset + 8));
+        entity.setUserId(cursor.getLong(offset + 9));
      }
     
     /** @inheritdoc */

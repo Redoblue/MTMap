@@ -136,7 +136,7 @@ public class AlbumHelper {
                 Log.i(TAG, _id + " album:" + album + " albumArt:" + albumArt
                         + "albumKey: " + albumKey + " artist: " + artist
                         + " numOfSongs: " + numOfSongs + "---");
-                HashMap<String, String> hash = new HashMap<String, String>();
+                HashMap<String, String> hash = new HashMap<>();
                 hash.put("_id", _id + "");
                 hash.put("album", album);
                 hash.put("albumArt", albumArt);

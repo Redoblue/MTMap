@@ -28,6 +28,8 @@ public class MTGrain {
     private java.util.Date date;
     private boolean isPublic;
     private boolean isIngored;
+    private double latitude;
+    private double longitude;
     private long siteId;
     private long categoryId;
     private long userId;
@@ -61,12 +63,14 @@ public class MTGrain {
         this.id = id;
     }
 
-    public MTGrain(long id, String description, java.util.Date date, boolean isPublic, boolean isIngored, long siteId, long categoryId, long userId) {
+    public MTGrain(long id, String description, java.util.Date date, boolean isPublic, boolean isIngored, double latitude, double longitude, long siteId, long categoryId, long userId) {
         this.id = id;
         this.description = description;
         this.date = date;
         this.isPublic = isPublic;
         this.isIngored = isIngored;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.siteId = siteId;
         this.categoryId = categoryId;
         this.userId = userId;
@@ -120,6 +124,22 @@ public class MTGrain {
 
     public void setIsIngored(boolean isIngored) {
         this.isIngored = isIngored;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public long getSiteId() {

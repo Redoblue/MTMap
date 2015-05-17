@@ -1,5 +1,7 @@
 package com.hltc.mtmap.orm;
 
+import com.amap.api.maps.model.LatLng;
+
 import de.greenrobot.daogenerator.DaoGenerator;
 import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Property;
@@ -43,6 +45,8 @@ public class Generator {
         mtGrain.addDateProperty("date").notNull();
         mtGrain.addBooleanProperty("isPublic").notNull();
         mtGrain.addBooleanProperty("isIngored").notNull();
+        mtGrain.addDoubleProperty("latitude").notNull();
+        mtGrain.addDoubleProperty("longitude").notNull();
         Property graSiteId = mtGrain.addLongProperty("siteId").notNull().getProperty();
         Property graCatId = mtGrain.addLongProperty("categoryId").notNull().getProperty();
         Property graUsrId = mtGrain.addLongProperty("userId").notNull().getProperty();

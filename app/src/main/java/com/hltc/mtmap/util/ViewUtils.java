@@ -61,9 +61,9 @@ public class ViewUtils {
     }
 
     // 设置hint字体大小
-    public static SpannedString getHint(String str) {
+    public static SpannedString getHint(String str, int size) {
         SpannableString ss = new SpannableString(str);
-        AbsoluteSizeSpan ass = new AbsoluteSizeSpan(20, true);
+        AbsoluteSizeSpan ass = new AbsoluteSizeSpan(size, true);
         ss.setSpan(ass, 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return new SpannedString(ss);
     }

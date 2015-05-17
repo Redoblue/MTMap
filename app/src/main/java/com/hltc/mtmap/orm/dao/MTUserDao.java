@@ -31,7 +31,7 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
         public final static Property AvatarURL = new Property(4, String.class, "avatarURL", false, "AVATAR_URL");
         public final static Property RawAvatarURL = new Property(5, String.class, "rawAvatarURL", false, "RAW_AVATAR_URL");
         public final static Property CoverURL = new Property(6, String.class, "coverURL", false, "COVER_URL");
-    }
+    };
 
     private DaoSession daoSession;
 

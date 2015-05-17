@@ -59,6 +59,22 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
     private Button mConfirmButton;
     private EditText mPasswdEditText;
     private Button mlastConfirmButton;
+    private TextWatcher watcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            mConfirmButton.setEnabled(s.length() > 0);
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,9 +108,9 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
         mSendVerifyCodeButton.setOnClickListener(this);
         mConfirmButton.setOnClickListener(this);
         mlastConfirmButton.setOnClickListener(this);
-        mPhoneEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_phone)));
-        mVerifyCodeEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.singup_verifycode_hint)));
-        mPasswdEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_password)));
+        mPhoneEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_phone), 20));
+        mVerifyCodeEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.singup_verifycode_hint), 20));
+        mPasswdEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_password), 20));
         mVerifyCodeEditText.addTextChangedListener(watcher);
     }
 
@@ -263,7 +279,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                                 JSONObject son = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 LocalUserInfo userInfo = new LocalUserInfo();
-                                userInfo.setId(son.getLong(ApiUtils.KEY_USR_ID));
+                                userInfo.setId(son.getString(ApiUtils.KEY_USR_ID));
                                 userInfo.setNickname(son.getString(ApiUtils.KEY_USR_NICKNAME));
                                 userInfo.setCreateTime(son.getString(ApiUtils.KEY_USR_CREATE_TIME));
                                 userInfo.setAvatarURL(son.getString(ApiUtils.KEY_USR_AVATARURL));
@@ -299,6 +315,16 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
                 });
     }
 
+    /**
+     * ************************** Life Cycle ************************
+     */
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        AppManager.getAppManager().finishActivity(this);
+    }
+
     private class DownTimer extends CountDownTimer {
         public DownTimer(long millisInFuture, long countDownInterval) {
             super(millisInFuture, countDownInterval);
@@ -315,32 +341,5 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
             mSendVerifyCodeButton.setEnabled(true);
             mSendVerifyCodeButton.setText("重发验证码");
         }
-    }
-
-    private TextWatcher watcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mConfirmButton.setEnabled(s.length() > 0);
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
-
-    /**
-     * ************************** Life Cycle ************************
-     */
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        AppManager.getAppManager().finishActivity(this);
     }
 }

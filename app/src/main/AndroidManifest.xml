@@ -40,11 +40,16 @@
         <activity android:name=".activity.SignUpActivity" />
         <activity android:name=".activity.SignInActivity" />
         <activity android:name=".activity.PublishActivity" />
-        <activity android:name=".activity.CreateGrainActivity" />
+        <activity
+            android:name=".activity.CreateGrainActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity android:name=".activity.DeletePhotoActivity" />
         <activity android:name=".activity.PhotoActivity" />
         <activity android:name=".activity.GalleryActivity" />
         <activity android:name=".activity.DonePublishActivity" />
+        <activity
+            android:name=".activity.CompleteTextActivity"
+            android:windowSoftInputMode="stateVisible" />
     </application>
 
 </manifest>

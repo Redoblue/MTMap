@@ -29,7 +29,7 @@ public class MTSiteDao extends AbstractDao<MTSite, Long> {
         public final static Property Address = new Property(2, String.class, "address", false, "ADDRESS");
         public final static Property Latitude = new Property(3, float.class, "latitude", false, "LATITUDE");
         public final static Property Longitude = new Property(4, float.class, "longitude", false, "LONGITUDE");
-    }
+    };
 
     private DaoSession daoSession;
 

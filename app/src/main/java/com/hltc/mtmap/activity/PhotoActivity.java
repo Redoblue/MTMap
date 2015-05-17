@@ -112,9 +112,10 @@ public class PhotoActivity extends Activity {
                 }
 
                 if (PhotoHelper.act_bool) {
-                    Intent intent = new Intent(PhotoActivity.this,
-                            CreateGrainActivity.class);
-                    startActivity(intent);
+//                    Intent intent = new Intent(PhotoActivity.this,
+//                            CreateGrainActivity.class);
+//                    startActivity(intent);
+                    AppManager.getAppManager().finishActivity(GalleryActivity.class);//TODO 检查CreateGrainActivity.class是否存在
                     PhotoHelper.act_bool = false;
                 }
                 for (int i = 0; i < list.size(); i++) {

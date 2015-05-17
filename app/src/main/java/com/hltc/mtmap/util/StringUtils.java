@@ -5,6 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 /**
@@ -113,6 +114,11 @@ public class StringUtils {
         String date = dateFormater2.format(cal.getTime());
         date = date.replace("-", "");
         return Long.parseLong(date);
+    }
+
+    public static String getUUID() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
     }
 
     /**

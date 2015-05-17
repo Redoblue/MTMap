@@ -36,6 +36,9 @@ public class AppConfig {
     public static final String CONF_USR_PHONE = "user.phone";
     public static final String CONF_USR_COVER_URL = "user.cover_url";
 
+    public static final String OSS_ROOT = "oss-cn-hangzhou.aliyuncs.com";
+    public static final String OSS_BUCKET = "maitianditu";
+
 
     public static final String DEFAULT_APP_ROOT_PATH =
             Environment.getExternalStorageDirectory() + File.separator + APP_NAME + File.separator;
@@ -94,12 +97,12 @@ public class AppConfig {
      * ****************************** LocalUserInfo ****************************
      */
 
-    public long getUsrId() {
-        return StringUtils.toLong(get(CONF_USR_ID));
+    public String getUsrId() {
+        return get(CONF_USR_ID);
     }
 
-    public void setUsrId(long id) {
-        set(CONF_USR_ID, String.valueOf(id));
+    public void setUsrId(String id) {
+        set(CONF_USR_ID, id);
     }
 
     public String getUsrNickname() {

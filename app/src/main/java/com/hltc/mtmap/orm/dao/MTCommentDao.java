@@ -38,7 +38,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         public final static Property ToCommentId = new Property(3, Long.class, "toCommentId", false, "TO_COMMENT_ID");
         public final static Property UserId = new Property(4, Long.class, "userId", false, "USER_ID");
         public final static Property GrainId = new Property(5, long.class, "grainId", false, "GRAIN_ID");
-    }
+    };
 
     private DaoSession daoSession;
 

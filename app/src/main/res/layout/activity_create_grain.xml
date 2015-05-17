@@ -61,8 +61,8 @@
             android:focusableInTouchMode="true"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/create_grain_et_address"
+            <Button
+                android:id="@+id/btn_create_grain_address"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="@null"
@@ -74,83 +74,65 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="10dp" />
 
-            <FrameLayout
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="1dp"
+                android:background="@color/separator" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/separator" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="54dp"
+                    android:text="公开"
+                    android:textSize="18sp" />
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:orientation="horizontal">
+                <Switch
+                    android:id="@+id/create_grain_st_public"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="30dp"
+                    android:textOff="否"
+                    android:textOn="是" />
+            </LinearLayout>
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:paddingLeft="54dp"
-                            android:text="公开"
-                            android:textSize="18sp" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/separator" />
 
-                        <Switch
-                            android:id="@+id/create_grain_st_public"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginRight="30dp"
-                            android:textOff="否"
-                            android:textOn="是" />
-                    </LinearLayout>
+            <EditText
+                android:id="@+id/create_grain_et_comment"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/grey"
+                android:gravity="start|top"
+                android:hint="发表一下吃货的心情吧！"
+                android:paddingLeft="20dp"
+                android:paddingTop="10dp" />
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/separator" />
-
-                    <EditText
-                        android:id="@+id/create_grain_et_comment"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginRight="30dp"
-                        android:layout_marginTop="15dp"
-                        android:background="@color/grey"
-                        android:gravity="start|top"
-                        android:hint="发表一下吃货的心情吧！"
-                        android:paddingLeft="20dp"
-                        android:paddingTop="10dp" />
-
-                    <com.hltc.mtmap.widget.AddPhotoGridView
-                        android:id="@+id/create_grain_gv_photos"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginRight="30dp"
-                        android:layout_marginTop="5dp"
-                        android:horizontalSpacing="3dp"
-                        android:numColumns="4"
-                        android:scrollbars="none"
-                        android:verticalSpacing="5dp" />
-                </LinearLayout>
-
-                <ListView
-                    android:id="@+id/create_grain_lv_results"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#666666"
-                    android:visibility="invisible" />
-            </FrameLayout>
+            <com.hltc.mtmap.widget.AddPhotoGridView
+                android:id="@+id/create_grain_gv_photos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="5dp"
+                android:horizontalSpacing="3dp"
+                android:numColumns="4"
+                android:scrollbars="none"
+                android:verticalSpacing="5dp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

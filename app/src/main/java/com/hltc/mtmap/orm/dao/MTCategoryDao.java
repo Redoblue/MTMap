@@ -27,7 +27,7 @@ public class MTCategoryDao extends AbstractDao<MTCategory, Long> {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
         public final static Property IconURL = new Property(2, String.class, "iconURL", false, "ICON_URL");
-    }
+    };
 
     private DaoSession daoSession;
 

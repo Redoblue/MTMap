@@ -37,7 +37,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         public final static Property ThumbnailURL = new Property(2, String.class, "thumbnailURL", false, "THUMBNAIL_URL");
         public final static Property UserId = new Property(3, long.class, "userId", false, "USER_ID");
         public final static Property GrainId = new Property(4, long.class, "grainId", false, "GRAIN_ID");
-    }
+    };
 
     private DaoSession daoSession;
 

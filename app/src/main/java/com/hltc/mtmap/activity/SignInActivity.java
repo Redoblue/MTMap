@@ -76,8 +76,8 @@ public class SignInActivity extends Activity implements View.OnClickListener, Pr
         mTitleTextView.setText(R.string.sign_in);
         mBarRightButton.setText(R.string.signin_bar_right);
         mBarRightButton.setOnClickListener(this);
-        mPhoneEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_phone)));
-        mPasswdEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_password)));
+        mPhoneEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_phone), 20));
+        mPasswdEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_password), 20));
         mSignInProcessButton.setMode(ActionProcessButton.Mode.ENDLESS);
         mSignInProcessButton.setOnClickListener(this);
     }
@@ -148,7 +148,7 @@ public class SignInActivity extends Activity implements View.OnClickListener, Pr
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
                                 JSONObject son = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 LocalUserInfo userInfo = new LocalUserInfo();
-                                userInfo.setId(son.getLong(ApiUtils.KEY_USR_ID));
+                                userInfo.setId(son.getString(ApiUtils.KEY_USR_ID));
                                 userInfo.setNickname(son.getString(ApiUtils.KEY_USR_NICKNAME));
                                 userInfo.setCreateTime(son.getString(ApiUtils.KEY_USR_CREATE_TIME));
                                 userInfo.setAvatarURL(son.getString(ApiUtils.KEY_USR_AVATARURL));

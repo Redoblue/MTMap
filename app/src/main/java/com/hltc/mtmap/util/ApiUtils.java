@@ -1,5 +1,14 @@
 package com.hltc.mtmap.util;
 
+import android.util.Log;
+
+import com.alibaba.sdk.android.oss.callback.SaveCallback;
+import com.alibaba.sdk.android.oss.model.OSSException;
+import com.alibaba.sdk.android.oss.storage.OSSData;
+import com.alibaba.sdk.android.oss.storage.OSSFile;
+
+import java.io.FileNotFoundException;
+
 /**
  * Created by Redoblue on 2015/4/25.
  */

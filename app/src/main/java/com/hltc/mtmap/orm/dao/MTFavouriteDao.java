@@ -35,7 +35,7 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
         public final static Property GrainId = new Property(2, long.class, "grainId", false, "GRAIN_ID");
-    }
+    };
 
     private DaoSession daoSession;
 
