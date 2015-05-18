@@ -1,39 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_create_grain_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical">
+
+    <include
+        android:id="@+id/bar_create_grain_green"
+        layout="@layout/bar_green"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
 
     <RelativeLayout
         android:id="@+id/layout_create_grain_map"
         android:layout_width="match_parent"
-        android:layout_height="210dp">
+        android:layout_height="185dp">
 
-        <include
-            android:id="@+id/bar_create_grain_green"
-            layout="@layout/bar_green"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_alignParentTop="true" />
-
-        <RelativeLayout
+        <com.amap.api.maps.MapView
+            android:id="@+id/create_grain_view_map"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/bar_create_grain_green">
+            android:background="@drawable/background_blur" />
 
-            <com.amap.api.maps.MapView
-                android:id="@+id/create_grain_view_map"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/background_blur" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:src="@drawable/ic_action_location" />
-        </RelativeLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_action_location" />
 
         <TextView
             android:id="@+id/tv_create_grain_map_hint"
@@ -48,9 +41,9 @@
     </RelativeLayout>
 
     <ScrollView
+        android:id="@+id/sv_create_grain"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:fillViewport="true"
         android:scrollbars="none">
 
@@ -118,6 +111,8 @@
                 android:background="@color/grey"
                 android:gravity="start|top"
                 android:hint="发表一下吃货的心情吧！"
+                android:imeOptions="actionDone"
+                android:inputType="text"
                 android:paddingLeft="20dp"
                 android:paddingTop="10dp" />
 

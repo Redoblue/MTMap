@@ -1,12 +1,12 @@
 package com.hltc.mtmap.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -38,12 +38,12 @@ public class PhotoActivity extends Activity {
     Button backButton;
     @InjectView(R.id.gv_photo_view)
     GridView gridview;
-    @InjectView(R.id.bt)
-    Button bt;
+    @InjectView(R.id.btn_done)
+    Button doneButton;
 
-    List<ImageItem> dataList;
-    ImageGridAdapter adapter;
-    AlbumHelper helper;
+    private List<ImageItem> dataList;
+    private ImageGridAdapter adapter;
+    private AlbumHelper helper;
 
     private Handler mHandler = new Handler() {
         @Override
@@ -87,7 +87,7 @@ public class PhotoActivity extends Activity {
         gridview.setAdapter(adapter);
         adapter.setTextCallback(new ImageGridAdapter.TextCallback() {
             public void onListen(int count) {
-                bt.setText("完成" + "(" + count + ")");
+                doneButton.setText("完成" + "(" + count + ")");
             }
         });
 
@@ -101,7 +101,7 @@ public class PhotoActivity extends Activity {
 
         });
 
-        bt.setOnClickListener(new OnClickListener() {
+        doneButton.setOnClickListener(new OnClickListener() {
 
             public void onClick(View v) {
                 ArrayList<String> list = new ArrayList<>();
@@ -110,20 +110,19 @@ public class PhotoActivity extends Activity {
                 for (; it.hasNext(); ) {
                     list.add(it.next());
                 }
-
-                if (PhotoHelper.act_bool) {
-//                    Intent intent = new Intent(PhotoActivity.this,
-//                            CreateGrainActivity.class);
-//                    startActivity(intent);
-                    AppManager.getAppManager().finishActivity(GalleryActivity.class);//TODO 检查CreateGrainActivity.class是否存在
-                    PhotoHelper.act_bool = false;
-                }
                 for (int i = 0; i < list.size(); i++) {
                     if (PhotoHelper.addresses.size() < 9) {
                         PhotoHelper.addresses.add(list.get(i));
                     }
                 }
-                finish();
+
+                if (list.size() > 0) {
+                    Log.d("Publish", "finishGallery");
+                    AppManager.getAppManager().finishActivity(PhotoActivity.this);
+                    AppManager.getAppManager().finishActivity(GalleryActivity.class);//TODO 检查CreateGrainActivity.class是否存在
+                } else {
+                    AppManager.getAppManager().finishActivity(PhotoActivity.this);
+                }
             }
 
         });

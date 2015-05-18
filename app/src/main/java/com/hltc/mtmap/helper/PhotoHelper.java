@@ -16,12 +16,11 @@ import java.util.List;
 public class PhotoHelper {
 
     public static int max = 0;
-    public static boolean act_bool = true;
-
     public static List<Bitmap> bitmaps = new ArrayList<>();
 
     //图片sd地址  上传服务器时把图片调用下面方法压缩后 保存到临时文件夹 图片压缩后小于100KB，失真度不明显
     public static List<String> addresses = new ArrayList<>();
+    public static List<String> larges = new ArrayList<>();
 
     public static Bitmap resizeBitmapFromPath(String path) throws IOException {
         BufferedInputStream in = new BufferedInputStream(new FileInputStream(

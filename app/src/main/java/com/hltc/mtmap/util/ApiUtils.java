@@ -1,5 +1,6 @@
 package com.hltc.mtmap.util;
 
+import android.os.StrictMode;
 import android.util.Log;
 
 import com.alibaba.sdk.android.oss.callback.SaveCallback;
@@ -20,6 +21,7 @@ public class ApiUtils {
     public static final String URL_VAL_VCODE = "user/register/verify.json";
     public static final String URL_CRE_ACCOUNT = "user/register/new_user.json";
     public static final String URL_SIG_IN = "user/login/login.json";
+    public static final String URL_PUB_GRAIN = "grain/publish.json";
 
     public static final String KEY_SOURCE = "source";
     public static final String KEY_PHONE = "phone_number";
@@ -55,5 +57,9 @@ public class ApiUtils {
 
     public static String getSigninUrl() {
         return URL_ROOT + "/" + URL_SIG_IN;
+    }
+
+    public static String getPublishUrl() {
+        return URL_ROOT + "/" + URL_PUB_GRAIN;
     }
 }

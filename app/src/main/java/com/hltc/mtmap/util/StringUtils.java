@@ -1,5 +1,7 @@
 package com.hltc.mtmap.util;
 
+import com.hltc.mtmap.helper.PhotoHelper;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -143,5 +145,9 @@ public class StringUtils {
         Pattern pattern = Pattern
                 .compile(passwdRegexp);
         return pattern.matcher(str).matches();
+    }
+
+    public static String getFileNameFromPath(String path) {
+        return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
     }
 }

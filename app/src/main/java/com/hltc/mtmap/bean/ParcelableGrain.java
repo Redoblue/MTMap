@@ -3,21 +3,18 @@ package com.hltc.mtmap.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by redoblue on 15-5-15.
  */
-public class SerialGrain implements Parcelable {
+public class ParcelableGrain implements Parcelable {
 
-    public static final Parcelable.Creator<SerialGrain> CREATOR = new Parcelable.Creator<SerialGrain>() {
-        public SerialGrain createFromParcel(Parcel source) {
-            return new SerialGrain(source);
+    public static final Creator<ParcelableGrain> CREATOR = new Creator<ParcelableGrain>() {
+        public ParcelableGrain createFromParcel(Parcel source) {
+            return new ParcelableGrain(source);
         }
 
-        public SerialGrain[] newArray(int size) {
-            return new SerialGrain[size];
+        public ParcelableGrain[] newArray(int size) {
+            return new ParcelableGrain[size];
         }
     };
     public String userId;
@@ -32,14 +29,13 @@ public class SerialGrain implements Parcelable {
     public double latitude;
     public double longitude;
     public String cityCode;
-    public boolean isPublic;
+    public int isPublic;
     public String text;
-    public ArrayList<String> images;
 
-    public SerialGrain() {
+    public ParcelableGrain() {
     }
 
-    private SerialGrain(Parcel in) {
+    private ParcelableGrain(Parcel in) {
         this.userId = in.readString();
         this.token = in.readString();
         this.mcateId = in.readString();
@@ -52,9 +48,8 @@ public class SerialGrain implements Parcelable {
         this.latitude = in.readDouble();
         this.longitude = in.readDouble();
         this.cityCode = in.readString();
-        this.isPublic = in.readByte() != 0;
+        this.isPublic = in.readInt();
         this.text = in.readString();
-        this.images = (ArrayList<String>) in.readSerializable();
     }
 
     @Override
@@ -76,8 +71,7 @@ public class SerialGrain implements Parcelable {
         dest.writeDouble(this.latitude);
         dest.writeDouble(this.longitude);
         dest.writeString(this.cityCode);
-        dest.writeByte(isPublic ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.isPublic);
         dest.writeString(this.text);
-        dest.writeSerializable(this.images);
     }
 }

@@ -16,12 +16,16 @@ import android.os.Message;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -30,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -51,7 +56,7 @@ import com.amap.api.services.poisearch.PoiSearch;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.bean.SerialGrain;
+import com.hltc.mtmap.bean.ParcelableGrain;
 import com.hltc.mtmap.helper.PhotoHelper;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.FileUtils;
@@ -78,6 +83,10 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
     private static final int TAKE_PICTURE = 1;
     private static final int AUTO_COMPLETE = 2;
 
+    @InjectView(R.id.layout_create_grain_root)
+    LinearLayout rootView;
+    @InjectView(R.id.sv_create_grain)
+    ScrollView scrollView;
     @InjectView(R.id.bar_create_grain_green)
     RelativeLayout greenBar;
     @InjectView(R.id.tv_bar_title)
@@ -174,37 +183,58 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                     return;
                 }
 
-                boolean isFromGaode = poiTitles.contains(returnedValue);
-                PoiItem selectedItem = null;
-                for (PoiItem item : poiItems) {
-                    if (item.getTitle().equals(returnedValue)) {
-                        selectedItem = item;
-                        break;
-                    }
-                }
-                if (selectedItem == null) return;//TODO
-
-                SerialGrain grain = new SerialGrain();
+                ParcelableGrain grain = new ParcelableGrain();
                 grain.userId = AppConfig.getAppConfig(this).getUsrId();
                 grain.token = AppConfig.getAppConfig(this).getToken();
-                grain.mcateId = "123214";//TODO
-                grain.siteSource = isFromGaode ? 1 : 0;
-                grain.siteId = selectedItem.getPoiId();
-                grain.siteName = returnedValue;
-                grain.siteAddress = selectedItem.getAdName();
-                grain.sitePhone = selectedItem.getTel();
-                grain.siteType = "购物服务;专卖店;专营店";
-                grain.latitude = selectedItem.getLatLonPoint().getLatitude();
-                grain.longitude = selectedItem.getLatLonPoint().getLongitude();
-                grain.cityCode = selectedItem.getCityCode();
-                grain.isPublic = true;
-                grain.text = "真好吃";
-                grain.images = null; //TODO
+                grain.mcateId = types[intentType];
+
+                if (poiTitles.contains(returnedValue)) {
+                    PoiItem selectedItem = new PoiItem("", AMapUtils.convertToLatLonPoint(targetLocation), "", "");
+                    for (PoiItem item : poiItems) {
+                        if (item.getTitle().equals(returnedValue)) {
+                            selectedItem = item;
+                            break;
+                        }
+                    }
+                    grain.siteSource = 1;
+                    grain.siteId = selectedItem.getPoiId();
+                    grain.siteName = selectedItem.getTitle();
+                    grain.siteAddress = selectedItem.getAdName();
+                    grain.sitePhone = selectedItem.getTel();
+                    grain.siteType = selectedItem.getTypeDes();
+                    grain.latitude = selectedItem.getLatLonPoint().getLatitude();
+                    grain.longitude = selectedItem.getLatLonPoint().getLongitude();
+                    grain.cityCode = selectedItem.getCityCode();
+                    grain.isPublic = 1;
+                    grain.text = commentEditText.getText().toString().trim();
+                } else if (poiItems.size() > 0) {
+                    PoiItem tempPoi = poiItems.get(0);
+                    grain.siteSource = 0;
+                    grain.siteId = "";
+                    grain.siteName = returnedValue;
+                    grain.siteAddress = tempPoi.getAdName();
+                    grain.sitePhone = "";
+                    grain.latitude = tempPoi.getLatLonPoint().getLatitude();
+                    grain.longitude = tempPoi.getLatLonPoint().getLongitude();
+                    grain.cityCode = tempPoi.getCityCode();
+                    grain.isPublic = 1;
+                    grain.text = commentEditText.getText().toString().trim();
+                } else {
+                    grain.siteSource = 0;
+                    grain.siteId = "";
+                    grain.siteName = returnedValue;
+                    grain.siteAddress = returnedValue;
+                    grain.sitePhone = "";
+                    grain.latitude = myLocation.latitude;
+                    grain.longitude = myLocation.longitude;
+                    grain.cityCode = "";
+                    grain.isPublic = 1;
+                    grain.text = commentEditText.getText().toString().trim();
+                }
 
                 Intent publishIntent = new Intent(this, DonePublishActivity.class);
                 publishIntent.putExtra("GRAIN", grain);
                 startActivity(publishIntent);
-                //TODO 是否销毁Activity?
 
                 //TODO 上传到阿里云
                 // 高清的压缩图片全部就在  list 路径里面了
@@ -251,12 +281,38 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
         addressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //doSearchQuery();//进行第一次搜索
-
                 Intent autoCompleteIntent = new Intent(CreateGrainActivity.this, CompleteTextActivity.class);
                 autoCompleteIntent.putExtra("TITLE_LIST", (Serializable) poiTitles);
                 autoCompleteIntent.putExtra("OLD_CONTENT", addressButton.getText().toString());
                 startActivityForResult(autoCompleteIntent, AUTO_COMPLETE);
+            }
+        });
+
+        //监听软键盘
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm.isActive()) {
+                    scrollView.smoothScrollTo(0, AMapUtils.dp2px(CreateGrainActivity.this, 102));
+                } else {
+                    scrollView.smoothScrollTo(0, 0);
+                }
+            }
+        });
+
+        commentEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                switch (actionId) {
+                    case EditorInfo.IME_ACTION_DONE:
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        if (imm.isActive()) {
+                            imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+                        }
+                        break;
+                }
+                return true;
             }
         });
     }
@@ -265,7 +321,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
         LinearLayout.LayoutParams params = new
                 LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 yes ? ViewGroup.LayoutParams.MATCH_PARENT :
-                        AMapUtils.dp2px(CreateGrainActivity.this, 210));
+                        AMapUtils.dp2px(CreateGrainActivity.this, 185));
         mapLayout.setLayoutParams(params);
         barTitle.setText(yes ? "标记位置" : "创建" + createTypes[intentType]);
         cancelAction.setBackgroundResource(
@@ -307,15 +363,17 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
     // 获取操作结束后的位置
     @Override
     public void onCameraChangeFinish(CameraPosition cameraPosition) {
-        targetLocation = cameraPosition.target;
+
     }
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
         if (aMapLocation != null && aMapLocation.getAMapException().getErrorCode() == 0) {
             myLocation = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
-            poiCity = aMapLocation.getCity();
             mAmap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 15f));
+            poiCity = aMapLocation.getCity();
+            targetLocation = myLocation;
+            doSearchQuery(); // 第一次搜索
         }
     }
 
@@ -422,6 +480,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
     @Override
     public void onDestroy() {
         super.onDestroy();
+        FileUtils.deleteDir();
         mMapView.onDestroy();
         locationManagerProxy.destroy();
         AppManager.getAppManager().finishActivity(this);
@@ -502,7 +561,9 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                                 PhotoHelper.bitmaps.add(bitmap);
 //                                String name = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
 //                                FileUtils.saveBitmap(bitmap, "" + name);
-                                FileUtils.saveBitmap(bitmap, StringUtils.getUUID()); //重命名照片
+                                String uuid = StringUtils.getUUID();
+                                FileUtils.saveBitmap(bitmap, uuid); //重命名照片
+                                PhotoHelper.larges.add(AppConfig.DEFAULT_APP_ROOT_PATH + "photo/" + uuid + ".jpeg");
                                 PhotoHelper.max += 1;
                                 Message message = new Message();
                                 message.what = 1;

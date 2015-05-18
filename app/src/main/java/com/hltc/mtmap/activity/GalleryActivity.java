@@ -42,7 +42,7 @@ public class GalleryActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppManager.getAppManager().addActivity(this);
-        setContentView(R.layout.activity_photo_bucket);
+        setContentView(R.layout.activity_gallery);
         ButterKnife.inject(this);
 
         helper = AlbumHelper.getHelper();

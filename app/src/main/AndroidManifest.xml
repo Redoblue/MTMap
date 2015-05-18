@@ -46,7 +46,9 @@
         <activity android:name=".activity.DeletePhotoActivity" />
         <activity android:name=".activity.PhotoActivity" />
         <activity android:name=".activity.GalleryActivity" />
-        <activity android:name=".activity.DonePublishActivity" />
+        <activity
+            android:name=".activity.DonePublishActivity"
+            android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".activity.CompleteTextActivity"
             android:windowSoftInputMode="stateVisible" />
