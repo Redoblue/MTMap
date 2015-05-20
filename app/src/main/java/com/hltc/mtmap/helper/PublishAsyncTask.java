@@ -43,6 +43,8 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by redoblue on 15-5-18.
@@ -57,6 +59,7 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
     private OSSBucket ossBucket;
     private ParcelableGrain grain;
     private boolean isPushOK;
+    private int progress;
 
     public PublishAsyncTask(Context conext, RelativeLayout layout, CircleProgress circle, ParcelableGrain grain) {
         super();
@@ -74,7 +77,7 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
-        if (aBoolean && isPushOK) {
+        if (aBoolean) {
             progressLayout.setVisibility(View.GONE);
         } else {
             Toast.makeText(mContext, "发布失败", Toast.LENGTH_SHORT).show();
@@ -89,43 +92,25 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
         for (int i = 0; i < list.size(); i++) {
-            resumableUpload(1, list.get(i).getLarge());
-            resumableUpload(2, list.get(i).getSmall());
-            publishProgress(100 * i / list.size());
+            upload(list.get(i).getLarge());
+            upload(list.get(i).getSmall());
+            publishProgress(100 * (i + 1) / list.size());
         }
-//        FileUtils.deleteDir();
+        FileUtils.deleteDir();
         httpPublish();
         return true;
     }
 
     // 断点上传
-    public void resumableUpload(int type, String path) {
+    public void upload(String path) {
         OSSFile file = ossService.getOssFile(ossBucket,
-                type == 1 ?
-                        "large" + "/" + StringUtils.getFileNameFromPath(path)
-                        : "small" + "/" + StringUtils.getFileNameFromPath(path));
+                "10000002015051516420168824015343" + "/" + StringUtils.getFileNameFromPath(path) + ".png");
         try {
-            file.setUploadFilePath(path, type == 1 ? "image/jpeg" : "image/png");
-            file.ResumableUploadInBackground(new SaveCallback() {
-
-                @Override
-                public void onSuccess(String objectKey) {
-                    Log.d("Publish", "[onSuccess] - " + objectKey + " upload success!");
-                }
-
-                @Override
-                public void onProgress(String objectKey, int byteCount, int totalSize) {
-                    Log.d("Publish", "[onProgress] - current upload " + objectKey + " bytes: " + byteCount + " in total: " + totalSize);
-                }
-
-                @Override
-                public void onFailure(String objectKey, OSSException ossException) {
-                    Log.e("Publish", "[onFailure] - upload " + objectKey + " failed!\n" + ossException.toString());
-                    ossException.printStackTrace();
-                    ossException.getException().printStackTrace();
-                }
-            });
-        } catch (FileNotFoundException e) {
+            file.setUploadFilePath(path, "image/png");
+            file.upload();
+            //TODO
+            Log.d("Publish", "upload succeed!");
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -176,7 +161,7 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
 //            father.put("userId", grain.userId);
 //            father.put("token", grain.token);
             father.put("userId", "10000002015051516420168824015343");
-            father.put("token", "08WDqmCwJe5rCLziM984L3");
+            father.put("token", "0Iq_Mnp754Da2Nq9oEIlTN");
             father.put("mcateId", grain.mcateId);
             father.put("siteSource", grain.siteSource);
             father.put("siteId", grain.siteId);
@@ -192,8 +177,10 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
             JSONArray array = new JSONArray();
             for (GrainPhotoInfo item : list) {
                 JSONObject json = new JSONObject();
-                json.put("large", item.getLarge());
-                json.put("small", item.getSmall());
+                json.put("large", AppConfig.OSS_URL_IMAGE + "10000002015051516420168824015343" + "/"
+                        + StringUtils.getFileNameFromPath(item.getLarge()) + ".png");
+                json.put("small", AppConfig.OSS_URL_IMAGE + "10000002015051516420168824015343" + "/"
+                        + StringUtils.getFileNameFromPath(item.getSmall()) + ".png");
                 array.put(json);
             }
             father.put("images", array);

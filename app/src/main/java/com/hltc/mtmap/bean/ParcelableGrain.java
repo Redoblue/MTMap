@@ -20,16 +20,16 @@ public class ParcelableGrain implements Parcelable {
     public String userId;
     public String token;
     public String mcateId;
-    public int siteSource;
+    public String siteSource;
     public String siteId;
     public String siteName;
     public String siteAddress;
     public String sitePhone;
     public String siteType;
-    public double latitude;
-    public double longitude;
+    public String longitude;
+    public String latitude;
     public String cityCode;
-    public int isPublic;
+    public String isPublic;
     public String text;
 
     public ParcelableGrain() {
@@ -39,16 +39,16 @@ public class ParcelableGrain implements Parcelable {
         this.userId = in.readString();
         this.token = in.readString();
         this.mcateId = in.readString();
-        this.siteSource = in.readInt();
+        this.siteSource = in.readString();
         this.siteId = in.readString();
         this.siteName = in.readString();
         this.siteAddress = in.readString();
         this.sitePhone = in.readString();
         this.siteType = in.readString();
-        this.latitude = in.readDouble();
-        this.longitude = in.readDouble();
+        this.latitude = in.readString();
+        this.longitude = in.readString();
         this.cityCode = in.readString();
-        this.isPublic = in.readInt();
+        this.isPublic = in.readString();
         this.text = in.readString();
     }
 
@@ -62,16 +62,16 @@ public class ParcelableGrain implements Parcelable {
         dest.writeString(this.userId);
         dest.writeString(this.token);
         dest.writeString(this.mcateId);
-        dest.writeInt(this.siteSource);
+        dest.writeString(this.siteSource);
         dest.writeString(this.siteId);
         dest.writeString(this.siteName);
         dest.writeString(this.siteAddress);
         dest.writeString(this.sitePhone);
         dest.writeString(this.siteType);
-        dest.writeDouble(this.latitude);
-        dest.writeDouble(this.longitude);
+        dest.writeString(this.latitude);
+        dest.writeString(this.longitude);
         dest.writeString(this.cityCode);
-        dest.writeInt(this.isPublic);
+        dest.writeString(this.isPublic);
         dest.writeString(this.text);
     }
 }

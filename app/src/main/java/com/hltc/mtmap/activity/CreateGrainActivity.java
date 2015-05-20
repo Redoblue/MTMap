@@ -80,7 +80,7 @@ import butterknife.OnClick;
 public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedListener,
         AMap.OnCameraChangeListener, AMapLocationListener, PoiSearch.OnPoiSearchListener {
 
-    private static final int TAKE_PICTURE = 1;
+    private static final int TAKE_PHOTO = 1;
     private static final int AUTO_COMPLETE = 2;
 
     @InjectView(R.id.layout_create_grain_root)
@@ -196,40 +196,42 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                             break;
                         }
                     }
-                    grain.siteSource = 1;
+                    grain.siteSource = "1";
                     grain.siteId = selectedItem.getPoiId();
                     grain.siteName = selectedItem.getTitle();
                     grain.siteAddress = selectedItem.getAdName();
                     grain.sitePhone = selectedItem.getTel();
                     grain.siteType = selectedItem.getTypeDes();
-                    grain.latitude = selectedItem.getLatLonPoint().getLatitude();
-                    grain.longitude = selectedItem.getLatLonPoint().getLongitude();
+                    grain.latitude = String.valueOf(selectedItem.getLatLonPoint().getLatitude());
+                    grain.longitude = String.valueOf(selectedItem.getLatLonPoint().getLongitude());
                     grain.cityCode = selectedItem.getCityCode();
-                    grain.isPublic = 1;
+                    grain.isPublic = "1";
                     grain.text = commentEditText.getText().toString().trim();
                 } else if (poiItems.size() > 0) {
                     PoiItem tempPoi = poiItems.get(0);
-                    grain.siteSource = 0;
+                    grain.siteSource = "0";
                     grain.siteId = "";
                     grain.siteName = returnedValue;
                     grain.siteAddress = tempPoi.getAdName();
                     grain.sitePhone = "";
-                    grain.latitude = tempPoi.getLatLonPoint().getLatitude();
-                    grain.longitude = tempPoi.getLatLonPoint().getLongitude();
+                    grain.latitude = String.valueOf(tempPoi.getLatLonPoint().getLatitude());
+                    grain.longitude = String.valueOf(tempPoi.getLatLonPoint().getLongitude());
                     grain.cityCode = tempPoi.getCityCode();
-                    grain.isPublic = 1;
+                    grain.isPublic = "1";
                     grain.text = commentEditText.getText().toString().trim();
                 } else {
-                    grain.siteSource = 0;
-                    grain.siteId = "";
-                    grain.siteName = returnedValue;
-                    grain.siteAddress = returnedValue;
-                    grain.sitePhone = "";
-                    grain.latitude = myLocation.latitude;
-                    grain.longitude = myLocation.longitude;
-                    grain.cityCode = "";
-                    grain.isPublic = 1;
-                    grain.text = commentEditText.getText().toString().trim();
+                    // 未获取到位置
+                    //TODO
+//                    grain.siteSource = "0";
+//                    grain.siteId = "";
+//                    grain.siteName = returnedValue;
+//                    grain.siteAddress = returnedValue;
+//                    grain.sitePhone = "";
+//                    grain.latitude = myLocation.latitude;
+//                    grain.longitude = myLocation.longitude;
+//                    grain.cityCode = "";
+//                    grain.isPublic = 1;
+//                    grain.text = commentEditText.getText().toString().trim();
                 }
 
                 Intent publishIntent = new Intent(this, DonePublishActivity.class);
@@ -439,12 +441,12 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
         Uri imageUri = Uri.fromFile(file);
         Intent openCameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        startActivityForResult(openCameraIntent, TAKE_PICTURE);
+        startActivityForResult(openCameraIntent, TAKE_PHOTO);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case TAKE_PICTURE:
+            case TAKE_PHOTO:
                 if (resultCode == RESULT_OK) {
                     if (PhotoHelper.addresses.size() < 9) {
                         PhotoHelper.addresses.add(path);
@@ -559,11 +561,8 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                                 String path = PhotoHelper.addresses.get(PhotoHelper.max);
                                 Bitmap bitmap = PhotoHelper.resizeBitmapFromPath(path);
                                 PhotoHelper.bitmaps.add(bitmap);
-//                                String name = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
-//                                FileUtils.saveBitmap(bitmap, "" + name);
-                                String uuid = StringUtils.getUUID();
-                                FileUtils.saveBitmap(bitmap, uuid); //重命名照片
-                                PhotoHelper.larges.add(AppConfig.DEFAULT_APP_ROOT_PATH + "photo/" + uuid + ".jpeg");
+                                String where = FileUtils.saveBitmap(bitmap, StringUtils.getUUID()); //重命名照片
+                                PhotoHelper.larges.add(where);
                                 PhotoHelper.max += 1;
                                 Message message = new Message();
                                 message.what = 1;

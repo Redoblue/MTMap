@@ -218,18 +218,19 @@ public class FileUtils {
     }
 
 
-    public static void saveBitmap(Bitmap bm, String picName) {
+    public static String saveBitmap(Bitmap bm, String picName) {
         Log.e("", "保存图片");
+        String path = AppConfig.DEFAULT_APP_ROOT_PATH + "photo/" + picName + ".png";
         try {
             if (!isFileExist("")) {
                 File tempf = createSDDir("");
             }
-            File f = new File(AppConfig.DEFAULT_APP_ROOT_PATH + "photo/", picName + ".JPEG");
+            File f = new File(path);
             if (f.exists()) {
                 f.delete();
             }
             FileOutputStream out = new FileOutputStream(f);
-            bm.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            bm.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.flush();
             out.close();
             Log.e("", "已经保存");
@@ -238,6 +239,7 @@ public class FileUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return path;
     }
 
     public static File createSDDir(String dirName) throws IOException {

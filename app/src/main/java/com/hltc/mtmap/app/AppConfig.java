@@ -37,7 +37,8 @@ public class AppConfig {
     public static final String CONF_USR_COVER_URL = "user.cover_url";
 
     public static final String OSS_ROOT = "oss-cn-hangzhou.aliyuncs.com";
-    public static final String OSS_BUCKET = "mtmap-photo";
+    public static final String OSS_BUCKET = "maitianditu";
+    public static final String OSS_URL_IMAGE = "http:/" + OSS_BUCKET + "." + OSS_ROOT + "/";
 
 
     public static final String DEFAULT_APP_ROOT_PATH =
