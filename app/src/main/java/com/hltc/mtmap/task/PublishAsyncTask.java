@@ -1,4 +1,4 @@
-package com.hltc.mtmap.helper;
+package com.hltc.mtmap.task;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -22,6 +22,7 @@ import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.bean.GrainPhotoInfo;
 import com.hltc.mtmap.bean.ParcelableGrain;
+import com.hltc.mtmap.helper.PhotoHelper;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.FileUtils;
 import com.hltc.mtmap.util.ImageUtils;

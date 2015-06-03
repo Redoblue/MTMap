@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/bar_settings"
+        layout="@layout/bar_green" />
+
+    <Button
+        android:id="@+id/btn_settings_set_nickname"
+        style="@style/SettingButton"
+        android:text="设置昵称" />
+
+    <TextView style="@style/separator" />
+
+    <Button
+        android:id="@+id/btn_settings_change_passwd"
+        style="@style/SettingButton"
+        android:text="修改密码" />
+
+    <TextView style="@style/separator" />
+
+
+    <Button
+        android:id="@+id/btn_settings_feedback"
+        style="@style/SettingButton"
+        android:text="用户反馈" />
+
+    <TextView style="@style/separator" />
+
+
+    <Button
+        android:id="@+id/btn_settings_check_update"
+        style="@style/SettingButton"
+        android:text="检查更新" />
+
+    <TextView style="@style/separator" />
+
+
+    <Button
+        android:id="@+id/btn_settings_five_star"
+        style="@style/SettingButton"
+        android:text="五星好评" />
+
+    <TextView style="@style/separator" />
+
+
+    <Button
+        android:id="@+id/btn_settings_recommend"
+        style="@style/SettingButton"
+        android:text="推荐给好友" />
+
+    <TextView style="@style/separator" />
+
+
+    <Button
+        android:id="@+id/btn_settings_about"
+        style="@style/SettingButton"
+        android:text="关于麦田地图" />
+
+    <TextView style="@style/separator" />
+
+</LinearLayout>

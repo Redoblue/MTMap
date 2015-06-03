@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/bar_green" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="献出你的建议，\n让麦田疯狂地长吧！" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/grey"
+            android:gravity="start|top"
+            android:hint="尽情吐槽吧！"
+            android:inputType="text"
+            android:paddingLeft="20dp"
+            android:paddingTop="10dp" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="15dp"
+            android:hint="联系邮箱"
+            android:inputType="textEmailAddress" />
+
+        <Button
+            style="@style/BlueButton"
+            android:layout_width="match_parent"
+            android:text="提交" />
+    </LinearLayout>
+</LinearLayout>

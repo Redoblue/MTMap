@@ -169,7 +169,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
     }
 
     @OnClick({R.id.btn_bar_left, R.id.btn_bar_right})
-    public void execAction(View v) {
+    public void onClick(View v) {
         if (!isMapZoomedIn) {
             if (v.getId() == R.id.btn_bar_left) {
                 AppManager.getAppManager().finishActivity(this);

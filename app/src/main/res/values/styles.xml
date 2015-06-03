@@ -16,7 +16,7 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
-    
+
     <style name="AnimPublishActivityTheme">
         <item name="android:windowAnimationStyle">@style/PublishActivityAnimTheme</item>
         <item name="android:windowNoTitle">true</item>
@@ -80,5 +80,22 @@
         <item name="android:gravity">center_horizontal</item>
         <item name="android:text">吃喝</item>
         <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="SettingButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:paddingRight">15dp</item>
+    </style>
+
+    <style name="separator">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/separator</item>
     </style>
 </resources>

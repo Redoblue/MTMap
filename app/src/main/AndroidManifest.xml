@@ -52,6 +52,9 @@
         <activity
             android:name=".activity.CompleteTextActivity"
             android:windowSoftInputMode="stateVisible" />
+        <activity android:name=".activity.SettingsActivity" />
+        <activity android:name=".activity.UpdateNicknameActivity" />
+        <activity android:name=".activity.UpdatePasswdActivity" />
     </application>
 
 </manifest>

@@ -12,7 +12,7 @@ import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.bean.ParcelableGrain;
-import com.hltc.mtmap.helper.PublishAsyncTask;
+import com.hltc.mtmap.task.PublishAsyncTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <include layout="@layout/bar_green" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.0" />
+
+    <LinearLayout
+        android:id="@+id/layout_update_passwd_step_one"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/et_update_passwd_phone"
+                style="@style/WhiteBackground"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:inputType="phone" />
+
+            <Button
+                android:id="@+id/btn_update_passwd_send_verifycode"
+                style="@style/GreenButton"
+                android:layout_width="140dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:text="@string/signup_send_verifycode" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/et_update_passwd_verifycode"
+            style="@style/WhiteBackground"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="15dp"
+            android:inputType="number" />
+
+        <Button
+            android:id="@+id/btn_update_passwd_comfirm"
+            style="@style/GreenButton"
+            android:layout_width="match_parent"
+            android:enabled="false"
+            android:text="@string/signup_comfirm" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_update_passwd_step_two"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="15dp"
+        android:visibility="invisible">
+
+        <EditText
+            android:id="@+id/et_update_passwd_passwd"
+            style="@style/WhiteBackground"
+            android:layout_width="match_parent"
+            android:layout_marginBottom="15dp"
+            android:inputType="text" />
+
+        <Button
+            android:id="@+id/btn_update_passwd_create"
+            style="@style/GreenButton"
+            android:layout_width="match_parent"
+            android:text="确定" />
+    </LinearLayout>
+
+</LinearLayout>
