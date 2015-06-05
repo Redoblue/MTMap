@@ -53,8 +53,9 @@
             android:name=".activity.CompleteTextActivity"
             android:windowSoftInputMode="stateVisible" />
         <activity android:name=".activity.SettingsActivity" />
-        <activity android:name=".activity.UpdateNicknameActivity" />
-        <activity android:name=".activity.UpdatePasswdActivity" />
+        <activity android:name=".activity.setting.UpdateNicknameActivity" />
+        <activity android:name=".activity.setting.UpdatePasswdActivity" />
+        <activity android:name=".activity.setting.FeedbackActivity" />
     </application>
 
 </manifest>

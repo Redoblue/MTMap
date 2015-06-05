@@ -18,6 +18,7 @@
             android:text="献出你的建议，\n让麦田疯狂地长吧！" />
 
         <EditText
+            android:id="@+id/et_feedback_content"
             android:layout_width="match_parent"
             android:layout_height="120dp"
             android:layout_marginBottom="15dp"
@@ -30,6 +31,7 @@
             android:paddingTop="10dp" />
 
         <EditText
+            android:id="@+id/et_feedback_email"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginBottom="15dp"
@@ -37,6 +39,7 @@
             android:inputType="textEmailAddress" />
 
         <Button
+            android:id="@+id/btn_feedback_submit"
             style="@style/BlueButton"
             android:layout_width="match_parent"
             android:text="提交" />

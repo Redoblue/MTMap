@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.setting.FeedbackActivity;
+import com.hltc.mtmap.activity.setting.UpdateNicknameActivity;
+import com.hltc.mtmap.activity.setting.UpdatePasswdActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.util.AMapUtils;
 
@@ -80,6 +83,7 @@ public class SettingsActivity extends Activity {
                 generalClass = UpdatePasswdActivity.class;
                 break;
             case R.id.btn_settings_feedback:
+                generalClass = FeedbackActivity.class;
                 break;
             case R.id.btn_settings_check_update:
                 break;
@@ -90,6 +94,11 @@ public class SettingsActivity extends Activity {
             case R.id.btn_settings_about:
                 break;
         }
+
+        if (v.getId() == R.id.btn_bar_left) {
+            return;
+        }
+
         Intent intent = new Intent(this, generalClass);
         startActivity(intent);
     }

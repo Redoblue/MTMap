@@ -1,4 +1,4 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.setting;
 
 import android.app.Activity;
 import android.os.Bundle;
