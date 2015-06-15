@@ -20,30 +20,32 @@ import com.lidroid.xutils.util.LogUtils;
 import java.io.File;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+
 /**
  * 启动界面
  */
 public class SplashActivity extends Activity implements Animation.AnimationListener {
 
-    private LinearLayout background;
-
-    private Context mContext;
+    @InjectView(R.id.activity_start_view)
+    LinearLayout background;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_splash);
+        ButterKnife.inject(this);
         AppManager.getAppManager().addActivity(this);
-        findViewById();
-        loadBackground();
-        mContext = this;
+//        loadBackground();
 
+        initView();
         initAnimation();
     }
 
-    private void findViewById() {
-        background = (LinearLayout) findViewById(R.id.activity_start_view);
+    private void initView() {
+        background.setBackgroundResource(R.drawable.pic_start);
     }
 
     private void initAnimation() {
@@ -61,21 +63,22 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
     @Override
     public void onAnimationEnd(Animation animation) {
         // 查询是否第一次使用本软件
-        if (AppUtils.isFirstTimeToUse(mContext)) {
+        if (AppUtils.isFirstTimeToUse(this)) {
             LogUtils.d("第一次使用分支");
-            Intent intent = new Intent(mContext, GuideActivity.class);
+            Intent intent = new Intent(this, GuideActivity.class);
             startActivity(intent);
         } else {    //判断登录状态，是则进入主界面，否则进入登录界面
-            if (AppUtils.isSignedIn(mContext)) {
+            if (AppUtils.isSignedIn(this)) {
                 LogUtils.d("已登录分支");
-                Intent intent = new Intent(mContext, MainActivity.class);
+                Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             } else {
                 LogUtils.d("未登录分支");
-                Intent intent = new Intent(mContext, StartActivity.class);
+                Intent intent = new Intent(this, StartActivity.class);
                 startActivity(intent);
             }
         }
+        AppManager.getAppManager().finishActivity(this);
     }
 
     @Override

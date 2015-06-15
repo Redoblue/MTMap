@@ -1,46 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <com.flaviofaria.kenburnsview.KenBurnsView
         android:id="@+id/img_start_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/background"
-        />
+        android:src="@drawable/background" />
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@mipmap/ic_launcher"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"
-        android:padding="70dp"
         android:layout_above="@+id/layout_start_choose"
-        />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:padding="70dp"
+        android:src="@mipmap/ic_launcher" />
+
     <LinearLayout
         android:id="@+id/layout_start_choose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:padding="15dp"
-        >
+        android:layout_marginBottom="65dp"
+        android:orientation="vertical"
+        android:padding="15dp">
+
         <Button
+            android:id="@+id/btn_start_signin"
             style="@style/GreenButton"
             android:layout_width="match_parent"
-            android:id="@+id/btn_start_signin"
-            android:text="@string/sign_in"
-            android:layout_marginBottom="30dp"
-            />
-        <Button
-            style="@style/BlueButton"
-            android:layout_width="match_parent"
-            android:id="@+id/btn_start_signup"
-            android:text="@string/sign_up"
             android:layout_marginBottom="15dp"
-            />
+            android:text="@string/sign_in" />
+
+        <Button
+            android:id="@+id/btn_start_signup"
+            style="@style/GreenButton"
+            android:layout_width="match_parent"
+            android:text="@string/sign_up" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btn_start_skip"
+        style="@style/BlueButton"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="15dp"
+        android:text="跳   过" />
 </RelativeLayout>

@@ -166,7 +166,7 @@ public class FileUtils {
         if (!saveDir.exists()) {
             saveDir.mkdirs();
         }
-        saveDir = null;
+//        saveDir = null;
         return savePath;
     }
 
