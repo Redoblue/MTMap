@@ -88,15 +88,16 @@ public class CommonViewHolder {
         return this;
     }
 
-    public CommonViewHolder setImage(int viewId, Drawable drawable) {
-//        ImageView imageView = getView(viewId);
-//        ImageLoader.getInstance().displayImage(url, imageView);
-        ((ImageView) getView(viewId)).setImageDrawable(drawable);
+    public CommonViewHolder setImage(int viewId, String url) {
+        ImageView imageView = getView(viewId);
+        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        ImageLoader.getInstance().displayImage(url, imageView);
         return this;
     }
 
-    public CommonViewHolder setCircleImage(int viewId, Drawable drawable) {
-        ((CircleImageView) getView(viewId)).setImageDrawable(drawable);
+    public CommonViewHolder setCircleImage(int viewId, String url) {
+        ImageView imageView = getView(viewId);
+        ImageLoader.getInstance().displayImage(url, imageView);
         return this;
     }
 }

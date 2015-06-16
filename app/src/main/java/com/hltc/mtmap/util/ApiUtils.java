@@ -23,6 +23,9 @@ public class ApiUtils {
     public static final String URL_SIG_IN = "user/login/login.json";
     public static final String URL_PUB_GRAIN = "grain/publish.json";
     public static final String URL_UPD_NICKNAME = "user/settings/update_nickname.json";
+    public static final String URL_REC_GRAIN_0 = "user/getRecommendGrain.json";
+    // 游客模块
+    public static final String URL_REC_GRAIN_1 = "visitor/getRecommendGrain.json";
 
     public static final String KEY_SOURCE = "source";
     public static final String KEY_PHONE = "phone_number";
@@ -66,5 +69,9 @@ public class ApiUtils {
 
     public static String getUpdateNicknameUrl() {
         return URL_ROOT + "/" + URL_UPD_NICKNAME;
+    }
+
+    public static String getRecommendGrainUrl(boolean isUser) {
+        return isUser ? URL_REC_GRAIN_0 : URL_REC_GRAIN_1;
     }
 }
