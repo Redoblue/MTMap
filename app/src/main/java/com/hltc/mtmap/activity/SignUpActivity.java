@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.KeyEvent;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -18,6 +18,7 @@ import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.bean.LocalUserInfo;
+import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -38,83 +39,90 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 /**
  * Created by Redoblue on 2015/4/24.
  */
-public class SignUpActivity extends Activity implements View.OnClickListener {
+public class SignUpActivity extends Activity {
 
+    @InjectView(R.id.btn_bar_left)
+    Button btnBarLeft;
+    @InjectView(R.id.tv_bar_title)
+    TextView tvBarTitle;
+    @InjectView(R.id.btn_bar_right)
+    Button btnBarRight;
+    @InjectView(R.id.et_signup_phone)
+    EditText etSignupPhone;
+    @InjectView(R.id.btn_signup_send_verifycode)
+    Button btnSignupSendVerifycode;
+    @InjectView(R.id.et_signup_verifycode)
+    EditText etSignupVerifycode;
+    @InjectView(R.id.btn_signup_comfirm)
+    Button btnSignupComfirm;
+    @InjectView(R.id.layout_signup_step_one)
+    LinearLayout layoutSignupStepOne;
+    @InjectView(R.id.et_signup_passwd)
+    EditText etSignupPasswd;
+    @InjectView(R.id.btn_signup_create)
+    Button btnSignupCreate;
+    @InjectView(R.id.layout_signup_step_two)
+    LinearLayout layoutSignupStepTwo;
+
+    private int source; //用来判断是注册还是找回密码
     private DownTimer mDownTimer;
     private String mPhone;
     private String mVCode;
     private String mPasswd;
-
-    private LinearLayout stepOneLayout;
-    private LinearLayout stepTwoLayout;
-
-    private Button mGoBackButton;
-    private TextView mTitleTextView;
-    private EditText mPhoneEditText;
-    private Button mSendVerifyCodeButton;
-    private EditText mVerifyCodeEditText;
-    private Button mConfirmButton;
-    private EditText mPasswdEditText;
-    private Button mlastConfirmButton;
-    private TextWatcher watcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            mConfirmButton.setEnabled(s.length() > 0);
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_signup);
-
-        findViewById();
-        initViews();
-        mDownTimer = new DownTimer(60000, 1000);
+        ButterKnife.inject(this);
         AppManager.getAppManager().addActivity(this);
+
+        initView();
+        mDownTimer = new DownTimer(60000, 1000);
+        source = getIntent().getIntExtra("source", 0);
+        Log.d("Settings", "source: " + source + " source == 0: " + String.valueOf(source == 0));
     }
 
-    private void findViewById() {
-        stepOneLayout = (LinearLayout) findViewById(R.id.layout_signup_step_one);
-        stepTwoLayout = (LinearLayout) findViewById(R.id.layout_signup_step_two);
-        mGoBackButton = (Button) findViewById(R.id.btn_bar_left);
-        mTitleTextView = (TextView) findViewById(R.id.tv_bar_title);
-        mPhoneEditText = (EditText) findViewById(R.id.et_signup_phone);
-        mSendVerifyCodeButton = (Button) findViewById(R.id.btn_signup_send_verifycode);
-        mVerifyCodeEditText = (EditText) findViewById(R.id.et_signup_verifycode);
-        mConfirmButton = (Button) findViewById(R.id.btn_signup_comfirm);
-        mPasswdEditText = (EditText) findViewById(R.id.et_signup_passwd);
-        mlastConfirmButton = (Button) findViewById(R.id.btn_signup_create);
+    private void initView() {
+        tvBarTitle.setText((source == 0) ? "注册" : "修改密码");
+        btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
+        btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
+        btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
+
+        etSignupPhone.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_phone), 20));
+        etSignupVerifycode.setHint(ViewUtils.getHint(getResources().getString(R.string.singup_verifycode_hint), 20));
+        etSignupPasswd.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_password), 20));
+        etSignupVerifycode.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                btnSignupComfirm.setEnabled(s.length() > 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
-    private void initViews() {
-        mTitleTextView.setText(R.string.sign_up);
-        mGoBackButton.setBackgroundResource(R.drawable.back);
-        mGoBackButton.setOnClickListener(this);
-        mSendVerifyCodeButton.setOnClickListener(this);
-        mConfirmButton.setOnClickListener(this);
-        mlastConfirmButton.setOnClickListener(this);
-        mPhoneEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_phone), 20));
-        mVerifyCodeEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.singup_verifycode_hint), 20));
-        mPasswdEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_password), 20));
-        mVerifyCodeEditText.addTextChangedListener(watcher);
-    }
-
-    @Override
+    @OnClick({R.id.btn_bar_left,
+            R.id.btn_signup_send_verifycode,
+            R.id.btn_signup_comfirm,
+            R.id.btn_signup_create,
+    })
     public void onClick(View v) {
         int id = v.getId();
         if (id != R.id.btn_bar_left
@@ -128,7 +136,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
                 AppManager.getAppManager().finishActivity(this);
                 break;
             case R.id.btn_signup_send_verifycode:
-                String phone = mPhoneEditText.getText().toString();
+                String phone = etSignupPhone.getText().toString();
                 if (!StringUtils.isMobilePhone(phone)) {
                     ToastUtils.showShort(this, "请输入正确的手机号码");
                     break;
@@ -139,7 +147,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
                 httpSubmitPhone();
                 break;
             case R.id.btn_signup_comfirm:
-                String vcode = mVerifyCodeEditText.getText().toString();
+                String vcode = etSignupVerifycode.getText().toString();
                 if (!StringUtils.isVerifyCode(vcode)) {
                     ToastUtils.showShort(this, "验证码格式错误");
                     break;
@@ -148,15 +156,13 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
                 httpValidateVCode();
                 break;
             case R.id.btn_signup_create:
-                String passwd = mPasswdEditText.getText().toString();
+                String passwd = etSignupPasswd.getText().toString();
                 if (!StringUtils.isPasswd(passwd)) {
                     ToastUtils.showShort(this, "密码格式错误");
                     break;
                 }
                 mPasswd = passwd;
                 httpSignUp();
-                break;
-            default:
                 break;
         }
     }
@@ -168,7 +174,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
 
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.GET,
-                ApiUtils.getRequestVCodeUrl(),
+                ApiUtils.getRequestVCodeUrl(source),
                 params,
                 new RequestCallBack<String>() {
                     @Override
@@ -209,7 +215,7 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
 
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.GET,
-                ApiUtils.getValidateVCodeUrl(),
+                ApiUtils.getValidateVCodeUrl(source),
                 params,
                 new RequestCallBack<String>() {
                     @Override
@@ -224,8 +230,8 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
                                 String tmpToken = son.getString(ApiUtils.KEY_TMP_TOKEN);
                                 AppConfig.getAppConfig(SignUpActivity.this).setToken(tmpToken);     //将临时Token保存
                                 // 进行布局转换
-                                stepOneLayout.setVisibility(View.GONE);
-                                stepTwoLayout.setVisibility(View.VISIBLE);
+                                layoutSignupStepOne.setVisibility(View.GONE);
+                                layoutSignupStepTwo.setVisibility(View.VISIBLE);
                             } else {
                                 JSONObject girl = new JSONObject(result);
                                 String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
@@ -267,7 +273,9 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
 
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.getCreateAccountUrl(),
+                source == 0 ?
+                        ApiUtils.getCreateAccountUrl() :
+                        ApiUtils.getResetPasswdUrl(),
                 params,
                 new RequestCallBack<String>() {
                     @Override
@@ -332,14 +340,14 @@ public class SignUpActivity extends Activity implements View.OnClickListener {
 
         @Override
         public void onTick(long millisUntilFinished) {
-            mSendVerifyCodeButton.setEnabled(false);
-            mSendVerifyCodeButton.setText(millisUntilFinished / 1000 + " 秒");
+            btnSignupSendVerifycode.setEnabled(false);
+            btnSignupSendVerifycode.setText(millisUntilFinished / 1000 + " 秒");
         }
 
         @Override
         public void onFinish() {
-            mSendVerifyCodeButton.setEnabled(true);
-            mSendVerifyCodeButton.setText("重发验证码");
+            btnSignupSendVerifycode.setEnabled(true);
+            btnSignupSendVerifycode.setText("重发验证码");
         }
     }
 }

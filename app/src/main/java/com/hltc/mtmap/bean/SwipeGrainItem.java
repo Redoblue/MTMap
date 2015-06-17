@@ -3,7 +3,7 @@ package com.hltc.mtmap.bean;
 /**
  * Created by merlin on 5/4/15.
  */
-public class GrainItem {
+public class SwipeGrainItem {
 
     private long grainId;
     private String text;
@@ -11,6 +11,15 @@ public class GrainItem {
     private long userId;
     private String portraitSmall;
     private SiteItem site;
+    private int cover;
+
+    public int getCover() {
+        return cover;
+    }
+
+    public void setCover(int cover) {
+        this.cover = cover;
+    }
 
     public String getPortraitSmall() {
         return portraitSmall;

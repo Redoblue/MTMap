@@ -38,8 +38,12 @@
         </activity>
         <activity android:name=".activity.GuideActivity" />
         <activity android:name=".activity.StartActivity" />
-        <activity android:name=".activity.SignUpActivity" />
-        <activity android:name=".activity.SignInActivity" />
+        <activity
+            android:name=".activity.SignUpActivity"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <activity
+            android:name=".activity.SignInActivity"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity android:name=".activity.PublishActivity" />
         <activity
             android:name=".activity.CreateGrainActivity"

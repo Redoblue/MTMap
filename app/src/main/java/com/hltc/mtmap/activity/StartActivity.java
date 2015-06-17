@@ -63,6 +63,7 @@ public class StartActivity extends Activity {
                 break;
             case R.id.btn_start_signup:
                 Intent intent1 = new Intent(this, SignUpActivity.class);
+                intent1.putExtra("source", 0);
                 startActivity(intent1);
                 break;
             case R.id.btn_start_skip:

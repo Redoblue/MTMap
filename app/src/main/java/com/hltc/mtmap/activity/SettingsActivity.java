@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.setting.FeedbackActivity;
 import com.hltc.mtmap.activity.setting.UpdateNicknameActivity;
-import com.hltc.mtmap.activity.setting.UpdatePasswdActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.util.AMapUtils;
 
@@ -80,7 +79,7 @@ public class SettingsActivity extends Activity {
                 generalClass = UpdateNicknameActivity.class;
                 break;
             case R.id.btn_settings_change_passwd:
-                generalClass = UpdatePasswdActivity.class;
+                generalClass = SignUpActivity.class;
                 break;
             case R.id.btn_settings_feedback:
                 generalClass = FeedbackActivity.class;
@@ -100,6 +99,9 @@ public class SettingsActivity extends Activity {
         }
 
         Intent intent = new Intent(this, generalClass);
+        if (generalClass == SignUpActivity.class) {
+            intent.putExtra("source", 1);
+        }
         startActivity(intent);
     }
 

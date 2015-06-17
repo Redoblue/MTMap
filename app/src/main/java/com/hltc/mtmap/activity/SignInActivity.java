@@ -3,11 +3,14 @@ package com.hltc.mtmap.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.hltc.mtmap.R;
@@ -15,6 +18,7 @@ import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.bean.LocalUserInfo;
 import com.hltc.mtmap.helper.ProgressGenerator;
+import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -34,17 +38,27 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+
 /**
  * Created by Redoblue on 2015/4/26.
  */
-public class SignInActivity extends Activity implements View.OnClickListener, ProgressGenerator.OnCompleteListener {
+public class SignInActivity extends Activity implements ProgressGenerator.OnCompleteListener {
 
-    private Button mBarLeftButton;
-    private TextView mTitleTextView;
-    private Button mBarRightButton;
-    private EditText mPhoneEditText;
-    private EditText mPasswdEditText;
-    private ActionProcessButton mSignInProcessButton;
+    @InjectView(R.id.btn_bar_left)
+    Button btnBarLeft;
+    @InjectView(R.id.tv_bar_title)
+    TextView tvBarTitle;
+    @InjectView(R.id.btn_bar_right)
+    Button btnBarRight;
+    @InjectView(R.id.et_signin_phone)
+    EditText etSigninPhone;
+    @InjectView(R.id.et_signin_passwd)
+    EditText etSigninPasswd;
+    @InjectView(R.id.btn_process_signin)
+    ActionProcessButton btnProcessSignin;
 
     private ProgressGenerator mGenerator;
 
@@ -54,35 +68,45 @@ public class SignInActivity extends Activity implements View.OnClickListener, Pr
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_signin);
+        ButterKnife.inject(this);
         AppManager.getAppManager().addActivity(this);
 
-        findViewById();
         initViews();
         mGenerator = new ProgressGenerator(this);
     }
 
-    private void findViewById() {
-        mBarLeftButton = (Button) findViewById(R.id.btn_bar_left);
-        mTitleTextView = (TextView) findViewById(R.id.tv_bar_title);
-        mBarRightButton = (Button) findViewById(R.id.btn_bar_right);
-        mPhoneEditText = (EditText) findViewById(R.id.et_signin_phone);
-        mPasswdEditText = (EditText) findViewById(R.id.et_signin_passwd);
-        mSignInProcessButton = (ActionProcessButton) findViewById(R.id.btn_process_signin);
-    }
-
     private void initViews() {
-        mBarLeftButton.setBackgroundResource(R.drawable.back);
-        mBarLeftButton.setOnClickListener(this);
-        mTitleTextView.setText(R.string.sign_in);
-        mBarRightButton.setText(R.string.signin_bar_right);
-        mBarRightButton.setOnClickListener(this);
-        mPhoneEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_phone), 20));
-        mPasswdEditText.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_password), 20));
-        mSignInProcessButton.setMode(ActionProcessButton.Mode.ENDLESS);
-        mSignInProcessButton.setOnClickListener(this);
+        tvBarTitle.setText("登录");
+        btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
+        btnBarRight.setText("忘记密码");
+        btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
+        btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
+        btnBarRight.setHeight(AMapUtils.dp2px(this, 25));
+
+        etSigninPhone.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_phone), 20));
+        etSigninPasswd.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_password), 20));
+        etSigninPasswd.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                btnProcessSignin.setEnabled(s.length() > 0);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        btnProcessSignin.setMode(ActionProcessButton.Mode.ENDLESS);
     }
 
-    @Override
+    @OnClick({R.id.btn_bar_left,
+            R.id.btn_bar_right,
+            R.id.btn_process_signin})
     public void onClick(View v) {
         int id = v.getId();
         if (id != R.id.btn_bar_left && id != R.id.btn_bar_right
@@ -95,13 +119,20 @@ public class SignInActivity extends Activity implements View.OnClickListener, Pr
                 AppManager.getAppManager().finishActivity(this);
                 break;
             case R.id.btn_bar_right:
-                // TODO
+                Intent intent = new Intent(this, SignUpActivity.class);
+                intent.putExtra("source", 1);
+                startActivity(intent);
                 break;
             case R.id.btn_process_signin:
-                mSignInProcessButton.setEnabled(false);
-//                mSignInProcessButton.setClickable(true);
-                mPasswdEditText.setEnabled(false);
-                mGenerator.start(mSignInProcessButton);
+                if (StringUtils.isEmpty(etSigninPhone.getText().toString())
+                        || StringUtils.isEmpty(etSigninPasswd.getText().toString())) {
+                    Toast.makeText(this, "请完善登录信息", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                btnProcessSignin.setEnabled(false);
+//                btnProcessSignin.setClickable(true);
+                etSigninPasswd.setEnabled(false);
+                mGenerator.start(btnProcessSignin);
                 httpSignIn();
                 mGenerator.stop();
                 break;
@@ -110,22 +141,22 @@ public class SignInActivity extends Activity implements View.OnClickListener, Pr
 
     @Override
     public void onComplete() {
-        mSignInProcessButton.setEnabled(true);
-//        mSignInProcessButton.setClickable(true);
-        mPasswdEditText.setEnabled(true);
+        btnProcessSignin.setEnabled(true);
+//        btnProcessSignin.setClickable(true);
+        etSigninPasswd.setEnabled(true);
     }
 
     private void httpSignIn() {
         // button begin to animate
-        mGenerator.start(mSignInProcessButton);
+        mGenerator.start(btnProcessSignin);
 
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_UNIQUE_INFO, mPhoneEditText.getText());
-            json.put(ApiUtils.KEY_PASSWD, StringUtils.toMD5(mPasswdEditText.getText().toString()));
+            json.put(ApiUtils.KEY_UNIQUE_INFO, etSigninPhone.getText());
+            json.put(ApiUtils.KEY_PASSWD, StringUtils.toMD5(etSigninPasswd.getText().toString()));
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -135,7 +166,7 @@ public class SignInActivity extends Activity implements View.OnClickListener, Pr
 
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.getRequestVCodeUrl(),
+                ApiUtils.getSigninUrl(),
                 params,
                 new RequestCallBack<String>() {
                     @Override
@@ -179,5 +210,11 @@ public class SignInActivity extends Activity implements View.OnClickListener, Pr
                         mGenerator.stop();
                     }
                 });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        AppManager.getAppManager().finishActivity(this);
     }
 }

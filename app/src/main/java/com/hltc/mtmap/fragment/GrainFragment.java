@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.CommonAdapter;
 import com.hltc.mtmap.adapter.CommonViewHolder;
-import com.hltc.mtmap.bean.GrainItem;
+import com.hltc.mtmap.bean.SwipeGrainItem;
 import com.hltc.mtmap.bean.SiteItem;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
@@ -35,6 +35,7 @@ import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -56,8 +57,9 @@ public class GrainFragment extends Fragment {
     @InjectView(R.id.btn_bar_right)
     Button btnBarRight;
 
-    private List<GrainItem> mSwipeItems;
+    private List<SwipeGrainItem> mSwipeItems;
     private SwipeViewAdapter mSwipeAdapter;
+    private List<HashMap<Long, Integer>> states = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,7 +79,7 @@ public class GrainFragment extends Fragment {
 
         mSwipeItems = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
-            GrainItem item = new GrainItem();
+            SwipeGrainItem item = new SwipeGrainItem();
             item.setImage("http://maitianditu.oss-cn-hangzhou.aliyuncs.com/10000002015051516420168824015343/5bdea599-b482-4169-9def-d55e8ee3122a.png");
             item.setPortraitSmall("http://maitianditu.oss-cn-hangzhou.aliyuncs.com/10000002015051516420168824015343/261471c4-e6a9-4739-81ea-eafa87582c12.png");
             item.setText("我只是一个card而已 " + i);
@@ -96,17 +98,20 @@ public class GrainFragment extends Fragment {
 
             @Override
             public void onLeftCardExit(Object o) {
-
+                SwipeGrainItem swipeGrainItem = (SwipeGrainItem) o;
+                HashMap<Long, Integer> map = new HashMap<>();
+                map.put(swipeGrainItem.getGrainId(), 0);
+                states.add(map);
             }
 
             @Override
             public void onRightCardExit(Object o) {
-
+                Log.d("GrainFragment", "right");
             }
 
             @Override
             public void onAdapterAboutToEmpty(int i) {
-                if (i <= 2) {
+                if (i == 2) {
                     httpLoadData();
                 }
             }
@@ -123,12 +128,10 @@ public class GrainFragment extends Fragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_grain_ignore:
-                mSwipeItems.remove(0);
-                mSwipeAdapter.notifyDataSetChanged();
+                viewGrainSwipe.getTopCardListener().selectLeft();
                 break;
             case R.id.btn_grain_favourite:
-                mSwipeItems.remove(0);
-                mSwipeAdapter.notifyDataSetChanged();
+                viewGrainSwipe.getTopCardListener().selectRight();
                 break;
         }
     }
@@ -171,13 +174,13 @@ public class GrainFragment extends Fragment {
                                 JSONObject son = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 JSONArray array = son.getJSONArray("grain");
                                 for (int i = 0; i < array.length(); i++) {
-                                    GrainItem grainItem = new GrainItem();
+                                    SwipeGrainItem swipeGrainItem = new SwipeGrainItem();
                                     JSONObject grain = array.getJSONObject(i);
-                                    grainItem.setGrainId(grain.getLong("grainId"));
-                                    grainItem.setText(grain.getString("text"));
-                                    grainItem.setImage(grain.getString("image"));
-                                    grainItem.setUserId(grain.getLong("userId"));
-                                    grainItem.setPortraitSmall(grain.getString("portraitSmall"));
+                                    swipeGrainItem.setGrainId(grain.getLong("grainId"));
+                                    swipeGrainItem.setText(grain.getString("text"));
+                                    swipeGrainItem.setImage(grain.getString("image"));
+                                    swipeGrainItem.setUserId(grain.getLong("userId"));
+                                    swipeGrainItem.setPortraitSmall(grain.getString("portraitSmall"));
 
                                     SiteItem siteItem = new SiteItem();
                                     JSONObject site = grain.getJSONObject("site");
@@ -190,8 +193,8 @@ public class GrainFragment extends Fragment {
                                     siteItem.setMtype(site.getString("mtype"));
                                     siteItem.setGtype(site.getString("gtype"));
 
-                                    grainItem.setSite(siteItem);
-                                    mSwipeItems.add(grainItem);
+                                    swipeGrainItem.setSite(siteItem);
+                                    mSwipeItems.add(swipeGrainItem);
                                 }
                                 mSwipeAdapter.notifyDataSetChanged();
                             } else {
@@ -210,9 +213,16 @@ public class GrainFragment extends Fragment {
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-
+                        SwipeGrainItem item = new SwipeGrainItem();
+                        item.setCover(R.drawable.grain_404);
+                        mSwipeItems.add(item);
+                        mSwipeAdapter.notifyDataSetChanged();
                     }
                 });
+    }
+
+    private void httpSubmitGrainOperation(long grainId, int state) {
+        // 返回忽略或收藏信息
     }
 
     /**
@@ -229,16 +239,18 @@ public class GrainFragment extends Fragment {
      * ******************* Adapter *******************
      */
 
-    private class SwipeViewAdapter extends CommonAdapter<GrainItem> {
-        SwipeViewAdapter(Context context, List<GrainItem> list, int viewId) {
+    private class SwipeViewAdapter extends CommonAdapter<SwipeGrainItem> {
+        SwipeViewAdapter(Context context, List<SwipeGrainItem> list, int viewId) {
             super(context, list, viewId);
         }
 
         @Override
-        public void convert(CommonViewHolder holder, GrainItem grainItem) {
-            holder.setImage(R.id.iv_swipe_pic, grainItem.getImage())
-                    .setCircleImage(R.id.civ_swipe_avatar, grainItem.getPortraitSmall()) //用户头像
-                    .setText(R.id.tv_swipe_comment, grainItem.getText());
+        public void convert(CommonViewHolder holder, SwipeGrainItem swipeGrainItem) {
+            holder.setImage(R.id.iv_swipe_pic, swipeGrainItem.getImage())
+                    .setCircleImage(R.id.civ_swipe_avatar, swipeGrainItem.getPortraitSmall()) //用户头像
+                    .setText(R.id.tv_swipe_comment, swipeGrainItem.getText())
+                    .setImage(R.id.iv_swipe_cover, swipeGrainItem.getCover()
+                    );
         }
     }
 }

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -92,6 +93,12 @@ public class CommonViewHolder {
         ImageView imageView = getView(viewId);
         imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         ImageLoader.getInstance().displayImage(url, imageView);
+        return this;
+    }
+
+    public CommonViewHolder setImage(int viewId, int resourceId) {
+        ImageView imageView = getView(viewId);
+        imageView.setImageResource(resourceId);
         return this;
     }
 

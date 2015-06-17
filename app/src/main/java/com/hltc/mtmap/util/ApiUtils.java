@@ -1,15 +1,5 @@
 package com.hltc.mtmap.util;
 
-import android.os.StrictMode;
-import android.util.Log;
-
-import com.alibaba.sdk.android.oss.callback.SaveCallback;
-import com.alibaba.sdk.android.oss.model.OSSException;
-import com.alibaba.sdk.android.oss.storage.OSSData;
-import com.alibaba.sdk.android.oss.storage.OSSFile;
-
-import java.io.FileNotFoundException;
-
 /**
  * Created by Redoblue on 2015/4/25.
  */
@@ -17,13 +7,17 @@ public class ApiUtils {
 
     public static final String URL_ROOT = "http://120.25.237.104:8080/maitian/v1";
 
-    public static final String URL_REQ_VCODE = "user/register/verify_code.json";
-    public static final String URL_VAL_VCODE = "user/register/verify.json";
+    public static final String URL_REQ_VCODE_0 = "user/register/verify_code.json";
+    public static final String URL_VAL_VCODE_0 = "user/register/verify.json";
     public static final String URL_CRE_ACCOUNT = "user/register/new_user.json";
     public static final String URL_SIG_IN = "user/login/login.json";
     public static final String URL_PUB_GRAIN = "grain/publish.json";
     public static final String URL_UPD_NICKNAME = "user/settings/update_nickname.json";
     public static final String URL_REC_GRAIN_0 = "user/getRecommendGrain.json";
+    // 找回密码
+    public static final String URL_REQ_VCODE_1 = "user/login/forget/verify_code.json";
+    public static final String URL_VAL_VCODE_1 = "user/login/forget/verify.json";
+    public static final String URL_RST_PASSWD = "user/login/forget/reset_password.json";
     // 游客模块
     public static final String URL_REC_GRAIN_1 = "visitor/getRecommendGrain.json";
 
@@ -47,16 +41,24 @@ public class ApiUtils {
     public static final String KEY_USR_PHONE = "phoneNumber";
     public static final String KEY_USR_COVERURL = "coverImg";
 
-    public static String getRequestVCodeUrl() {
-        return URL_ROOT + "/" + URL_REQ_VCODE;
+    public static String getRequestVCodeUrl(int source) {
+        return source == 0 ?
+                URL_ROOT + "/" + URL_REQ_VCODE_0 :
+                URL_ROOT + "/" + URL_REQ_VCODE_1;
     }
 
-    public static String getValidateVCodeUrl() {
-        return URL_ROOT + "/" + URL_VAL_VCODE;
+    public static String getValidateVCodeUrl(int source) {
+        return source == 0 ?
+                URL_ROOT + "/" + URL_VAL_VCODE_0 :
+                URL_ROOT + "/" + URL_VAL_VCODE_1;
     }
 
     public static String getCreateAccountUrl() {
         return URL_ROOT + "/" + URL_CRE_ACCOUNT;
+    }
+
+    public static String getResetPasswdUrl() {
+        return URL_ROOT + "/" + URL_RST_PASSWD;
     }
 
     public static String getSigninUrl() {
