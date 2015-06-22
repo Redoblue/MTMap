@@ -5,7 +5,7 @@ package com.hltc.mtmap.util;
  */
 public class ApiUtils {
 
-    public static final String URL_ROOT = "http://120.25.237.104:8080/maitian/v1";
+    public static final String URL_ROOT = "http://www.maitianditu.com/maitian/v1";
 
     public static final String URL_REQ_VCODE_0 = "user/register/verify_code.json";
     public static final String URL_VAL_VCODE_0 = "user/register/verify.json";
@@ -33,13 +33,16 @@ public class ApiUtils {
     public static final String KEY_PASSWD = "pwd";
     public static final String KEY_UNIQUE_INFO = "unique_info";
 
+    //注册
     public static final String KEY_USR_ID = "userId";
+    public static final String KEY_USR_NAME = "userName";
+    public static final String KEY_USR_IS_LOG_IN = "isLogin";
     public static final String KEY_USR_NICKNAME = "nickName";
+    public static final String KEY_USR_PHONE = "phone";
+    public static final String KEY_USR_PORTRAIT = "portrait";
+    public static final String KEY_USR_PORTRAIT_SMALL = "portraitSmall";
     public static final String KEY_USR_CREATE_TIME = "createTime";
-    public static final String KEY_USR_AVATARURL = "portraitSmall";
-    public static final String KEY_USR_RAW_AVATARURL = "portrait";
-    public static final String KEY_USR_PHONE = "phoneNumber";
-    public static final String KEY_USR_COVERURL = "coverImg";
+    public static final String KEY_USR_COVER_IMG = "coverImg";
 
     public static String getRequestVCodeUrl(int source) {
         return source == 0 ?

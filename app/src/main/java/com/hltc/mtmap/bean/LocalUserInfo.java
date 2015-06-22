@@ -5,52 +5,46 @@ package com.hltc.mtmap.bean;
  */
 public class LocalUserInfo {
 
-    private String id;
-    private String nickname;
-    private String createTime;
-    private String avatarURL;
-    private String rawAvatarURL;
+    private String userId;
+    private String userName;
+    private boolean isLogin;
+    private String nickName;
     private String phone;
-    private String coverURL;
+    private String createTime;
+    private String portrait;
+    private String portraitSmall;
+    private String coverImg;
 
-    public String getId() {
-        return id;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getNickname() {
-        return nickname;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
-    public String getCreateTime() {
-        return createTime;
+    public boolean getIsLogin() {
+        return isLogin;
     }
 
-    public void setCreateTime(String createTime) {
-        this.createTime = createTime;
+    public void setIsLogin(boolean isLogin) {
+        this.isLogin = isLogin;
     }
 
-    public String getAvatarURL() {
-        return avatarURL;
+    public String getNickName() {
+        return nickName;
     }
 
-    public void setAvatarURL(String avatarURL) {
-        this.avatarURL = avatarURL;
-    }
-
-    public String getRawAvatarURL() {
-        return rawAvatarURL;
-    }
-
-    public void setRawAvatarURL(String rawAvatarURL) {
-        this.rawAvatarURL = rawAvatarURL;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     public String getPhone() {
@@ -61,12 +55,35 @@ public class LocalUserInfo {
         this.phone = phone;
     }
 
-    public String getCoverURL() {
-        return coverURL;
+    public String getCreateTime() {
+        return createTime;
     }
 
-    public void setCoverURL(String coverURL) {
-        this.coverURL = coverURL;
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
     }
 
+    public String getPortrait() {
+        return portrait;
+    }
+
+    public void setPortrait(String portrait) {
+        this.portrait = portrait;
+    }
+
+    public String getPortraitSmall() {
+        return portraitSmall;
+    }
+
+    public void setPortraitSmall(String portraitSmall) {
+        this.portraitSmall = portraitSmall;
+    }
+
+    public String getCoverImg() {
+        return coverImg;
+    }
+
+    public void setCoverImg(String coverImg) {
+        this.coverImg = coverImg;
+    }
 }

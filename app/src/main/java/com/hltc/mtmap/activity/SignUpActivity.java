@@ -85,14 +85,14 @@ public class SignUpActivity extends Activity {
         ButterKnife.inject(this);
         AppManager.getAppManager().addActivity(this);
 
-        initView();
         mDownTimer = new DownTimer(60000, 1000);
         source = getIntent().getIntExtra("source", 0);
-        Log.d("Settings", "source: " + source + " source == 0: " + String.valueOf(source == 0));
+        initView();
+        Log.d("Settings", "source: " + source + "\n source == 0: " + String.valueOf(source == 0));
     }
 
     private void initView() {
-        tvBarTitle.setText((source == 0) ? "注册" : "修改密码");
+        tvBarTitle.setText(source == 0 ? "注册" : "修改密码");
         btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
         btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
         btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
@@ -262,7 +262,7 @@ public class SignUpActivity extends Activity {
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
             json.put(ApiUtils.KEY_PHONE, mPhone);
-            json.put(ApiUtils.KEY_PASSWD, mPasswd);
+            json.put(ApiUtils.KEY_PASSWD, StringUtils.toMD5(mPasswd));
             json.put(ApiUtils.KEY_TMP_TOKEN, tmpToken);
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
@@ -285,20 +285,22 @@ public class SignUpActivity extends Activity {
                             return;
                         try {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                                JSONObject son = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
+                                JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 LocalUserInfo userInfo = new LocalUserInfo();
-                                userInfo.setId(son.getString(ApiUtils.KEY_USR_ID));
-                                userInfo.setNickname(son.getString(ApiUtils.KEY_USR_NICKNAME));
-                                userInfo.setCreateTime(son.getString(ApiUtils.KEY_USR_CREATE_TIME));
-                                userInfo.setAvatarURL(son.getString(ApiUtils.KEY_USR_AVATARURL));
-                                userInfo.setRawAvatarURL(son.getString(ApiUtils.KEY_USR_RAW_AVATARURL));
-                                userInfo.setPhone(son.getString(ApiUtils.KEY_USR_PHONE));
-                                userInfo.setCoverURL(son.getString(ApiUtils.KEY_USR_COVERURL));
+                                userInfo.setUserId(data.getString(ApiUtils.KEY_USR_ID));
+                                userInfo.setUserName(data.getString(ApiUtils.KEY_USR_NAME));
+                                userInfo.setIsLogin(StringUtils.toBool(data.getString(ApiUtils.KEY_USR_IS_LOG_IN)));
+                                userInfo.setNickName(data.getString(ApiUtils.KEY_USR_NICKNAME));
+                                userInfo.setPhone(data.getString(ApiUtils.KEY_USR_PHONE));
+                                userInfo.setCreateTime(data.getString(ApiUtils.KEY_USR_CREATE_TIME));
+                                userInfo.setPortrait(data.getString(ApiUtils.KEY_USR_PORTRAIT));
+                                userInfo.setPortraitSmall(data.getString(ApiUtils.KEY_USR_PORTRAIT_SMALL));
+                                userInfo.setCoverImg(data.getString(ApiUtils.KEY_USR_COVER_IMG));
                                 AppConfig.getAppConfig(SignUpActivity.this).setUserInfo(userInfo);
                                 //TODO 已注册好 下一步干吗？
                                 ToastUtils.showShort(SignUpActivity.this, "注册成功");
-                                LogUtils.d(userInfo.toString());
-                                //TODO
+                                Log.d("SignUpActivity", userInfo.toString());
+
                                 Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 AppManager.getAppManager().finishActivity(SignUpActivity.this);

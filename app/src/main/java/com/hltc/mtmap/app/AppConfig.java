@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
+import com.ecloud.pulltozoomview.PullToZoomBase;
+import com.hltc.mtmap.activity.SignUpActivity;
 import com.hltc.mtmap.bean.LocalUserInfo;
 import com.hltc.mtmap.bean.TokenInfo;
 
@@ -28,13 +30,15 @@ public class AppConfig {
     public static final String CONF_FIRST_USE = "first_use";
     public static final String CONF_TOKEN = "token.value";
     public static final String CONF_TOKEN_EXPIRESIN = "token.expires_in";
-    public static final String CONF_USR_ID = "user.id";
-    public static final String CONF_USR_NICKNAME = "user.nickname";
-    public static final String CONF_USR_CREATE_TIME = "user.create_time";
-    public static final String CONF_USR_AVATAR_URL = "user.avatar_url";
-    public static final String CONF_USR_RAW_AVATAR_URL = "user.raw_avatar_url";
+    public static final String CONF_USR_USER_ID = "user.userId";
+    public static final String CONF_USER_USERNAME = "user.userName";
+    public static final String CONF_USER_IS_LOGIN = "user.isLogin";
+    public static final String CONF_USR_NICK_NAME = "user.nickName";
+    public static final String CONF_USR_CREATE_TIME = "user.createTime";
+    public static final String CONF_USR_PORTRAIT = "user.portrait";
+    public static final String CONF_USR_PORTRAIT_SMALL = "user.portraitSmall";
     public static final String CONF_USR_PHONE = "user.phone";
-    public static final String CONF_USR_COVER_URL = "user.cover_url";
+    public static final String CONF_USR_COVER_IMG = "user.coverImg";
 
     public static final String OSS_ROOT = "oss-cn-hangzhou.aliyuncs.com";
     public static final String OSS_BUCKET = "maitianditu";
@@ -98,72 +102,90 @@ public class AppConfig {
      * ****************************** LocalUserInfo ****************************
      */
 
-    public String getUsrId() {
-        return get(CONF_USR_ID);
+    public String getConfUsrUserId() {
+        return get(CONF_USR_USER_ID);
     }
 
-    public void setUsrId(String id) {
-        set(CONF_USR_ID, id);
+    public void setConfUsrUserId(String id) {
+        set(CONF_USR_USER_ID, id);
     }
 
-    public String getUsrNickname() {
-        return get(CONF_USR_NICKNAME);
+    public String getConfUserUsername() {
+        return get(CONF_USER_USERNAME);
     }
 
-    public void setUsrNickname(String nickname) {
-        set(CONF_USR_NICKNAME, nickname);
+    public void setConfUserUsername(String arg) {
+        set(CONF_USER_USERNAME, arg);
     }
 
-    public String getUsrCreateTime() {
-        return get(CONF_USR_CREATE_TIME);
+    public boolean getConfUserIsLogin() {
+        return StringUtils.toBool(get(CONF_USER_IS_LOGIN));
     }
 
-    public void setUsrCreateTime(String createTime) {
-        set(CONF_USR_CREATE_TIME, createTime);
+    public void setConfUserIsLogin(boolean arg) {
+        set(CONF_USER_IS_LOGIN, String.valueOf(arg));
     }
 
-    public String getUsrAvatarURL() {
-        return get(CONF_USR_AVATAR_URL);
+    public String getConfUsrNickName() {
+        return get(CONF_USR_NICK_NAME);
     }
 
-    public void setUsrAvatarURL(String avatarURL) {
-        set(CONF_USR_AVATAR_URL, avatarURL);
+    public void setConfUsrNickName(String nickname) {
+        set(CONF_USR_NICK_NAME, nickname);
     }
 
-    public String getUsrRawAvatarURL() {
-        return get(CONF_USR_RAW_AVATAR_URL);
-    }
-
-    public void setUsrRawAvatarURL(String rawAvatarURL) {
-        set(CONF_USR_RAW_AVATAR_URL, rawAvatarURL);
-    }
-
-    public String getUsrPhone() {
+    public String getConfUsrPhone() {
         return get(CONF_USR_PHONE);
     }
 
-    public void setUsrPhone(String phone) {
+    public void setConfUsrPhone(String phone) {
         set(CONF_USR_PHONE, phone);
     }
 
-    public String getUsrCoverURL() {
-        return get(CONF_USR_COVER_URL);
+    public String getConfUsrCreateTime() {
+        return get(CONF_USR_CREATE_TIME);
     }
 
-    public void setUsrCoverURL(String coverURL) {
-        set(CONF_USR_COVER_URL, coverURL);
+    public void setConfUsrCreateTime(String createTime) {
+        set(CONF_USR_CREATE_TIME, createTime);
+    }
+
+    public String getConfUsrPortrait() {
+        return get(CONF_USR_PORTRAIT);
+    }
+
+    public void setConfUsrPortrait(String avatarURL) {
+        set(CONF_USR_PORTRAIT, avatarURL);
+    }
+
+    public String getConfUsrPortraitSmall() {
+        return get(CONF_USR_PORTRAIT_SMALL);
+    }
+
+    public void setConfUsrPortraitSmall(String rawAvatarURL) {
+        set(CONF_USR_PORTRAIT_SMALL, rawAvatarURL);
+    }
+
+    public String getConfUsrCoverImg() {
+        return get(CONF_USR_COVER_IMG);
+    }
+
+    public void setConfUsrCoverImg(String coverURL) {
+        set(CONF_USR_COVER_IMG, coverURL);
     }
 
     public LocalUserInfo getUserInfo() {
-        if (mUserInfo == null && !StringUtils.isEmpty(String.valueOf(getUsrId()))) {
+        if (mUserInfo == null && !StringUtils.isEmpty(String.valueOf(getConfUsrUserId()))) {
             mUserInfo = new LocalUserInfo();
-            mUserInfo.setId(getUsrId());
-            mUserInfo.setNickname(getUsrNickname());
-            mUserInfo.setCreateTime(getUsrCreateTime());
-            mUserInfo.setAvatarURL(getUsrAvatarURL());
-            mUserInfo.setRawAvatarURL(getUsrRawAvatarURL());
-            mUserInfo.setPhone(getUsrPhone());
-            mUserInfo.setCoverURL(getUsrCoverURL());
+            mUserInfo.setUserId(getConfUsrUserId());
+            mUserInfo.setUserName(getConfUserUsername());
+            mUserInfo.setIsLogin(getConfUserIsLogin());
+            mUserInfo.setNickName(getConfUsrNickName());
+            mUserInfo.setPhone(getConfUsrPhone());
+            mUserInfo.setCreateTime(getConfUsrCreateTime());
+            mUserInfo.setPortrait(getConfUsrPortrait());
+            mUserInfo.setPortraitSmall(getConfUsrPortraitSmall());
+            mUserInfo.setCoverImg(getConfUsrCoverImg());
         }
         return mUserInfo;
     }
@@ -171,13 +193,15 @@ public class AppConfig {
     public void setUserInfo(LocalUserInfo userInfo) {
         mUserInfo = userInfo;
 
-        this.setUsrId(mUserInfo.getId());
-        this.setUsrNickname(mUserInfo.getNickname());
-        this.setUsrCreateTime(mUserInfo.getCreateTime());
-        this.setUsrAvatarURL(mUserInfo.getAvatarURL());
-        this.setUsrRawAvatarURL(mUserInfo.getRawAvatarURL());
-        this.setUsrPhone(mUserInfo.getPhone());
-        this.setUsrCoverURL(mUserInfo.getCoverURL());
+        this.setConfUsrUserId(mUserInfo.getUserId());
+        this.setConfUserUsername(mUserInfo.getUserName());
+        this.setConfUserIsLogin(mUserInfo.getIsLogin());
+        this.setConfUsrNickName(mUserInfo.getNickName());
+        this.setConfUsrPhone(mUserInfo.getPhone());
+        this.setConfUsrCreateTime(mUserInfo.getCreateTime());
+        this.setConfUsrPortrait(mUserInfo.getPortrait());
+        this.setConfUsrPortraitSmall(mUserInfo.getPortraitSmall());
+        this.setConfUsrCoverImg(mUserInfo.getCoverImg());
     }
 
     /**

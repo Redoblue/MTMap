@@ -59,8 +59,8 @@
             android:windowSoftInputMode="stateVisible" />
         <activity android:name=".activity.SettingsActivity" />
         <activity android:name=".activity.setting.UpdateNicknameActivity" />
-        <activity android:name=".activity.setting.UpdatePasswdActivity" />
         <activity android:name=".activity.setting.FeedbackActivity" />
+        <activity android:name=".activity.FriendListActivity" />
     </application>
 
 </manifest>

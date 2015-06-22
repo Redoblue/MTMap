@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.FriendListActivity;
 import com.hltc.mtmap.activity.SettingsActivity;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ToastUtils;
@@ -25,10 +26,10 @@ public class ProfileFragment extends Fragment {
     private View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            Class toClass = null;
             switch (v.getId()) {
                 case R.id.btn_profile_settings:
-                    Intent settingsIntent = new Intent(getActivity(), SettingsActivity.class);
-                    startActivity(settingsIntent);
+                    toClass = SettingsActivity.class;
                     break;
                 case R.id.btn_profile_maitian:
                     ToastUtils.showShort(getActivity(), "maitian");
@@ -36,12 +37,15 @@ public class ProfileFragment extends Fragment {
                 case R.id.btn_profile_favourite:
                     break;
                 case R.id.btn_profile_friend:
+                    toClass = FriendListActivity.class;
                     break;
                 case R.id.btn_profile_gallery:
                     break;
                 default:
                     break;
             }
+            Intent intent = new Intent(getActivity(), toClass);
+            startActivity(intent);
         }
     };
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -177,18 +178,20 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
                         try {
                             JSONObject farther = new JSONObject(result);
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
-                                JSONObject son = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
+                                JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 LocalUserInfo userInfo = new LocalUserInfo();
-                                userInfo.setId(son.getString(ApiUtils.KEY_USR_ID));
-                                userInfo.setNickname(son.getString(ApiUtils.KEY_USR_NICKNAME));
-                                userInfo.setCreateTime(son.getString(ApiUtils.KEY_USR_CREATE_TIME));
-                                userInfo.setAvatarURL(son.getString(ApiUtils.KEY_USR_AVATARURL));
-                                userInfo.setRawAvatarURL(son.getString(ApiUtils.KEY_USR_RAW_AVATARURL));
-                                userInfo.setPhone(son.getString(ApiUtils.KEY_USR_PHONE));
-                                userInfo.setCoverURL(son.getString(ApiUtils.KEY_USR_COVERURL));
+                                userInfo.setUserId(data.getString(ApiUtils.KEY_USR_ID));
+                                userInfo.setUserName(data.getString(ApiUtils.KEY_USR_NAME));
+                                userInfo.setIsLogin(StringUtils.toBool(data.getString(ApiUtils.KEY_USR_IS_LOG_IN)));
+                                userInfo.setNickName(data.getString(ApiUtils.KEY_USR_NICKNAME));
+                                userInfo.setPhone(data.getString(ApiUtils.KEY_USR_PHONE));
+                                userInfo.setCreateTime(data.getString(ApiUtils.KEY_USR_CREATE_TIME));
+                                userInfo.setPortrait(data.getString(ApiUtils.KEY_USR_PORTRAIT));
+                                userInfo.setPortraitSmall(data.getString(ApiUtils.KEY_USR_PORTRAIT_SMALL));
+                                userInfo.setCoverImg(data.getString(ApiUtils.KEY_USR_COVER_IMG));
                                 AppConfig.getAppConfig(SignInActivity.this).setUserInfo(userInfo);
                                 // 进入主界面
-                                ToastUtils.showShort(SignInActivity.this, "登录成功");
+                                Toast.makeText(SignInActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 AppManager.getAppManager().finishActivity(SignInActivity.this);

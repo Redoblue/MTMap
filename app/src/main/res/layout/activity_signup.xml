@@ -1,62 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1"
     android:background="@drawable/background_blur"
-    >
-    <include layout="@layout/bar_transparent"/>
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <include layout="@layout/bar_transparent" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.3"
-        />
+        android:layout_weight="0.3" />
+
     <LinearLayout
         android:id="@+id/layout_signup_step_one"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:padding="15dp"
-        >
+        android:orientation="vertical"
+        android:padding="15dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="15dp"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
+
             <EditText
-                style="@style/WhiteBackground"
                 android:id="@+id/et_signup_phone"
-                android:inputType="phone"
+                style="@style/WhiteBackground"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                />
+                android:inputType="phone" />
+
             <Button
-                style="@style/GreenButton"
                 android:id="@+id/btn_signup_send_verifycode"
+                style="@style/GreenButton"
                 android:layout_width="140dp"
-                android:text="@string/signup_send_verifycode"
-                android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                />
+                android:layout_marginStart="10dp"
+                android:text="@string/signup_send_verifycode" />
         </LinearLayout>
+
         <EditText
-            style="@style/WhiteBackground"
             android:id="@+id/et_signup_verifycode"
+            style="@style/WhiteBackground"
             android:layout_width="match_parent"
-            android:inputType="number"
             android:layout_marginBottom="15dp"
-            />
+            android:inputType="number" />
+
         <Button
-            style="@style/GreenButton"
             android:id="@+id/btn_signup_comfirm"
+            style="@style/GreenButton"
             android:layout_width="match_parent"
             android:enabled="false"
-            android:text="@string/signup_comfirm"
-            />
+            android:text="@string/signup_comfirm" />
     </LinearLayout>
 
     <LinearLayout
@@ -65,21 +64,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="15dp"
-        android:visibility="invisible"
-        >
+        android:visibility="invisible">
+
         <EditText
-            style="@style/WhiteBackground"
             android:id="@+id/et_signup_passwd"
+            style="@style/WhiteBackground"
             android:layout_width="match_parent"
-            android:inputType="text"
             android:layout_marginBottom="15dp"
-            />
+            android:inputType="text" />
+
         <Button
-            style="@style/GreenButton"
             android:id="@+id/btn_signup_create"
+            style="@style/GreenButton"
             android:layout_width="match_parent"
-            android:text="@string/sign_up"
-            />
+            android:text="@string/sign_up" />
     </LinearLayout>
 
 </LinearLayout>

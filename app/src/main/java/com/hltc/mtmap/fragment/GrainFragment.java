@@ -86,7 +86,7 @@ public class GrainFragment extends Fragment {
             mSwipeItems.add(item);
         }
 
-        mSwipeAdapter = new SwipeViewAdapter(getActivity(), mSwipeItems, R.layout.grain_card_item);
+        mSwipeAdapter = new SwipeViewAdapter(getActivity(), mSwipeItems, R.layout.item_grain_card);
         viewGrainSwipe.setAdapter(mSwipeAdapter);
         httpLoadData(); //首次加载数据
         viewGrainSwipe.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {

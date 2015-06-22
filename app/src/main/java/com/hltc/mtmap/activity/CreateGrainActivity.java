@@ -184,7 +184,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                 }
 
                 ParcelableGrain grain = new ParcelableGrain();
-                grain.userId = AppConfig.getAppConfig(this).getUsrId();
+                grain.userId = AppConfig.getAppConfig(this).getConfUsrUserId();
                 grain.token = AppConfig.getAppConfig(this).getToken();
                 grain.mcateId = types[intentType];
 

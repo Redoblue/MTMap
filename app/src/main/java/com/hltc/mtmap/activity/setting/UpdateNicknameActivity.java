@@ -104,7 +104,7 @@ public class UpdateNicknameActivity extends Activity {
                         try {
                             JSONObject farther = new JSONObject(result);
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
-                                AppConfig.getAppConfig(getApplicationContext()).setUsrNickname(nickname);
+                                AppConfig.getAppConfig(getApplicationContext()).setConfUsrNickName(nickname);
                                 AppManager.getAppManager().finishActivity(UpdateNicknameActivity.this);
                             } else {
                                 String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
