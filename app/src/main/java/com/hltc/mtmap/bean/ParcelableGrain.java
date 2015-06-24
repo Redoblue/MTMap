@@ -17,7 +17,7 @@ public class ParcelableGrain implements Parcelable {
             return new ParcelableGrain[size];
         }
     };
-    public String userId;
+    public long userId;
     public String token;
     public String mcateId;
     public String siteSource;
@@ -36,7 +36,7 @@ public class ParcelableGrain implements Parcelable {
     }
 
     private ParcelableGrain(Parcel in) {
-        this.userId = in.readString();
+        this.userId = in.readLong();
         this.token = in.readString();
         this.mcateId = in.readString();
         this.siteSource = in.readString();
@@ -59,7 +59,7 @@ public class ParcelableGrain implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.userId);
+        dest.writeLong(this.userId);
         dest.writeString(this.token);
         dest.writeString(this.mcateId);
         dest.writeString(this.siteSource);

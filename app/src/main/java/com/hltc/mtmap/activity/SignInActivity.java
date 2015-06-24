@@ -17,6 +17,7 @@ import com.dd.processbutton.iml.ActionProcessButton;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.LocalUserInfo;
 import com.hltc.mtmap.helper.ProgressGenerator;
 import com.hltc.mtmap.util.AMapUtils;
@@ -62,7 +63,6 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
     ActionProcessButton btnProcessSignin;
 
     private ProgressGenerator mGenerator;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -180,7 +180,7 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
                                 JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 LocalUserInfo userInfo = new LocalUserInfo();
-                                userInfo.setUserId(data.getString(ApiUtils.KEY_USR_ID));
+                                userInfo.setUserId(data.getLong(ApiUtils.KEY_USR_ID));
                                 userInfo.setUserName(data.getString(ApiUtils.KEY_USR_NAME));
                                 userInfo.setIsLogin(StringUtils.toBool(data.getString(ApiUtils.KEY_USR_IS_LOG_IN)));
                                 userInfo.setNickName(data.getString(ApiUtils.KEY_USR_NICKNAME));
@@ -189,7 +189,8 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
                                 userInfo.setPortrait(data.getString(ApiUtils.KEY_USR_PORTRAIT));
                                 userInfo.setPortraitSmall(data.getString(ApiUtils.KEY_USR_PORTRAIT_SMALL));
                                 userInfo.setCoverImg(data.getString(ApiUtils.KEY_USR_COVER_IMG));
-                                AppConfig.getAppConfig(SignInActivity.this).setUserInfo(userInfo);
+                                AppConfig.getAppConfig(MyApplication.getContext()).setUserInfo(userInfo);
+                                AppConfig.getAppConfig(MyApplication.getContext()).setToken(data.getString(ApiUtils.KEY_TOKEN));
                                 // 进入主界面
                                 Toast.makeText(SignInActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(SignInActivity.this, MainActivity.class);

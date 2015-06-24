@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f1f1f1"
     android:orientation="vertical">
 
     <include layout="@layout/bar_green" />
@@ -10,38 +11,56 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="15dp">
+        android:padding="15dp"
+        android:paddingTop="20dp">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="献出你的建议，\n让麦田疯狂地长吧！" />
+            android:text="献出你的建议，\n让麦田成长为你要的样子！"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:text="反馈内容"
+            android:textSize="15sp" />
 
         <EditText
             android:id="@+id/et_feedback_content"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:layout_marginBottom="15dp"
             android:layout_marginTop="15dp"
-            android:background="@color/grey"
+            android:background="@drawable/whitebg"
             android:gravity="start|top"
             android:hint="尽情吐槽吧！"
             android:inputType="text"
             android:paddingLeft="20dp"
             android:paddingTop="10dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="联系邮箱"
+            android:textSize="15sp" />
+
         <EditText
             android:id="@+id/et_feedback_email"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="15dp"
-            android:hint="联系邮箱"
-            android:inputType="textEmailAddress" />
+            android:layout_height="40dp"
+            android:layout_marginBottom="18dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/whitebg"
+            android:inputType="textEmailAddress"
+            android:paddingLeft="20dp" />
 
         <Button
             android:id="@+id/btn_feedback_submit"
-            style="@style/BlueButton"
+            style="@style/GreenButton"
             android:layout_width="match_parent"
-            android:text="提交" />
+            android:text="提 交"
+            android:textSize="18sp" />
     </LinearLayout>
 </LinearLayout>

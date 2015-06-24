@@ -13,5 +13,6 @@
         android:layout_height="48dp"
         android:layout_gravity="center_vertical"
         android:layout_margin="15dp"
+        android:hint="设置新的昵称"
         android:inputType="text" />
 </LinearLayout>

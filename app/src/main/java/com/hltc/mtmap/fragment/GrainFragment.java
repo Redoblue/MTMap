@@ -10,13 +10,21 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.alibaba.sdk.android.oss.OSSService;
+import com.alibaba.sdk.android.oss.callback.GetFileCallback;
+import com.alibaba.sdk.android.oss.model.OSSException;
+import com.alibaba.sdk.android.oss.storage.OSSBucket;
+import com.alibaba.sdk.android.oss.storage.OSSFile;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.CommonAdapter;
 import com.hltc.mtmap.adapter.CommonViewHolder;
+import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.bean.SwipeGrainItem;
 import com.hltc.mtmap.bean.SiteItem;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
+import com.hltc.mtmap.util.FileUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -58,8 +66,12 @@ public class GrainFragment extends Fragment {
     Button btnBarRight;
 
     private List<SwipeGrainItem> mSwipeItems;
+    private List<SwipeGrainItem> tempItems;//未获取图片的临时对象
     private SwipeViewAdapter mSwipeAdapter;
     private List<HashMap<Long, Integer>> states = new ArrayList<>();
+
+    private OSSService ossService;
+    private OSSBucket ossBucket;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,6 +80,8 @@ public class GrainFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         initView();
+        ossService = OssManager.getOssManager().getService();
+        ossBucket = OssManager.getOssManager().getBucket();
         return view;
     }
 
@@ -80,8 +94,8 @@ public class GrainFragment extends Fragment {
         mSwipeItems = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             SwipeGrainItem item = new SwipeGrainItem();
-            item.setImage("http://maitianditu.oss-cn-hangzhou.aliyuncs.com/10000002015051516420168824015343/5bdea599-b482-4169-9def-d55e8ee3122a.png");
-            item.setPortraitSmall("http://maitianditu.oss-cn-hangzhou.aliyuncs.com/10000002015051516420168824015343/261471c4-e6a9-4739-81ea-eafa87582c12.png");
+            item.setImage("http://maitianditu.oss-cn-hangzhou.aliyuncs.com/27TeEBIp9378uH7KI3rALu.jpg");
+            item.setPortraitSmall("http://maitianditu.oss-cn-hangzhou.aliyuncs.com/27TeEBIp9378uH7KI3rALu.jpg");
             item.setText("我只是一个card而已 " + i);
             mSwipeItems.add(item);
         }
@@ -113,6 +127,13 @@ public class GrainFragment extends Fragment {
             public void onAdapterAboutToEmpty(int i) {
                 if (i == 2) {
                     httpLoadData();
+                    for (SwipeGrainItem item : tempItems) {
+                        resumableDownload(StringUtils.getFileNameFromPath(item.getImage()));
+                        item.setImage(FileUtils.getAppCache(getActivity(), "swipe") + StringUtils.getFileNameFromPath(item.getImage()));
+                        mSwipeItems.add(item);
+                        mSwipeAdapter.notifyDataSetChanged();
+                    }
+                    //TODO
                 }
             }
 
@@ -140,6 +161,29 @@ public class GrainFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+    }
+
+    // 断点下载
+    public void resumableDownload(String file) {
+        OSSFile bigFile = ossService.getOssFile(ossBucket, file);
+        bigFile.ResumableDownloadToInBackground(FileUtils.getAppCache(getActivity(), "swipe") + file, new GetFileCallback() {
+
+            @Override
+            public void onSuccess(String objectKey, String filePath) {
+                Log.d("GrainFragment", "[onSuccess] - " + objectKey + " storage path: " + filePath);
+            }
+
+            @Override
+            public void onProgress(String objectKey, int byteCount, int totalSize) {
+                Log.d("GrainFragment", "[onProgress] - current download: " + objectKey + " bytes:" + byteCount + " in total:" + totalSize);
+            }
+
+            @Override
+            public void onFailure(String objectKey, OSSException ossException) {
+                Log.e("GrainFragment", "[onFailure] - download " + objectKey + " failed!\n" + ossException.toString());
+                ossException.printStackTrace();
+            }
+        });
     }
 
     private void httpLoadData() {
@@ -194,9 +238,8 @@ public class GrainFragment extends Fragment {
                                     siteItem.setGtype(site.getString("gtype"));
 
                                     swipeGrainItem.setSite(siteItem);
-                                    mSwipeItems.add(swipeGrainItem);
+                                    tempItems.add(swipeGrainItem);
                                 }
-                                mSwipeAdapter.notifyDataSetChanged();
                             } else {
                                 JSONObject girl = new JSONObject(result);
                                 String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);

@@ -102,12 +102,12 @@ public class AppConfig {
      * ****************************** LocalUserInfo ****************************
      */
 
-    public String getConfUsrUserId() {
-        return get(CONF_USR_USER_ID);
+    public long getConfUsrUserId() {
+        return StringUtils.toLong(get(CONF_USR_USER_ID));
     }
 
-    public void setConfUsrUserId(String id) {
-        set(CONF_USR_USER_ID, id);
+    public void setConfUsrUserId(long id) {
+        set(CONF_USR_USER_ID, String.valueOf(id));
     }
 
     public String getConfUserUsername() {

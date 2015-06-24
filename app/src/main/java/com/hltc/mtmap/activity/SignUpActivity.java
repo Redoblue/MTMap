@@ -287,7 +287,7 @@ public class SignUpActivity extends Activity {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                                 JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 LocalUserInfo userInfo = new LocalUserInfo();
-                                userInfo.setUserId(data.getString(ApiUtils.KEY_USR_ID));
+                                userInfo.setUserId(data.getLong(ApiUtils.KEY_USR_ID));
                                 userInfo.setUserName(data.getString(ApiUtils.KEY_USR_NAME));
                                 userInfo.setIsLogin(StringUtils.toBool(data.getString(ApiUtils.KEY_USR_IS_LOG_IN)));
                                 userInfo.setNickName(data.getString(ApiUtils.KEY_USR_NICKNAME));
@@ -301,7 +301,7 @@ public class SignUpActivity extends Activity {
                                 ToastUtils.showShort(SignUpActivity.this, "注册成功");
                                 Log.d("SignUpActivity", userInfo.toString());
 
-                                Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+                                Intent intent = new Intent(SignUpActivity.this, CheckContactActivity.class);
                                 startActivity(intent);
                                 AppManager.getAppManager().finishActivity(SignUpActivity.this);
                             } else {

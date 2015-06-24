@@ -5,7 +5,7 @@ package com.hltc.mtmap.bean;
  */
 public class LocalUserInfo {
 
-    private String userId;
+    private long userId;
     private String userName;
     private boolean isLogin;
     private String nickName;
@@ -15,11 +15,11 @@ public class LocalUserInfo {
     private String portraitSmall;
     private String coverImg;
 
-    public String getUserId() {
+    public long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(long userId) {
         this.userId = userId;
     }
 

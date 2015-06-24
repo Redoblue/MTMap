@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -105,6 +106,12 @@ public class CommonViewHolder {
     public CommonViewHolder setCircleImage(int viewId, String url) {
         ImageView imageView = getView(viewId);
         ImageLoader.getInstance().displayImage(url, imageView);
+        return this;
+    }
+
+    public CommonViewHolder setToggleButton(int viewId, boolean isSelected) {
+        ToggleButton toggleButton = getView(viewId);
+        toggleButton.setChecked(isSelected);
         return this;
     }
 }

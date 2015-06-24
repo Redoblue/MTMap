@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/bar_check_contact"
+        layout="@layout/bar_green"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true" />
+
+    <ListView
+        android:id="@+id/lv_check_contact"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/bar_check_contact" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <com.dd.processbutton.iml.ActionProcessButton xmlns:custom="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/apb_check_contact"
+                android:layout_width="280dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_horizontal"
+                android:text="检索通讯录"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                custom:pb_colorComplete="@color/green_complete"
+                custom:pb_colorNormal="@color/green_main"
+                custom:pb_colorPressed="@color/green_pressed"
+                custom:pb_colorProgress="@color/purple_progress"
+                custom:pb_textComplete="@string/signin_btn_complete"
+                custom:pb_textProgress="@string/signin_btn_process" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:text="获取APP内好友关系"
+                android:textColor="#ff525252"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_check_contact_skip"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="25dp"
+            android:gravity="center_horizontal"
+            android:text="跳 过"
+            android:textColor="#59ba45"
+            android:textSize="18sp" />
+    </RelativeLayout>
+</RelativeLayout>

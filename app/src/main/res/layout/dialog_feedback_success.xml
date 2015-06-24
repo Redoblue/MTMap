@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent">
+
+    <LinearLayout
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:text="提交成功"
+            android:textSize="15sp" />
+
+        <TextView style="@style/separator" />
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/pic_feedback_success" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:maxLines="2"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="我们已经收到您的建议，感谢之余祝您生活愉快！麦田有您更精彩！"
+            android:textSize="12sp" />
+
+        <TextView
+            style="@style/separator"
+            android:layout_marginTop="20dp" />
+
+        <TextView
+            android:id="@+id/tv_feedback_success_home"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:text="返回首页"
+            android:textColor="#59ba45"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+</RelativeLayout>

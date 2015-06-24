@@ -20,6 +20,10 @@ public class ApiUtils {
     public static final String URL_RST_PASSWD = "user/login/forget/reset_password.json";
     // 游客模块
     public static final String URL_REC_GRAIN_1 = "visitor/getRecommendGrain.json";
+    // 检索通讯录
+    public static final String URL_CHE_CONTACT = "user/register/check_contact.json";
+    // 反馈
+    public static final String URL_FEEDBACK = "user/settings/feedback.json";
 
     public static final String KEY_SOURCE = "source";
     public static final String KEY_PHONE = "phone_number";
@@ -43,6 +47,10 @@ public class ApiUtils {
     public static final String KEY_USR_PORTRAIT_SMALL = "portraitSmall";
     public static final String KEY_USR_CREATE_TIME = "createTime";
     public static final String KEY_USR_COVER_IMG = "coverImg";
+
+    //反馈
+    public static final String KEY_CONTENT = "content";
+    public static final String KEY_EMAIL = "email";
 
     public static String getRequestVCodeUrl(int source) {
         return source == 0 ?
@@ -78,5 +86,13 @@ public class ApiUtils {
 
     public static String getRecommendGrainUrl(boolean isUser) {
         return isUser ? URL_REC_GRAIN_0 : URL_REC_GRAIN_1;
+    }
+
+    public static String getCheckContactUrl() {
+        return URL_ROOT + "/" + URL_CHE_CONTACT;
+    }
+
+    public static String getFeedbackUrl() {
+        return URL_ROOT + "/" + URL_FEEDBACK;
     }
 }

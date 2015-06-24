@@ -2,6 +2,7 @@ package com.hltc.mtmap.activity.setting;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.SettingsActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.util.AMapUtils;
@@ -23,8 +25,12 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
 
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -49,7 +55,7 @@ public class UpdateNicknameActivity extends Activity {
         super.onCreate(savedInstanceState);
         AppManager.getAppManager().addActivity(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_edit_single);
+        setContentView(R.layout.activity_update_nickname);
         ButterKnife.inject(this);
 
         initView();
@@ -64,8 +70,7 @@ public class UpdateNicknameActivity extends Activity {
         btnBarRight.setWidth(AMapUtils.dp2px(this, 25));
         btnBarRight.setHeight(AMapUtils.dp2px(this, 25));
 
-//        String nickname = AppConfig.getAppConfig(this).getUsrNickname();
-        String nickname = "阳阳";
+        String nickname = AppConfig.getAppConfig(this).getConfUsrNickName();
         etSingleLine.setText(nickname);
         etSingleLine.setSelection(nickname.length());
     }
@@ -86,13 +91,22 @@ public class UpdateNicknameActivity extends Activity {
 
     private void httpUpdateNickname(final String nickname) {
         RequestParams params = new RequestParams();
-        params.addQueryStringParameter(ApiUtils.KEY_SOURCE, "Android");
-        params.addQueryStringParameter(ApiUtils.KEY_USR_ID, "10000002015051516420168824015343");
-        params.addQueryStringParameter(ApiUtils.KEY_TOKEN, "0Iq_Mnp754Da2Nq9oEIlTN");
-        params.addQueryStringParameter(ApiUtils.KEY_USR_NICKNAME, nickname);
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_SOURCE, "Android");
+            json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getToken());
+            json.put(ApiUtils.KEY_USR_NICKNAME, nickname);
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         HttpUtils http = new HttpUtils();
-        http.send(HttpRequest.HttpMethod.GET,
+        http.send(HttpRequest.HttpMethod.POST,
                 ApiUtils.getUpdateNicknameUrl(),
                 params,
                 new RequestCallBack<String>() {
@@ -105,7 +119,11 @@ public class UpdateNicknameActivity extends Activity {
                             JSONObject farther = new JSONObject(result);
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
                                 AppConfig.getAppConfig(getApplicationContext()).setConfUsrNickName(nickname);
-                                AppManager.getAppManager().finishActivity(UpdateNicknameActivity.this);
+
+                                AppManager.getAppManager().finishActivity(UpdateNicknameActivity.class);
+                                AppManager.getAppManager().finishActivity(SettingsActivity.class);
+
+                                Toast.makeText(UpdateNicknameActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
                             } else {
                                 String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
                                 if (errorMsg != null) {

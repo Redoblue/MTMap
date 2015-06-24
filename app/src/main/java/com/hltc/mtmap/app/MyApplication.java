@@ -3,6 +3,13 @@ package com.hltc.mtmap.app;
 import android.app.Application;
 import android.content.Context;
 
+import com.alibaba.sdk.android.oss.OSSService;
+import com.alibaba.sdk.android.oss.OSSServiceProvider;
+import com.alibaba.sdk.android.oss.model.AccessControlList;
+import com.alibaba.sdk.android.oss.model.ClientConfiguration;
+import com.alibaba.sdk.android.oss.model.TokenGenerator;
+import com.alibaba.sdk.android.oss.storage.OSSBucket;
+import com.alibaba.sdk.android.oss.util.OSSToolKit;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
@@ -11,10 +18,13 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
  */
 public class MyApplication extends Application {
 
+    private static Context mContext;
     private boolean login = false;    //登录状态
     private long loginUid = 0;    //登录用户的id
 
-    private static Context mContext;
+    public static Context getContext() {
+        return mContext;
+    }
 
     @Override
     public void onCreate() {
@@ -28,9 +38,5 @@ public class MyApplication extends Application {
         //使用默认的ImageLoader配置参数
         ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(this);
         ImageLoader.getInstance().init(configuration);
-    }
-
-    public static Context getContext() {
-        return mContext;
     }
 }

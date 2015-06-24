@@ -20,6 +20,8 @@ import com.alibaba.sdk.android.oss.storage.OSSFile;
 import com.alibaba.sdk.android.oss.util.OSSToolKit;
 import com.github.lzyzsd.circleprogress.CircleProgress;
 import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.bean.GrainPhotoInfo;
 import com.hltc.mtmap.bean.ParcelableGrain;
 import com.hltc.mtmap.helper.PhotoHelper;
@@ -56,11 +58,12 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
     private RelativeLayout progressLayout;
     private CircleProgress circleProgress;
     private Context mContext;
-    private OSSService ossService = OSSServiceProvider.getService();
-    private OSSBucket ossBucket;
     private ParcelableGrain grain;
     private boolean isPushOK;
     private int progress;
+
+    private OSSService ossService;
+    private OSSBucket ossBucket;
 
     public PublishAsyncTask(Context conext, RelativeLayout layout, CircleProgress circle, ParcelableGrain grain) {
         super();
@@ -68,11 +71,13 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
         this.progressLayout = layout;
         this.circleProgress = circle;
         this.grain = grain;
+
+        ossService = OssManager.getOssManager().getService();
+        ossBucket = OssManager.getOssManager().getBucket();
     }
 
     @Override
     protected void onPreExecute() {
-        initOssService();
         initData();
     }
 
@@ -114,31 +119,6 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private void initOssService() {
-        ossService.setApplicationContext(mContext);
-        //TODO 全局加签
-        ossService.setGlobalDefaultTokenGenerator(new TokenGenerator() { // 设置全局默认加签器
-            @Override
-            public String generateToken(String httpMethod, String md5, String type, String date,
-                                        String ossHeaders, String resource) {
-                String content = httpMethod + "\n" + md5 + "\n" + type + "\n" + date + "\n" + ossHeaders
-                        + resource;
-                return OSSToolKit.generateToken("wxGYeoOqFGIikopt", "eQyS38ArhJo0fIotIuLoiz0FCx0J4N", content);
-            }
-        });
-        ossService.setGlobalDefaultHostId(AppConfig.OSS_ROOT);
-        ossService.setCustomStandardTimeWithEpochSec(System.currentTimeMillis() / 1000);
-        ossService.setGlobalDefaultACL(AccessControlList.PUBLIC_READ); // 默认为private
-
-        ClientConfiguration conf = new ClientConfiguration();
-        conf.setConnectTimeout(15 * 1000); // 设置全局网络连接超时时间，默认30s
-        conf.setSocketTimeout(15 * 1000); // 设置全局socket超时时间，默认30s
-        conf.setMaxConnections(50); // 设置全局最大并发网络链接数, 默认50
-        ossService.setClientConfiguration(conf);
-
-        ossBucket = ossService.getOssBucket(AppConfig.OSS_BUCKET);
     }
 
     private void initData() {

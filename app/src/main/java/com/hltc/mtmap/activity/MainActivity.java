@@ -8,11 +8,14 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.fragment.GrainFragment;
 import com.hltc.mtmap.fragment.MapFragment;
@@ -24,6 +27,9 @@ import com.hltc.mtmap.util.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
@@ -42,7 +48,23 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             R.drawable.ic_tab_message_pressed,
             R.drawable.ic_tab_private_pressed
     };
-
+    private static final int TAB_ITEM_NUM = 5;
+    private static final int TAB_MAP = 0;
+    private static final int TAB_GRAIN = 1;
+    private static final int TAB_PUBLISH = 2;
+    private static final int TAB_MESSAGE = 3;
+    private static final int TAB_PRIVATE = 4;
+    public MyApplication application;
+    @InjectView(R.id.tab_item_map)
+    TextView tabMap;
+    @InjectView(R.id.tab_item_grain)
+    TextView tabGrain;
+    @InjectView(R.id.tab_item_publish)
+    TextView tabPublish;
+    @InjectView(R.id.tab_item_message)
+    TextView tabMessage;
+    @InjectView(R.id.tab_item_private)
+    TextView tabPrivate;
     private int[] ids = {
             R.id.tab_item_map,
             R.id.tab_item_grain,
@@ -50,28 +72,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             R.id.tab_item_message,
             R.id.tab_item_private
     };
-
-    private static final int TAB_ITEM_NUM = 5;
-    private static final int TAB_MAP = 0;
-    private static final int TAB_GRAIN = 1;
-    private static final int TAB_PUBLISH = 2;
-    private static final int TAB_MESSAGE = 3;
-    private static final int TAB_PRIVATE = 4;
-
-
     private FragmentManager fgManager;
     private int currentTabIndex = 0;
-
-    private TextView tabMap;
-    private TextView tabGrain;
-    private TextView tabPublish;
-    private TextView tabMessage;
-    private TextView tabPrivate;
-
     private List<Fragment> fragmentList;
     private List<TextView> tabItemList;
-
-    public MyApplication application;
 //    public DaoManager daoManager;
 
     @Override
@@ -79,8 +83,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        ButterKnife.inject(this);
 
-        findViewById();
+        Log.d("MainActivity", "onCreate");///
         fgManager = getSupportFragmentManager();
         application = (MyApplication) getApplication();
 //        daoManager = DaoManager.getDaoManager(this);
@@ -94,14 +99,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         // 检查是否需要下载欢迎图片
         checkWelcomeImage();
-    }
-
-    private void findViewById() {
-        tabMap = (TextView) findViewById(R.id.tab_item_map);
-        tabGrain = (TextView) findViewById(R.id.tab_item_grain);
-        tabPublish = (TextView) findViewById(R.id.tab_item_publish);
-        tabMessage = (TextView) findViewById(R.id.tab_item_message);
-        tabPrivate = (TextView) findViewById(R.id.tab_item_private);
     }
 
     private void initView() {
@@ -203,11 +200,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
 
-    /************************* Life Cycle ************************/
+    /**
+     * ********************** Life Cycle ***********************
+     */
 
     @Override
     protected void onResume() {
         super.onResume();
         setChioceItem(currentTabIndex);
+        Log.d("MainActivity", "onResume");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        AppManager.getAppManager().finishActivity(this);
     }
 }

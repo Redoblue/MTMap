@@ -61,6 +61,10 @@
         <activity android:name=".activity.setting.UpdateNicknameActivity" />
         <activity android:name=".activity.setting.FeedbackActivity" />
         <activity android:name=".activity.FriendListActivity" />
+        <activity android:name=".activity.CheckContactActivity" />
+        <activity
+            android:name=".activity.setting.FeedbackSuccessDialog"
+            android:theme="@android:style/Theme.Dialog" />
     </application>
 
 </manifest>
