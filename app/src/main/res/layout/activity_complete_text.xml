@@ -4,10 +4,14 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <include layout="@layout/bar_green" />
+
     <EditText
         android:id="@+id/et_complete_text"
+        style="@style/WhiteBackground"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="48dp"
+        android:layout_margin="15dp"
         android:imeOptions="actionDone"
         android:inputType="text"
         android:singleLine="true" />

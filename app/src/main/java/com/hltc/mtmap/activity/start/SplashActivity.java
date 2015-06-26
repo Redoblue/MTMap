@@ -1,7 +1,6 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.start;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -11,6 +10,7 @@ import android.view.animation.Animation;
 import android.widget.LinearLayout;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.FileUtils;

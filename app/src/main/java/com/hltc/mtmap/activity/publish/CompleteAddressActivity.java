@@ -1,4 +1,4 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.publish;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,13 +6,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,6 +21,7 @@ import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.CommonAdapter;
 import com.hltc.mtmap.adapter.CommonViewHolder;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.StringUtils;
 
 import java.util.ArrayList;
@@ -28,16 +29,23 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Created by redoblue on 15-5-15.
  */
-public class CompleteTextActivity extends Activity {
+public class CompleteAddressActivity extends Activity {
 
     @InjectView(R.id.et_complete_text)
     EditText editText;
     @InjectView(R.id.lv_complete_text_poi)
     ListView poiListView;
+    @InjectView(R.id.btn_bar_left)
+    Button btnBarLeft;
+    @InjectView(R.id.tv_bar_title)
+    TextView tvBarTitle;
+    @InjectView(R.id.btn_bar_right)
+    Button btnBarRight;
 
     private List<String> poiTitles = new ArrayList<>();
     private List<String> poisToDisplay = new ArrayList<>();
@@ -63,6 +71,14 @@ public class CompleteTextActivity extends Activity {
     }
 
     private void initView() {
+        tvBarTitle.setText("修改昵称");
+        btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
+        btnBarRight.setBackgroundResource(R.drawable.ic_action_done);
+        btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
+        btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
+        btnBarRight.setWidth(AMapUtils.dp2px(this, 25));
+        btnBarRight.setHeight(AMapUtils.dp2px(this, 25));
+
         editText.setText(oldString);
         editText.setSelection(oldString.length());
         editText.addTextChangedListener(new TextWatcher() {
@@ -91,7 +107,7 @@ public class CompleteTextActivity extends Activity {
                         Intent returnIntent = new Intent();
                         returnIntent.putExtra("SELECTED_POI", editText.getText().toString().trim());
                         setResult(RESULT_OK, returnIntent);
-                        AppManager.getAppManager().finishActivity(CompleteTextActivity.this);
+                        AppManager.getAppManager().finishActivity(CompleteAddressActivity.this);
 
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         if (imm.isActive()) {
@@ -117,6 +133,24 @@ public class CompleteTextActivity extends Activity {
                 adapter.notifyDataSetChanged();
             }
         });
+    }
+
+    @OnClick({
+            R.id.btn_bar_left,
+            R.id.btn_bar_right
+    })
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_bar_left:
+                AppManager.getAppManager().finishActivity(this);
+                break;
+            case R.id.btn_bar_right:
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("SELECTED_POI", editText.getText().toString().trim());
+                setResult(RESULT_OK, returnIntent);
+                AppManager.getAppManager().finishActivity(CompleteAddressActivity.this);
+                break;
+        }
     }
 
     private void refreshPoisToDisplay(String s) {

@@ -1,25 +1,21 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.start;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.adapter.GuidePagerAdapter;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.lidroid.xutils.util.LogUtils;
 

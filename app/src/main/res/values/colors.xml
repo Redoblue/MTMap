@@ -7,7 +7,7 @@
     <color name="profile_text">#b2000000</color>
     <color name="white">#FFFFFF</color>
     <color name="red">#FF0000</color>
-    <color name="half_transparent">#10000000</color>
+    <color name="half_transparent">#80000000</color>
     <color name="btn_un_border">#CCCCCC</color>
     <color name="transparent">#00000000</color>
 
@@ -15,5 +15,5 @@
     <color name="green_main">#5db84d</color>
 
     <color name="separator">#2659ba46</color>
-    
+
 </resources>

@@ -1,24 +1,18 @@
-package com.hltc.mtmap.activity.setting;
+package com.hltc.mtmap.activity.profile.setting;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.CheckContactActivity;
-import com.hltc.mtmap.activity.SignUpActivity;
+import com.hltc.mtmap.activity.profile.SettingsActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.bean.LocalUserInfo;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -42,9 +36,9 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 /**
- * Created by redoblue on 15-6-5.
+ * Created by redoblue on 15-6-1.
  */
-public class FeedbackActivity extends Activity {
+public class UpdateNicknameActivity extends Activity {
 
     @InjectView(R.id.btn_bar_left)
     Button btnBarLeft;
@@ -52,68 +46,49 @@ public class FeedbackActivity extends Activity {
     TextView tvBarTitle;
     @InjectView(R.id.btn_bar_right)
     Button btnBarRight;
-    @InjectView(R.id.et_feedback_content)
-    EditText etFeedbackContent;
-    @InjectView(R.id.et_feedback_email)
-    EditText etFeedbackEmail;
-    @InjectView(R.id.btn_feedback_submit)
-    Button btnFeedbackSubmit;
+    @InjectView(R.id.et_single_line)
+    EditText etSingleLine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppManager.getAppManager().addActivity(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_feedback);
+        setContentView(R.layout.activity_update_nickname);
         ButterKnife.inject(this);
 
         initView();
     }
 
     private void initView() {
-        tvBarTitle.setText("用户反馈");
+        tvBarTitle.setText("修改昵称");
         btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
+        btnBarRight.setBackgroundResource(R.drawable.ic_action_done);
         btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
         btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
+        btnBarRight.setWidth(AMapUtils.dp2px(this, 25));
+        btnBarRight.setHeight(AMapUtils.dp2px(this, 25));
 
-        btnFeedbackSubmit.setEnabled(false);
-        etFeedbackEmail.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                btnFeedbackSubmit.setEnabled(s.length() > 0);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        String nickname = AppConfig.getAppConfig(this).getConfUsrNickName();
+        etSingleLine.setText(nickname);
+        etSingleLine.setSelection(nickname.length());
     }
 
-    @OnClick({R.id.btn_bar_left, R.id.btn_feedback_submit})
+    @OnClick({R.id.btn_bar_left,
+            R.id.btn_bar_right})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_bar_left:
                 AppManager.getAppManager().finishActivity(this);
                 break;
-            case R.id.btn_feedback_submit:
-                httpFeedBack();
+            case R.id.btn_bar_right:
+                String newNickname = etSingleLine.getText().toString();
+                httpUpdateNickname(newNickname);
                 break;
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        AppManager.getAppManager().finishActivity(this);
-    }
-
-    private void httpFeedBack() {
+    private void httpUpdateNickname(final String nickname) {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
@@ -121,8 +96,7 @@ public class FeedbackActivity extends Activity {
             json.put(ApiUtils.KEY_SOURCE, "Android");
             json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getToken());
-            json.put(ApiUtils.KEY_CONTENT, etFeedbackContent.getText().toString());
-            json.put(ApiUtils.KEY_EMAIL, etFeedbackEmail.getText().toString());
+            json.put(ApiUtils.KEY_USR_NICKNAME, nickname);
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -132,7 +106,7 @@ public class FeedbackActivity extends Activity {
 
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.getFeedbackUrl(),
+                ApiUtils.getUpdateNicknameUrl(),
                 params,
                 new RequestCallBack<String>() {
                     @Override
@@ -141,17 +115,20 @@ public class FeedbackActivity extends Activity {
                         if (StringUtils.isEmpty(result))
                             return;
                         try {
-                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                                //TODO
-                                Intent intent = new Intent(MyApplication.getContext(), FeedbackSuccessDialog.class);
-                                startActivity(intent);
+                            JSONObject farther = new JSONObject(result);
+                            if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
+                                AppConfig.getAppConfig(getApplicationContext()).setConfUsrNickName(nickname);
+
+                                AppManager.getAppManager().finishActivity(UpdateNicknameActivity.class);
+                                AppManager.getAppManager().finishActivity(SettingsActivity.class);
+
+                                Toast.makeText(UpdateNicknameActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
                             } else {
-                                JSONObject girl = new JSONObject(result);
-                                String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
+                                String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
                                 if (errorMsg != null) {
-                                    // 发送验证码失败
+                                    // 登录失败
                                     // TODO 没有验证错误码
-                                    ToastUtils.showShort(MyApplication.getContext(), errorMsg);
+                                    ToastUtils.showShort(UpdateNicknameActivity.this, errorMsg);
                                 }
                             }
                         } catch (JSONException e) {
@@ -161,8 +138,9 @@ public class FeedbackActivity extends Activity {
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-
+                        Toast.makeText(UpdateNicknameActivity.this, "请检查你的网络", Toast.LENGTH_SHORT).show();
                     }
                 });
+
     }
 }

@@ -1,4 +1,4 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.publish;
 
 import java.util.ArrayList;
 import java.util.List;

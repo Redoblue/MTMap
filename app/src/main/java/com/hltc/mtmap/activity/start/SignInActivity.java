@@ -1,11 +1,10 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.start;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -15,6 +14,7 @@ import android.widget.Toast;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;

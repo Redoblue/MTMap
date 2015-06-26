@@ -1,4 +1,4 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.profile;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,8 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.setting.FeedbackActivity;
-import com.hltc.mtmap.activity.setting.UpdateNicknameActivity;
+import com.hltc.mtmap.activity.profile.setting.FeedbackActivity;
+import com.hltc.mtmap.activity.profile.setting.UpdateNicknameActivity;
+import com.hltc.mtmap.activity.start.SignUpActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.util.AMapUtils;
 

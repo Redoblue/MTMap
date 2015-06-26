@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent">
+
+    <LinearLayout
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:text="发布成功"
+            android:textColor="@color/black"
+            android:textSize="15sp" />
+
+        <TextView style="@style/separator" />
+
+        <ImageView
+            android:id="@+id/iv_done_publish_pic"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/pic_done_publish" />
+
+        <TextView
+            style="@style/separator"
+            android:layout_marginTop="20dp" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+
+            <TextView
+                android:id="@+id/btn_done_publish_home"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:gravity="center_vertical"
+                android:text="首页"
+                android:textColor="#59ba45"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/btn_done_publish_maitian"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:gravity="center_vertical"
+                android:text="返回我的麦田"
+                android:textColor="#59ba45"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/btn_done_publish_share"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:text="分享"
+                android:textColor="#59ba45"
+                android:textSize="15sp" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_done_publish_share"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingBottom="20dp"
+        android:paddingTop="20dp"
+        android:visibility="invisible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="10dp"
+            android:drawableTop="@drawable/share_wechat"
+            android:gravity="center_horizontal"
+            android:text="微信"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="10dp"
+            android:drawableTop="@drawable/share_circle"
+            android:gravity="center_horizontal"
+            android:text="朋友圈"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="10dp"
+            android:drawableTop="@drawable/share_qq"
+            android:gravity="center_horizontal"
+            android:text="QQ"
+            android:textSize="13sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="10dp"
+            android:drawableTop="@drawable/share_weibo"
+            android:gravity="center_horizontal"
+            android:text="微博"
+            android:textSize="13sp" />
+    </LinearLayout>
+</RelativeLayout>

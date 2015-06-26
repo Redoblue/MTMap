@@ -1,15 +1,13 @@
-package com.hltc.mtmap.activity.setting;
+package com.hltc.mtmap.activity.profile.setting;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.MainActivity;
-import com.hltc.mtmap.activity.SettingsActivity;
+import com.hltc.mtmap.activity.profile.SettingsActivity;
 import com.hltc.mtmap.app.AppManager;
 
 import butterknife.ButterKnife;

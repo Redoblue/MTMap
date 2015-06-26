@@ -1,4 +1,4 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.publish;
 
 import android.app.Activity;
 import android.content.Context;
@@ -29,6 +29,9 @@ import butterknife.InjectView;
  */
 public class PublishActivity extends Activity {
 
+    public static final int CREATE_CHIHE = 0;
+    public static final int CREATE_WANLE = 1;
+    public static final int CREATE_OTHER = 2;
     @InjectView(R.id.tv_publish_chihe)
     TextView createChihe;
     @InjectView(R.id.tv_publish_wanle)
@@ -37,11 +40,6 @@ public class PublishActivity extends Activity {
     TextView createOther;
     @InjectView(R.id.layout_publish_exit)
     RelativeLayout exitButton;
-
-    public static final int CREATE_CHIHE = 0;
-    public static final int CREATE_WANLE = 1;
-    public static final int CREATE_OTHER = 2;
-
     private List<TextView> textViews;
 
     @Override
@@ -66,11 +64,9 @@ public class PublishActivity extends Activity {
                     1300, view.getTranslationY());
             animation.setDuration(800);
 
-//            view.setOnClickListener(this);
             view.setOnTouchListener(new MyOnTouchListener(this));
             view.startAnimation(animation);
         }
-//        exitButton.setOnClickListener(this);
         exitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,23 +75,28 @@ public class PublishActivity extends Activity {
         });
     }
 
-//    @Override
-//    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.tv_publish_chihe:
-//                //TODO
-//                break;
-//            case R.id.tv_publish_wanle:
-//                //TODO
-//                break;
-//            case R.id.tv_publish_other:
-//                //TODO
-//                break;
-//            case R.id.layout_publish_exit:
-//                AppManager.getAppManager().finishActivity(this);
-//                break;
-//        }
-//    }
+    private int getCreateType(View v) {
+        switch (v.getId()) {
+            case R.id.tv_publish_chihe:
+                return CREATE_CHIHE;
+            case R.id.tv_publish_wanle:
+                return CREATE_WANLE;
+            case R.id.tv_publish_other:
+                return CREATE_OTHER;
+            default:
+                return -1;
+        }
+    }
+
+    /**
+     * ****************** Life Cycle ********************
+     */
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_slide_out_bottom);
+    }
 
     private class MyOnTouchListener implements View.OnTouchListener {
 
@@ -129,28 +130,5 @@ public class PublishActivity extends Activity {
 
             return true;
         }
-    }
-
-    private int getCreateType(View v) {
-        switch (v.getId()) {
-            case R.id.tv_publish_chihe:
-                return CREATE_CHIHE;
-            case R.id.tv_publish_wanle:
-                return CREATE_WANLE;
-            case R.id.tv_publish_other:
-                return CREATE_OTHER;
-            default:
-                return -1;
-        }
-    }
-
-    /**
-     * ****************** Life Cycle ********************
-     */
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_slide_out_bottom);
     }
 }

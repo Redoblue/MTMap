@@ -3,7 +3,7 @@ package com.hltc.mtmap.bean;
 /**
  * Created by merlin on 5/4/15.
  */
-public class SwipeGrainItem {
+public class GrainItem {
 
     private long grainId;
     private String text;

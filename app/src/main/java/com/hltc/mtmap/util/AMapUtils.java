@@ -8,11 +8,14 @@ import android.net.Uri;
 
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.LatLonPoint;
+import com.hltc.mtmap.orm.models.MTCategory;
 
 /**
  * Created by Redoblue on 2015/4/7.
  */
 public class AMapUtils {
+
+    public static String[] mCateId = {"010000", "020000", "990000"};
 
     public static LatLonPoint convertToLatLonPoint(LatLng latLng) {
         return new LatLonPoint(latLng.latitude, latLng.longitude);
@@ -62,6 +65,26 @@ public class AMapUtils {
         } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 返回两个经纬度点之间的距离，单位：m
+     *
+     * @param latLng0
+     * @param latLng1
+     * @return
+     */
+    public static long calculateDistance(LatLng latLng0, LatLng latLng1) {
+        double earthRadius = 6378.137;
+        double radLat1 = Math.toRadians(latLng0.latitude);
+        double radLat2 = Math.toRadians(latLng1.latitude);
+        double a = radLat1 - radLat2;
+        double b = Math.toRadians(latLng0.longitude) - Math.toRadians(latLng1.longitude);
+        double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+                Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+        s *= earthRadius;
+//        s = Math.round(s * 10000) / 10000;
+        return Math.round(s * 1000);
     }
 
 }

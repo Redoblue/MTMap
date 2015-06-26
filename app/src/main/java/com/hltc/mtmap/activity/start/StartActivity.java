@@ -1,4 +1,4 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.start;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import android.widget.Button;
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.app.AppManager;
 
 import butterknife.ButterKnife;

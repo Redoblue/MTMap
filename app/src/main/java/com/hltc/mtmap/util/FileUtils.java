@@ -220,7 +220,7 @@ public class FileUtils {
 
     public static String saveBitmap(Bitmap bm, String picName) {
         Log.e("", "保存图片");
-        String path = AppConfig.DEFAULT_APP_ROOT_PATH + "photo/" + picName + ".png";
+        String path = AppConfig.DEFAULT_APP_ROOT_PATH + "photo/" + picName + ".jpg";
         try {
             if (!isFileExist("")) {
                 File tempf = createSDDir("");
@@ -230,7 +230,7 @@ public class FileUtils {
                 f.delete();
             }
             FileOutputStream out = new FileOutputStream(f);
-            bm.compress(Bitmap.CompressFormat.PNG, 100, out);
+            bm.compress(Bitmap.CompressFormat.JPEG, 100, out);
             out.flush();
             out.close();
             Log.e("", "已经保存");

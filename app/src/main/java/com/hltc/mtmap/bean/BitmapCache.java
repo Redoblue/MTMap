@@ -15,8 +15,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
-import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.GalleryActivity;
+import com.hltc.mtmap.activity.publish.GalleryActivity;
 
 public class BitmapCache extends Activity {
 

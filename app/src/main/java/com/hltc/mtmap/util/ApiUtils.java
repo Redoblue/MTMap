@@ -6,6 +6,7 @@ package com.hltc.mtmap.util;
 public class ApiUtils {
 
     public static final String URL_ROOT = "http://www.maitianditu.com/maitian/v1";
+//    public static final String URL_ROOT = "http://171.113.182.61/maitian/v1";
 
     public static final String URL_REQ_VCODE_0 = "user/register/verify_code.json";
     public static final String URL_VAL_VCODE_0 = "user/register/verify.json";
@@ -24,6 +25,10 @@ public class ApiUtils {
     public static final String URL_CHE_CONTACT = "user/register/check_contact.json";
     // 反馈
     public static final String URL_FEEDBACK = "user/settings/feedback.json";
+    // FederationToken
+    public static final String URL_FEDERATION_TOKEN = "auth/oss_federation_token.json";
+    // 麦粒
+    public static final String URL_GRAIN_QUERY = "grain/home_query.json";
 
     public static final String KEY_SOURCE = "source";
     public static final String KEY_PHONE = "phone_number";
@@ -51,6 +56,19 @@ public class ApiUtils {
     //反馈
     public static final String KEY_CONTENT = "content";
     public static final String KEY_EMAIL = "email";
+
+    //获取FederationToken
+    public static final String KEY_TMP_AK = "tmpAkId";
+    public static final String KEY_TMP_SK = "tmpAkSecret";
+    public static final String KEY_SEC_TOKEN = "securityToken";
+    public static final String KEY_EXP_TIME = "expireTime";
+
+    //query grain
+    public static final String KEY_GRAIN_MCATEID = "mcateId";
+    public static final String KEY_GRAIN_CITYCODE = "cityCode";
+    public static final String KEY_GRAIN_LON = "lon";
+    public static final String KEY_GRAIN_LAT = "lat";
+    public static final String KEY_GRAIN_RADIUS = "radius";
 
     public static String getRequestVCodeUrl(int source) {
         return source == 0 ?
@@ -94,5 +112,13 @@ public class ApiUtils {
 
     public static String getFeedbackUrl() {
         return URL_ROOT + "/" + URL_FEEDBACK;
+    }
+
+    public static String getFederationTokenUrl() {
+        return URL_ROOT + "/" + URL_FEDERATION_TOKEN;
+    }
+
+    public static String getQueryGrainUrl() {
+        return URL_ROOT + "/" + URL_GRAIN_QUERY;
     }
 }

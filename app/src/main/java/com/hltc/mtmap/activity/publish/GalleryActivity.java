@@ -1,4 +1,4 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.publish;
 
 import android.app.Activity;
 import android.content.Intent;

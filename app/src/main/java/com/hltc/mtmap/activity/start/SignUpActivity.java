@@ -1,4 +1,4 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.start;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -30,7 +30,6 @@ import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
-import com.lidroid.xutils.util.LogUtils;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;

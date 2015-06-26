@@ -1,4 +1,4 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.publish;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -59,6 +59,7 @@ import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.bean.ParcelableGrain;
 import com.hltc.mtmap.helper.PhotoHelper;
 import com.hltc.mtmap.util.AMapUtils;
+import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.FileUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ViewUtils;
@@ -174,6 +175,10 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
             if (v.getId() == R.id.btn_bar_left) {
                 AppManager.getAppManager().finishActivity(this);
             } else {
+                if (!AppUtils.isNetworkConnected(this)) {
+                    Toast.makeText(this, "请检查您的网络", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (StringUtils.isEmpty(addressButton.getText().toString())) {
                     Toast.makeText(this, "还没有设置地址哦！", Toast.LENGTH_SHORT).show();
                     return;
@@ -222,27 +227,11 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                 } else {
                     // 未获取到位置
                     //TODO
-//                    grain.siteSource = "0";
-//                    grain.siteId = "";
-//                    grain.siteName = returnedValue;
-//                    grain.siteAddress = returnedValue;
-//                    grain.sitePhone = "";
-//                    grain.latitude = myLocation.latitude;
-//                    grain.longitude = myLocation.longitude;
-//                    grain.cityCode = "";
-//                    grain.isPublic = 1;
-//                    grain.text = commentEditText.getText().toString().trim();
                 }
 
-                Intent publishIntent = new Intent(this, DonePublishActivity.class);
+                Intent publishIntent = new Intent(this, DonePublishDialog.class);
                 publishIntent.putExtra("GRAIN", grain);
                 startActivity(publishIntent);
-
-                //TODO 上传到阿里云
-                // 高清的压缩图片全部就在  list 路径里面了
-                // 高清的压缩过的 bitmaps 对象  都在 PhotoHelper.bmp里面
-                // 完成上传服务器后 .........
-//                FileUtils.deleteDir();
             }
         } else {
             targetLocation = mAmap.getCameraPosition().target;
@@ -283,7 +272,11 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
         addressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent autoCompleteIntent = new Intent(CreateGrainActivity.this, CompleteTextActivity.class);
+                if (poiItems.isEmpty()) {
+                    Toast.makeText(CreateGrainActivity.this, "再等一秒", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                Intent autoCompleteIntent = new Intent(CreateGrainActivity.this, CompleteAddressActivity.class);
                 autoCompleteIntent.putExtra("TITLE_LIST", (Serializable) poiTitles);
                 autoCompleteIntent.putExtra("OLD_CONTENT", addressButton.getText().toString());
                 startActivityForResult(autoCompleteIntent, AUTO_COMPLETE);
@@ -359,13 +352,13 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
 
     @Override
     public void onCameraChange(CameraPosition cameraPosition) {
-        Log.d("CreateGrainActivity", "cameraPosition.target:" + cameraPosition.target);
+        Log.d("Publish", "cameraPosition.target:" + cameraPosition.target);
     }
 
     // 获取操作结束后的位置
     @Override
     public void onCameraChangeFinish(CameraPosition cameraPosition) {
-
+        Log.d("Publish", "onCameraChangeFinish");
     }
 
     @Override
@@ -409,7 +402,6 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                     poiItems = poiResult.getPois();// 取得第一页的poiitem数据，页数从数字0开始
                     for (PoiItem item : poiItems) {
                         poiTitles.add(item.getTitle());
-                        Log.d("Publish", item.getTitle());
                     }
                 }
             }
@@ -594,7 +586,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
             setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
 //            setBackgroundDrawable(new BitmapDrawable());
             setBackgroundDrawable(new ColorDrawable(R.color.half_transparent));
-            setBackgroundAlpha(0.5f);
+//            setBackgroundAlpha(0.5f);
             setOnDismissListener(new MyOnDismissListener());
             setFocusable(true);
             setOutsideTouchable(true);

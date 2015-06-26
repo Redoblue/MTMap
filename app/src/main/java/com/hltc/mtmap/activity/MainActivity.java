@@ -11,10 +11,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.amap.api.location.AMapLocationListener;
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.publish.PublishActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.fragment.GrainFragment;

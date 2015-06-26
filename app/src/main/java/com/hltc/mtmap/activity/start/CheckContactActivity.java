@@ -1,4 +1,4 @@
-package com.hltc.mtmap.activity;
+package com.hltc.mtmap.activity.start;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.dd.processbutton.iml.ActionProcessButton;
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.adapter.CommonAdapter;
 import com.hltc.mtmap.adapter.CommonViewHolder;
 import com.hltc.mtmap.app.AppConfig;

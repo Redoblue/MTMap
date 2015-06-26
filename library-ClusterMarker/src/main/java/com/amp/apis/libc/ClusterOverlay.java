@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Point;
 import android.os.Handler;
 import android.os.Message;
+
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMap.OnCameraChangeListener;
 import com.amap.api.maps.AMap.OnMarkerClickListener;
@@ -94,7 +95,21 @@ public class ClusterOverlay implements OnCameraChangeListener,
     public void addClusterItem(ClusterItem item) {
         mPoints.add(item);
         assignSingleCluster(item);
+    }
 
+    //redoblue
+    public void removeClusterItem(ClusterItem item) {
+        for (int i = 0; i < mPoints.size(); i++) {
+            if (mPoints.get(i).getPicUrl().equals(item.getPicUrl())) {
+                mPoints.remove(i);
+                break;
+            }
+        }
+    }
+
+    //redoblue
+    public void clearClusters() {
+        mPoints.clear();
     }
 
     /**

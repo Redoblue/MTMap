@@ -11,8 +11,8 @@ import android.widget.LinearLayout;
 
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.FriendListActivity;
-import com.hltc.mtmap.activity.SettingsActivity;
+import com.hltc.mtmap.activity.profile.FriendListActivity;
+import com.hltc.mtmap.activity.profile.SettingsActivity;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ToastUtils;
 
