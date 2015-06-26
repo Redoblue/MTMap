@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.helper.FederationTokenGetter;
 import com.hltc.mtmap.util.LogUtils;
 
 import java.util.ArrayList;
@@ -50,6 +52,8 @@ public class PublishActivity extends Activity {
         AppManager.getAppManager().addActivity(this);
         ButterKnife.inject(this);
         initView();
+
+        Log.d("Publish", FederationTokenGetter.getToken().toString());
     }
 
     private void initView() {

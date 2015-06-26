@@ -313,12 +313,12 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         try {
             json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getToken());
-            if (currentCategory != 0) {
+//            if (currentCategory != 0) {
                 json.put(ApiUtils.KEY_GRAIN_MCATEID, AMapUtils.mCateId[cateId]);
-            }
+//            }
             json.put(ApiUtils.KEY_GRAIN_CITYCODE, cityCode);
-            json.put(ApiUtils.KEY_GRAIN_LON, lastLocation.longitude);
-            json.put(ApiUtils.KEY_GRAIN_LAT, lastLocation.latitude);
+            json.put(ApiUtils.KEY_GRAIN_LON, mAmap.getCameraPosition().target.longitude);
+            json.put(ApiUtils.KEY_GRAIN_LAT, mAmap.getCameraPosition().target.latitude);
             json.put(ApiUtils.KEY_GRAIN_RADIUS, String.valueOf(radius));
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {

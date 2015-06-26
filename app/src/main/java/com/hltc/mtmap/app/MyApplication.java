@@ -18,9 +18,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
  */
 public class MyApplication extends Application {
 
+    public static OssManager mOssManager;
     private static Context mContext;
-    private boolean login = false;    //登录状态
-    private long loginUid = 0;    //登录用户的id
 
     public static Context getContext() {
         return mContext;

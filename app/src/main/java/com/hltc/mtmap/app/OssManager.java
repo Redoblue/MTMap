@@ -24,12 +24,12 @@ import java.io.FileNotFoundException;
  */
 public class OssManager {
 
+    private static final OssManager manager = new OssManager();
     public static String serverAddress;
     public static String ossHost;
     public static String imgHost;
     public static String bucketName;
     public static String cdnHost;
-    private static OssManager manager;
     public OSSService ossService;
     public OSSBucket ossBucket;
     public OSSBucket imgChannel;
@@ -40,9 +40,6 @@ public class OssManager {
     }
 
     public static OssManager getOssManager() {
-        if (manager == null) {
-            manager = new OssManager();
-        }
         return manager;
     }
 
@@ -51,13 +48,20 @@ public class OssManager {
         ossService.setApplicationContext(MyApplication.getContext());
         ossService.setGlobalDefaultHostId(ossHost);
         ossService.setCustomStandardTimeWithEpochSec(System.currentTimeMillis() / 1000);
-        ossService.setGlobalDefaultACL(AccessControlList.PRIVATE); // 默认为private
+        ossService.setGlobalDefaultACL(AccessControlList.PUBLIC_READ); // 默认为private
         // 为指定的用户拿取服务其授权需求的FederationToken
         ossService.setAuthenticationType(AuthenticationType.FEDERATION_TOKEN);
         ossService.setGlobalDefaultStsTokenGetter(new StsTokenGetter() {
             @Override
             public OSSFederationToken getFederationToken() {
-                return FederationTokenGetter.getToken();
+//                OSSFederationToken token = FederationTokenGetter.getToken();
+//                Log.d("Publish", token.toString());
+                OSSFederationToken token = new OSSFederationToken();
+                token.setTempAk("STS.ovUUkQeuEJe6jJfOIJ00");
+                token.setTempSk("A9fFqXaV2MwEQYhxonrjUmzG9c0bFxP8qdeY17rW");
+                token.setSecurityToken("CAES/gMIARKAAUuQL4oq6h+oQSWeYD9IQ0lVuhDmmDhvvdXIvB6mFdtDcL1HZDZbs1HQ0Msj++NonhbLDBcir/6cNxysN3+3BYhrkIoajj8v63N+cEXzHECDC+U4osBzUEGWxspEmxda8cWsTRNWF7tlOBNSLsyijiF5qF/AsfhnMKO+r0jEbeyIGhhTVFMub3ZVVWtRZXVFSmU2akpmT0lKMDAiEDExOTQ2Mjc4Nzk4Njk2MzUqDHVzZXIubWFpdGlhbjDzn8uH4yk6BlJzYU1ENUKtAgoBMRqaAQoFQWxsb3cSKQoMQWN0aW9uRXF1YWxzEgZBY3Rpb24aEQoPb3NzOkxpc3RPYmplY3RzEjUKDlJlc291cmNlRXF1YWxzEghSZXNvdXJjZRoZChdhY3M6b3NzOio6KjptYWl0aWFuZGl0dRIvCgpTdHJpbmdMaWtlEgpvc3M6UHJlZml4GhUKEzIzMzcyMjM0MjBAcXEuY29tLyoaigEKBUFsbG93EkgKDEFjdGlvbkVxdWFscxIGQWN0aW9uGjAKDW9zczpQdXRPYmplY3QKDW9zczpHZXRPYmplY3QKEG9zczpEZWxldGVPYmplY3QSNwoOUmVzb3VyY2VFcXVhbHMSCFJlc291cmNlGhsKGWFjczpvc3M6KjoqOm1haXRpYW5kaXR1Lyo=");
+                token.setExpiration(System.currentTimeMillis() + 3600 * 1000);
+                return token;
             }
         });
 
@@ -68,10 +72,10 @@ public class OssManager {
         ossService.setClientConfiguration(conf);
 
         ossBucket = ossService.getOssBucket(bucketName);
-        ossBucket.setBucketHostId(ossHost);
+//        ossBucket.setBucketHostId(ossHost);
 
         imgChannel = ossService.getOssBucket(bucketName);
-        imgChannel.setBucketHostId(imgHost);
+//        imgChannel.setBucketHostId(imgHost);
 //        imgChannel.setCdnAccelerateHostId(cdnHost);
     }
 
@@ -103,38 +107,38 @@ public class OssManager {
 
     public void uploadImage(String from, String objectKey) {
         OSSFile ossFile = ossService.getOssFile(ossBucket, objectKey);
-//        try {
-//            ossFile.setUploadFilePath(from, "image/jpg");
-//            ossFile.enableUploadCheckMd5sum();
-//            ossFile.upload();
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (OSSException e) {
-//            e.printStackTrace();
-//        }
         try {
             ossFile.setUploadFilePath(from, "image/jpeg");
+            ossFile.enableUploadCheckMd5sum();
+            ossFile.upload();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (OSSException e) {
+            e.printStackTrace();
         }
-        ossFile.enableUploadCheckMd5sum();
-        Log.d("Publish", ossFile.toString());
-        ossFile.uploadInBackground(new SaveCallback() {
-            @Override
-            public void onSuccess(String s) {
-                Log.d("Publish", "Upload Success!");
-            }
-
-            @Override
-            public void onProgress(String s, int i, int i1) {
-
-            }
-
-            @Override
-            public void onFailure(String s, OSSException e) {
-
-            }
-        });
+//        try {
+//            ossFile.setUploadFilePath(from, "image/jpeg");
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        ossFile.enableUploadCheckMd5sum();
+//        Log.d("Publish", ossFile.toString());
+//        ossFile.uploadInBackground(new SaveCallback() {
+//            @Override
+//            public void onSuccess(String s) {
+//                Log.d("Publish", "Upload Success!");
+//            }
+//
+//            @Override
+//            public void onProgress(String s, int i, int i1) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(String s, OSSException e) {
+//
+//            }
+//        });
     }
 
 }

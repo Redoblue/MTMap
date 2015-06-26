@@ -1,16 +1,11 @@
 package com.hltc.mtmap.helper;
 
 
-import android.content.Intent;
 import android.util.Log;
 
 import com.alibaba.sdk.android.oss.model.OSSFederationToken;
-import com.hltc.mtmap.activity.start.CheckContactActivity;
 import com.hltc.mtmap.app.AppConfig;
-import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.bean.FederationToken;
-import com.hltc.mtmap.bean.LocalUserInfo;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ToastUtils;
@@ -33,11 +28,11 @@ import java.io.UnsupportedEncodingException;
  */
 public class FederationTokenGetter {
 
-    private static OSSFederationToken token;
+//    private static OSSFederationToken token;
 
     public static OSSFederationToken getToken() {
-        token = getTokenFromServer();
-        return token;
+//        token = getTokenFromServer();
+        return getTokenFromServer();
     }
 
     private static OSSFederationToken getTokenFromServer() {
@@ -63,15 +58,17 @@ public class FederationTokenGetter {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result = responseInfo.result;
+                        Log.d("Publish", result);
                         if (StringUtils.isEmpty(result))
                             return;
                         try {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                                Log.d("Publish", "result: " + result);
                                 JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 localToken.setTempAk(data.getString(ApiUtils.KEY_TMP_AK));
                                 localToken.setTempSk(data.getString(ApiUtils.KEY_TMP_SK));
                                 localToken.setSecurityToken(data.getString(ApiUtils.KEY_SEC_TOKEN));
-                                localToken.setExpiration(System.currentTimeMillis() + 3600);
+                                localToken.setExpiration(System.currentTimeMillis() + 3600 * 1000);
                             } else {
                                 JSONObject girl = new JSONObject(result);
                                 String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
