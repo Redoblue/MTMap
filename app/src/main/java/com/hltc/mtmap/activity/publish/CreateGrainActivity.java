@@ -23,7 +23,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -75,15 +74,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- * Created by redoblue on 15-5-10.
- */
 public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedListener,
         AMap.OnCameraChangeListener, AMapLocationListener, PoiSearch.OnPoiSearchListener {
 
     private static final int TAKE_PHOTO = 1;
     private static final int AUTO_COMPLETE = 2;
-
+    public static String[] mCateId = {
+            "010000", "020000", "990000"
+    };
     @InjectView(R.id.layout_create_grain_root)
     LinearLayout rootView;
     @InjectView(R.id.sv_create_grain)
@@ -130,9 +128,11 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
     private String[] createTypes = {
             "吃喝", "玩乐", "其他"
     };
-    private String[] types = {
-            "餐饮", "体育", ""
+    private String[] guideCate = {
+            "050000", "080000", ""
     };
+
+    private PopupWindow photoWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,7 +191,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                 ParcelableGrain grain = new ParcelableGrain();
                 grain.userId = AppConfig.getAppConfig(this).getConfUsrUserId();
                 grain.token = AppConfig.getAppConfig(this).getToken();
-                grain.mcateId = types[intentType];
+                grain.mcateId = mCateId[intentType];
 
                 if (poiTitles.contains(returnedValue)) {
                     PoiItem selectedItem = new PoiItem("", AMapUtils.convertToLatLonPoint(targetLocation), "", "");
@@ -258,7 +258,8 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                     long arg3) {
                 if (arg2 == PhotoHelper.bitmaps.size()) {
-                    new MyPopupWindow(CreateGrainActivity.this, photosGridView);
+//                    new MyPopupWindow(CreateGrainActivity.this, photosGridView);
+                    showPopwindow();
                 } else {
                     Intent intent = new Intent(CreateGrainActivity.this,
                             DeletePhotoActivity.class);
@@ -330,7 +331,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
      * 开始进行poi搜索
      */
     protected void doSearchQuery() {
-        query = new PoiSearch.Query("", types[intentType], poiCity);
+        query = new PoiSearch.Query("", guideCate[intentType], poiCity);
         query.setPageSize(20);// 设置每页最多返回多少条poiitem
         query.setPageNum(1);// 设置查第一页
         query.setLimitDiscount(false);
@@ -449,6 +450,12 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                 if (resultCode == RESULT_OK) {
                     returnedValue = data.getStringExtra("SELECTED_POI");
                     addressButton.setText(returnedValue);
+
+                    //关掉输入法
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm.isActive()) {
+                        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+                    }
                 }
         }
     }
@@ -478,6 +485,67 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
         mMapView.onDestroy();
         locationManagerProxy.destroy();
         AppManager.getAppManager().finishActivity(this);
+    }
+
+    private void showPopwindow() {
+        // 利用layoutInflater获得View
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.window_publish_choose_photo, null);
+        // 下面是两种方法得到宽度和高度 getWindow().getDecorView().getWidth()
+        photoWindow = new PopupWindow(view,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.WRAP_CONTENT);
+        // 设置popWindow弹出窗体可点击，这句话必须添加，并且是true
+        photoWindow.setFocusable(true);
+        photoWindow.setOutsideTouchable(true);
+
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.alpha = 0.5f; //0.0-1.0
+        getWindow().setAttributes(lp);
+//        photoWindow.setBackgroundDrawable(new ColorDrawable(R.color.half_transparent));
+        // 实例化一个ColorDrawable颜色为半透明
+//        ColorDrawable dw = new ColorDrawable(0xb0000000);
+//        photoWindow.setBackgroundDrawable(dw);
+        // 设置popWindow的显示和消失动画
+        photoWindow.setAnimationStyle(android.R.style.Widget_PopupWindow);
+        // 在底部显示
+        photoWindow.showAtLocation(this.findViewById(R.id.create_grain_gv_photos),
+                Gravity.BOTTOM, 0, 0);
+        photoWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                WindowManager.LayoutParams lp = getWindow().getAttributes();
+                lp.alpha = 1.0f; //0.0-1.0
+                getWindow().setAttributes(lp);
+            }
+        });
+
+        Button camera = (Button) view.findViewById(R.id.btn_window_publish_camera);
+        Button photo = (Button) view.findViewById(R.id.btn_window_publish_photo);
+        Button cancel = (Button) view.findViewById(R.id.btn_window_publish_cancel);
+
+        camera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                takePhoto();
+                photoWindow.dismiss();
+            }
+        });
+        photo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(CreateGrainActivity.this,
+                        GalleryActivity.class);
+                startActivity(intent);
+                photoWindow.dismiss();
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                photoWindow.dismiss();
+            }
+        });
     }
 
     @SuppressLint("HandlerLeak")
@@ -570,75 +638,6 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
 
         public class ViewHolder {
             public ImageView image;
-        }
-    }
-
-    public class MyPopupWindow extends PopupWindow {
-
-        public MyPopupWindow(Context mContext, View parent) {
-
-            View view = View.inflate(mContext, R.layout.item_popup_window, null);
-            view.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.fade_ins));
-            LinearLayout layout = (LinearLayout) view.findViewById(R.id.ll_popup);
-            layout.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.push_bottom_in_2));
-
-            setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-            setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
-//            setBackgroundDrawable(new BitmapDrawable());
-            setBackgroundDrawable(new ColorDrawable(R.color.half_transparent));
-//            setBackgroundAlpha(0.5f);
-            setOnDismissListener(new MyOnDismissListener());
-            setFocusable(true);
-            setOutsideTouchable(true);
-            setContentView(view);
-            showAtLocation(parent, Gravity.BOTTOM, 0, 0);
-            update();
-
-            Button camera = (Button) view.findViewById(R.id.item_popupwindows_camera);
-            Button gallery = (Button) view.findViewById(R.id.item_popupwindows_Photo);
-            Button cancel = (Button) view.findViewById(R.id.item_popupwindows_cancel);
-            camera.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    takePhoto();
-                    dismiss();
-                }
-            });
-            gallery.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    Intent intent = new Intent(CreateGrainActivity.this,
-                            GalleryActivity.class);
-                    startActivity(intent);
-                    dismiss();
-                }
-            });
-            cancel.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    dismiss();
-                }
-            });
-        }
-
-        /**
-         * 设置添加屏幕的背景透明度
-         *
-         * @param bgAlpha
-         */
-        private void setBackgroundAlpha(float bgAlpha) {
-            WindowManager.LayoutParams lp = getWindow().getAttributes();
-            lp.alpha = bgAlpha; //0.0-1.0
-            getWindow().setAttributes(lp);
-        }
-
-        /**
-         * 将背景透明度改回来
-         *
-         * @author cg
-         */
-        class MyOnDismissListener implements PopupWindow.OnDismissListener {
-            @Override
-            public void onDismiss() {
-                setBackgroundAlpha(1f);
-            }
         }
     }
 }

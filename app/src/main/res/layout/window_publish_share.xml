@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_done_publish_share"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="horizontal"
+    android:paddingBottom="20dp"
+    android:paddingTop="20dp">
+
+    <TextView
+        android:id="@+id/tv_publish_share_wechat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawablePadding="10dp"
+        android:drawableTop="@drawable/share_wechat"
+        android:gravity="center_horizontal"
+        android:text="微信"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/tv_publish_share_circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawablePadding="10dp"
+        android:drawableTop="@drawable/share_circle"
+        android:gravity="center_horizontal"
+        android:text="朋友圈"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/tv_publish_share_qq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawablePadding="10dp"
+        android:drawableTop="@drawable/share_qq"
+        android:gravity="center_horizontal"
+        android:text="QQ"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/tv_publish_share_weibo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:drawablePadding="10dp"
+        android:drawableTop="@drawable/share_weibo"
+        android:gravity="center_horizontal"
+        android:text="微博"
+        android:textSize="13sp" />
+</LinearLayout>

@@ -15,8 +15,6 @@ import com.hltc.mtmap.orm.models.MTCategory;
  */
 public class AMapUtils {
 
-    public static String[] mCateId = {"010000", "020000", "990000"};
-
     public static LatLonPoint convertToLatLonPoint(LatLng latLng) {
         return new LatLonPoint(latLng.latitude, latLng.longitude);
     }

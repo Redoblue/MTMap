@@ -52,8 +52,6 @@ public class PublishActivity extends Activity {
         AppManager.getAppManager().addActivity(this);
         ButterKnife.inject(this);
         initView();
-
-        Log.d("Publish", FederationTokenGetter.getToken().toString());
     }
 
     private void initView() {

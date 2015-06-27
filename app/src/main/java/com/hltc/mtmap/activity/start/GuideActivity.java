@@ -67,16 +67,7 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
         // 设置第一次使用为False
         AppConfig.getAppConfig(this).set(AppConfig.CONF_FIRST_USE, "false");
 
-        //TODO 判断是否登陆
-        Class toClass;
-        if (AppUtils.isSignedIn(this)) {
-            LogUtils.d("已登录分支");
-            toClass = MainActivity.class;
-        } else {
-            LogUtils.d("未登录分支");
-            toClass = StartActivity.class;
-        }
-        Intent intent = new Intent(this, toClass);
+        Intent intent = new Intent(this, StartActivity.class);
         startActivity(intent);
         AppManager.getAppManager().finishActivity(GuideActivity.this);
     }

@@ -42,12 +42,6 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
         super();
     }
 
-    public static String getRemotePath(String s) {
-        String path = "users/" + AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrUserId()
-                + "/" + s.substring(s.lastIndexOf("/") + 1);
-        return path;
-    }
-
     @Override
     protected void onPreExecute() {
         initData();
@@ -65,7 +59,7 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
     protected Boolean doInBackground(Void... params) {
         for (int i = 0; i < PhotoHelper.larges.size(); i++) {
             String path = PhotoHelper.larges.get(i);
-            OssManager.getOssManager().uploadImage(path, getRemotePath(path));
+            OssManager.getOssManager().uploadImage(path, OssManager.getRemotePath(path));
         }
         FileUtils.deleteDir();
         return true;

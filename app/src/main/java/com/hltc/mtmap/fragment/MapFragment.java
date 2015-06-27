@@ -36,6 +36,7 @@ import com.amp.apis.libc.ClusterOverlay;
 import com.amp.apis.libc.ClusterRender;
 import com.capricorn.ArcMenu;
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.publish.CreateGrainActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.bean.RegionItem;
 import com.hltc.mtmap.bean.SiteItem;
@@ -314,7 +315,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getToken());
 //            if (currentCategory != 0) {
-                json.put(ApiUtils.KEY_GRAIN_MCATEID, AMapUtils.mCateId[cateId]);
+            json.put(ApiUtils.KEY_GRAIN_MCATEID, CreateGrainActivity.mCateId[cateId]);
 //            }
             json.put(ApiUtils.KEY_GRAIN_CITYCODE, cityCode);
             json.put(ApiUtils.KEY_GRAIN_LON, mAmap.getCameraPosition().target.longitude);
@@ -419,7 +420,8 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
+        if (mMapView != null)
+            mMapView.onDestroy();
     }
 
     @Override

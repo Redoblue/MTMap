@@ -43,8 +43,9 @@ public class AppUtils {
     }
 
     public static boolean isSignedIn(Context context) {
+        if (AppConfig.getAppConfig(context).getConfUsrUserId() > 0)
+            return true;
         return false;
-        //是否登陆
     }
 
     /**

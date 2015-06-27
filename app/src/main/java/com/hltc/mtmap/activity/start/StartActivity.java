@@ -7,12 +7,15 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.Interpolator;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.util.AppUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -59,15 +62,27 @@ public class StartActivity extends Activity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_start_signin:
+                if (!AppUtils.isNetworkConnected(this)) {
+                    Toast.makeText(this, "请检查您的网络", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent0 = new Intent(this, SignInActivity.class);
                 startActivity(intent0);
                 break;
             case R.id.btn_start_signup:
+                if (!AppUtils.isNetworkConnected(this)) {
+                    Toast.makeText(this, "请检查您的网络", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent1 = new Intent(this, SignUpActivity.class);
                 intent1.putExtra("source", 0);
                 startActivity(intent1);
                 break;
             case R.id.btn_start_skip:
+                if (MyApplication.signInStatus.equals("00")) {
+                    Toast.makeText(this, "请检查您的网络", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 Intent intent2 = new Intent(this, MainActivity.class);
                 startActivity(intent2);
                 finish();

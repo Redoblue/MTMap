@@ -5,7 +5,7 @@ package com.hltc.mtmap.util;
  */
 public class ApiUtils {
 
-    public static final String URL_ROOT = "http://www.maitianditu.com/maitian/v1";
+    public static final String URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
 //    public static final String URL_ROOT = "http://171.113.182.61/maitian/v1";
 
     public static final String URL_REQ_VCODE_0 = "user/register/verify_code.json";
@@ -29,6 +29,8 @@ public class ApiUtils {
     public static final String URL_FEDERATION_TOKEN = "auth/oss_federation_token.json";
     // 麦粒
     public static final String URL_GRAIN_QUERY = "grain/home_query.json";
+    // 登录
+    public static final String URL_LOGIN_BY_TOKEN = "user/login/login_by_token.json";
 
     public static final String KEY_SOURCE = "source";
     public static final String KEY_PHONE = "phone_number";
@@ -72,34 +74,34 @@ public class ApiUtils {
 
     public static String getRequestVCodeUrl(int source) {
         return source == 0 ?
-                URL_ROOT + "/" + URL_REQ_VCODE_0 :
-                URL_ROOT + "/" + URL_REQ_VCODE_1;
+                URL_ROOT + URL_REQ_VCODE_0 :
+                URL_ROOT + URL_REQ_VCODE_1;
     }
 
     public static String getValidateVCodeUrl(int source) {
         return source == 0 ?
-                URL_ROOT + "/" + URL_VAL_VCODE_0 :
-                URL_ROOT + "/" + URL_VAL_VCODE_1;
+                URL_ROOT + URL_VAL_VCODE_0 :
+                URL_ROOT + URL_VAL_VCODE_1;
     }
 
     public static String getCreateAccountUrl() {
-        return URL_ROOT + "/" + URL_CRE_ACCOUNT;
+        return URL_ROOT + URL_CRE_ACCOUNT;
     }
 
     public static String getResetPasswdUrl() {
-        return URL_ROOT + "/" + URL_RST_PASSWD;
+        return URL_ROOT + URL_RST_PASSWD;
     }
 
     public static String getSigninUrl() {
-        return URL_ROOT + "/" + URL_SIG_IN;
+        return URL_ROOT + URL_SIG_IN;
     }
 
     public static String getPublishUrl() {
-        return URL_ROOT + "/" + URL_PUB_GRAIN;
+        return URL_ROOT + URL_PUB_GRAIN;
     }
 
     public static String getUpdateNicknameUrl() {
-        return URL_ROOT + "/" + URL_UPD_NICKNAME;
+        return URL_ROOT + URL_UPD_NICKNAME;
     }
 
     public static String getRecommendGrainUrl(boolean isUser) {
@@ -107,18 +109,22 @@ public class ApiUtils {
     }
 
     public static String getCheckContactUrl() {
-        return URL_ROOT + "/" + URL_CHE_CONTACT;
+        return URL_ROOT + URL_CHE_CONTACT;
     }
 
     public static String getFeedbackUrl() {
-        return URL_ROOT + "/" + URL_FEEDBACK;
+        return URL_ROOT + URL_FEEDBACK;
     }
 
     public static String getFederationTokenUrl() {
-        return URL_ROOT + "/" + URL_FEDERATION_TOKEN;
+        return URL_ROOT + URL_FEDERATION_TOKEN;
     }
 
     public static String getQueryGrainUrl() {
-        return URL_ROOT + "/" + URL_GRAIN_QUERY;
+        return URL_ROOT + URL_GRAIN_QUERY;
+    }
+
+    public static String getLoginByTokenUrl() {
+        return URL_ROOT + URL_LOGIN_BY_TOKEN;
     }
 }

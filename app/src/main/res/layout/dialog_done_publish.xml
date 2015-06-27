@@ -6,6 +6,7 @@
     android:background="@color/transparent">
 
     <LinearLayout
+        android:id="@+id/layout_done_publish"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
@@ -36,6 +37,7 @@
             android:layout_marginTop="20dp" />
 
         <RelativeLayout
+            android:id="@+id/layout_publish_share"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_marginLeft="10dp"
@@ -74,57 +76,5 @@
                 android:textSize="15sp" />
 
         </RelativeLayout>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/layout_done_publish_share"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        android:paddingBottom="20dp"
-        android:paddingTop="20dp"
-        android:visibility="invisible">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawablePadding="10dp"
-            android:drawableTop="@drawable/share_wechat"
-            android:gravity="center_horizontal"
-            android:text="微信"
-            android:textSize="13sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawablePadding="10dp"
-            android:drawableTop="@drawable/share_circle"
-            android:gravity="center_horizontal"
-            android:text="朋友圈"
-            android:textSize="13sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawablePadding="10dp"
-            android:drawableTop="@drawable/share_qq"
-            android:gravity="center_horizontal"
-            android:text="QQ"
-            android:textSize="13sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:drawablePadding="10dp"
-            android:drawableTop="@drawable/share_weibo"
-            android:gravity="center_horizontal"
-            android:text="微博"
-            android:textSize="13sp" />
     </LinearLayout>
 </RelativeLayout>

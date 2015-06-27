@@ -18,11 +18,14 @@ import com.alibaba.sdk.android.oss.storage.OSSFile;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.CommonAdapter;
 import com.hltc.mtmap.adapter.CommonViewHolder;
+import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.bean.GrainItem;
 import com.hltc.mtmap.bean.SiteItem;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
+import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.FileUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ToastUtils;
@@ -40,6 +43,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,12 +69,8 @@ public class GrainFragment extends Fragment {
     Button btnBarRight;
 
     private List<GrainItem> mSwipeItems;
-    private List<GrainItem> tempItems;//未获取图片的临时对象
     private SwipeViewAdapter mSwipeAdapter;
     private List<HashMap<Long, Integer>> states = new ArrayList<>();
-
-    private OSSService ossService;
-    private OSSBucket ossBucket;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,8 +79,6 @@ public class GrainFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         initView();
-        ossService = OssManager.getOssManager().ossService;
-        ossBucket = OssManager.getOssManager().ossBucket;
         return view;
     }
 
@@ -91,17 +89,18 @@ public class GrainFragment extends Fragment {
         btnBarLeft.setHeight(AMapUtils.dp2px(getActivity(), 25));
 
         mSwipeItems = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            GrainItem item = new GrainItem();
-            item.setImage("http://maitianditu.img-cn-hangzhou.aliyuncs.com/27TeEBIp9378uH7KI3rALu.jpg@100x100-5rc.jpg");
-            item.setPortraitSmall("http://maitianditu.oss-cn-hangzhou.aliyuncs.com/27TeEBIp9378uH7KI3rALu.jpg");
-            item.setText("我只是一个card而已 " + i);
-            OssManager.getOssManager().downloadImage(
-                    getActivity().getCacheDir().getAbsolutePath() + "/swipe" + "/",
-                    "1GJs1_k-Z9wpPOQIlFCwtF.jpg@1e_200w_200h_1c_0i_1o_90q_1x.jpg");
-            mSwipeItems.add(item);
-        }
 
+//        FileUtils.getAppCache(getActivity(), "swipe");
+//        OssManager.getOssManager().downloadImage(
+//                FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg",
+//                "users/300204/180176e4-5103-4ec1-8c1e-48b481788136.jpg");
+//        for (int i = 0; i < 5; i++) {
+//            GrainItem item = new GrainItem();
+//            item.setImage(FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg");
+//            item.setPortraitSmall(FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg");
+//            item.setText("我只是一个card而已 " + i);
+//            mSwipeItems.add(item);
+//        }
         mSwipeAdapter = new SwipeViewAdapter(getActivity(), mSwipeItems, R.layout.item_grain_card);
         viewGrainSwipe.setAdapter(mSwipeAdapter);
         httpLoadData(); //首次加载数据
@@ -128,13 +127,16 @@ public class GrainFragment extends Fragment {
             @Override
             public void onAdapterAboutToEmpty(int i) {
                 if (i == 2) {
+//                    Log.d("GrainFragment", "2 left");
+//                    httpLoadData();
+//
+//                    OssManager.getOssManager().downloadImage(
+//                            FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg",
+//                            "users/300204/180176e4-5103-4ec1-8c1e-48b481788136.jpg");
+//                    GrainItem item = new GrainItem();
+//                    item.setImage(FileUtils.getAppCache(getActivity(), "swipe")
+//                            + "180176e4-5103-4ec1-8c1e-48b481788136.jpg");
                     httpLoadData();
-                    for (GrainItem item : tempItems) {
-                        resumableDownload(StringUtils.getFileNameFromPath(item.getImage()));
-                        item.setImage(FileUtils.getAppCache(getActivity(), "swipe") + StringUtils.getFileNameFromPath(item.getImage()));
-                        mSwipeItems.add(item);
-                        mSwipeAdapter.notifyDataSetChanged();
-                    }
                     //TODO
                 }
             }
@@ -165,36 +167,14 @@ public class GrainFragment extends Fragment {
         ButterKnife.reset(this);
     }
 
-    // 断点下载
-    public void resumableDownload(String file) {
-        OSSFile bigFile = ossService.getOssFile(ossBucket, file);
-        bigFile.ResumableDownloadToInBackground(FileUtils.getAppCache(getActivity(), "swipe") + file, new GetFileCallback() {
-
-            @Override
-            public void onSuccess(String objectKey, String filePath) {
-                Log.d("GrainFragment", "[onSuccess] - " + objectKey + " storage path: " + filePath);
-            }
-
-            @Override
-            public void onProgress(String objectKey, int byteCount, int totalSize) {
-                Log.d("GrainFragment", "[onProgress] - current download: " + objectKey + " bytes:" + byteCount + " in total:" + totalSize);
-            }
-
-            @Override
-            public void onFailure(String objectKey, OSSException ossException) {
-                Log.e("GrainFragment", "[onFailure] - download " + objectKey + " failed!\n" + ossException.toString());
-                ossException.printStackTrace();
-            }
-        });
-    }
-
     private void httpLoadData() {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
         try {
-            if (false) {
-                //TODO
+            if (AppUtils.isSignedIn(getActivity())) {
+                json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
+                json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getToken());
             } else {
                 json.put("vid", "Android");
             }
@@ -207,7 +187,9 @@ public class GrainFragment extends Fragment {
 
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.getCreateAccountUrl(),
+                AppUtils.isSignedIn(getActivity()) ?
+                        "http://www.maitianditu.com/maitian/v1/grain/getRecommendGrain.json" :
+                        "http://www.maitianditu.com/maitian/v1/visitor/getRecommendGrain.json",
                 params,
                 new RequestCallBack<String>() {
                     @Override
@@ -217,8 +199,8 @@ public class GrainFragment extends Fragment {
                             return;
                         try {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                                JSONObject son = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
-                                JSONArray array = son.getJSONArray("grain");
+                                JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
+                                JSONArray array = data.getJSONArray("grain");
                                 for (int i = 0; i < array.length(); i++) {
                                     GrainItem grainItem = new GrainItem();
                                     JSONObject grain = array.getJSONObject(i);
@@ -240,8 +222,9 @@ public class GrainFragment extends Fragment {
                                     siteItem.setGtype(site.getString("gtype"));
 
                                     grainItem.setSite(siteItem);
-                                    tempItems.add(grainItem);
+                                    mSwipeItems.add(grainItem);
                                 }
+                                mSwipeAdapter.notifyDataSetChanged();
                             } else {
                                 JSONObject girl = new JSONObject(result);
                                 String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);

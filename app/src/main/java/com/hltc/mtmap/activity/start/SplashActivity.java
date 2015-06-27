@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.FileUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -68,8 +69,7 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
             Intent intent = new Intent(this, GuideActivity.class);
             startActivity(intent);
         } else {    //判断登录状态，是则进入主界面，否则进入登录界面
-            if (AppUtils.isSignedIn(this)) {
-                LogUtils.d("已登录分支");
+            if (MyApplication.signInStatus.equals("11") || MyApplication.signInStatus.equals("01")) {
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             } else {

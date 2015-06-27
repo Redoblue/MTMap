@@ -17,18 +17,11 @@
         android:background="@color/white"
         android:src="@drawable/pic_1" />
 
-    <TextView
-        android:id="@+id/separator"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@+id/iv_swipe_pic"
-        android:background="@color/dark_grey" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/separator"
+        android:layout_below="@+id/iv_swipe_pic"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">

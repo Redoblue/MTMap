@@ -45,38 +45,65 @@
             android:label="@string/app_name">
 
         </activity>
-        <activity android:name=".activity.start.SplashActivity">
+        <activity
+            android:name=".activity.start.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.start.GuideActivity" />
-        <activity android:name=".activity.start.StartActivity" />
+        <activity
+            android:name=".activity.start.GuideActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.start.StartActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.start.SignUpActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustPan" />
         <activity
             android:name=".activity.start.SignInActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible|adjustPan" />
-        <activity android:name=".activity.publish.PublishActivity" />
+        <activity
+            android:name=".activity.publish.PublishActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.publish.CreateGrainActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity android:name=".activity.publish.DeletePhotoActivity" />
-        <activity android:name=".activity.publish.PhotoActivity" />
-        <activity android:name=".activity.publish.GalleryActivity" />
+        <activity
+            android:name=".activity.publish.DeletePhotoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.publish.PhotoActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.publish.GalleryActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.publish.DonePublishDialog"
             android:theme="@android:style/Theme.Translucent" />
         <activity
             android:name=".activity.publish.CompleteAddressActivity"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateVisible" />
-        <activity android:name=".activity.profile.SettingsActivity" />
-        <activity android:name=".activity.profile.setting.UpdateNicknameActivity" />
-        <activity android:name=".activity.profile.setting.FeedbackActivity" />
-        <activity android:name=".activity.profile.FriendListActivity" />
-        <activity android:name=".activity.start.CheckContactActivity" />
+        <activity
+            android:name=".activity.profile.SettingsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.profile.setting.UpdateNicknameActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.profile.setting.FeedbackActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.profile.FriendListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.start.CheckContactActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.profile.setting.FeedbackSuccessDialog"
             android:theme="@android:style/Theme.Dialog" />

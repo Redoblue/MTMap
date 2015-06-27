@@ -13,8 +13,10 @@ import com.alibaba.sdk.android.oss.model.ClientConfiguration;
 import com.alibaba.sdk.android.oss.model.OSSException;
 import com.alibaba.sdk.android.oss.model.OSSFederationToken;
 import com.alibaba.sdk.android.oss.model.StsTokenGetter;
+import com.alibaba.sdk.android.oss.model.TokenGenerator;
 import com.alibaba.sdk.android.oss.storage.OSSBucket;
 import com.alibaba.sdk.android.oss.storage.OSSFile;
+import com.alibaba.sdk.android.oss.util.OSSToolKit;
 import com.hltc.mtmap.helper.FederationTokenGetter;
 
 import java.io.FileNotFoundException;
@@ -43,25 +45,36 @@ public class OssManager {
         return manager;
     }
 
+    public static String getRemotePath(String s) {
+        String path = "users/" + AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrUserId()
+                + "/" + s.substring(s.lastIndexOf("/") + 1);
+        return path;
+    }
+
     private void initOssService() {
         ossService = OSSServiceProvider.getService();
         ossService.setApplicationContext(MyApplication.getContext());
         ossService.setGlobalDefaultHostId(ossHost);
-        ossService.setCustomStandardTimeWithEpochSec(System.currentTimeMillis() / 1000);
-        ossService.setGlobalDefaultACL(AccessControlList.PUBLIC_READ); // 默认为private
+//        ossService.setCustomStandardTimeWithEpochSec(System.currentTimeMillis() / 1000);
+        ossService.setGlobalDefaultACL(AccessControlList.PRIVATE); // 默认为private
         // 为指定的用户拿取服务其授权需求的FederationToken
-        ossService.setAuthenticationType(AuthenticationType.FEDERATION_TOKEN);
-        ossService.setGlobalDefaultStsTokenGetter(new StsTokenGetter() {
-            @Override
-            public OSSFederationToken getFederationToken() {
+//        ossService.setAuthenticationType(AuthenticationType.FEDERATION_TOKEN);
+//        ossService.setGlobalDefaultStsTokenGetter(new StsTokenGetter() {
+//            @Override
+//            public OSSFederationToken getFederationToken() {
 //                OSSFederationToken token = FederationTokenGetter.getToken();
 //                Log.d("Publish", token.toString());
-                OSSFederationToken token = new OSSFederationToken();
-                token.setTempAk("STS.ovUUkQeuEJe6jJfOIJ00");
-                token.setTempSk("A9fFqXaV2MwEQYhxonrjUmzG9c0bFxP8qdeY17rW");
-                token.setSecurityToken("CAES/gMIARKAAUuQL4oq6h+oQSWeYD9IQ0lVuhDmmDhvvdXIvB6mFdtDcL1HZDZbs1HQ0Msj++NonhbLDBcir/6cNxysN3+3BYhrkIoajj8v63N+cEXzHECDC+U4osBzUEGWxspEmxda8cWsTRNWF7tlOBNSLsyijiF5qF/AsfhnMKO+r0jEbeyIGhhTVFMub3ZVVWtRZXVFSmU2akpmT0lKMDAiEDExOTQ2Mjc4Nzk4Njk2MzUqDHVzZXIubWFpdGlhbjDzn8uH4yk6BlJzYU1ENUKtAgoBMRqaAQoFQWxsb3cSKQoMQWN0aW9uRXF1YWxzEgZBY3Rpb24aEQoPb3NzOkxpc3RPYmplY3RzEjUKDlJlc291cmNlRXF1YWxzEghSZXNvdXJjZRoZChdhY3M6b3NzOio6KjptYWl0aWFuZGl0dRIvCgpTdHJpbmdMaWtlEgpvc3M6UHJlZml4GhUKEzIzMzcyMjM0MjBAcXEuY29tLyoaigEKBUFsbG93EkgKDEFjdGlvbkVxdWFscxIGQWN0aW9uGjAKDW9zczpQdXRPYmplY3QKDW9zczpHZXRPYmplY3QKEG9zczpEZWxldGVPYmplY3QSNwoOUmVzb3VyY2VFcXVhbHMSCFJlc291cmNlGhsKGWFjczpvc3M6KjoqOm1haXRpYW5kaXR1Lyo=");
-                token.setExpiration(System.currentTimeMillis() + 3600 * 1000);
-                return token;
+//                return token;
+//            }
+//        });
+        ossService.setAuthenticationType(AuthenticationType.ORIGIN_AKSK);
+        ossService.setGlobalDefaultTokenGenerator(new TokenGenerator() {
+            @Override
+            public String generateToken(String httpMethod, String md5, String type, String date, String ossHeaders, String resource) {
+                String content = httpMethod + "\n" + md5 + "\n" + type + "\n" + date + "\n" + ossHeaders
+                        + resource;
+
+                return OSSToolKit.generateToken("wxGYeoOqFGIikopt", "eQyS38ArhJo0fIotIuLoiz0FCx0J4N", content);
             }
         });
 
@@ -72,11 +85,11 @@ public class OssManager {
         ossService.setClientConfiguration(conf);
 
         ossBucket = ossService.getOssBucket(bucketName);
-//        ossBucket.setBucketHostId(ossHost);
+        ossBucket.setBucketHostId(ossHost);
 
         imgChannel = ossService.getOssBucket(bucketName);
-//        imgChannel.setBucketHostId(imgHost);
-//        imgChannel.setCdnAccelerateHostId(cdnHost);
+        imgChannel.setBucketHostId(imgHost);
+        imgChannel.setCdnAccelerateHostId(cdnHost);
     }
 
     private void initConfig() {
@@ -95,11 +108,10 @@ public class OssManager {
     }
 
     public void downloadImage(String to, String objectKey) {
-        OSSFile ossFile = ossService.getOssFile(imgChannel, objectKey);
-        String filePath = to + objectKey.substring(objectKey.lastIndexOf("/") + 1, objectKey.indexOf("@"));
-        Log.d("OssManager", "filePath: " + filePath);
+        OSSFile ossFile = ossService.getOssFile(ossBucket, objectKey);
+        Log.d("OssManager", "to: " + to);
         try {
-            ossFile.downloadTo(filePath);
+            ossFile.downloadTo(to);
         } catch (OSSException e) {
             e.printStackTrace();
         }
@@ -116,29 +128,6 @@ public class OssManager {
         } catch (OSSException e) {
             e.printStackTrace();
         }
-//        try {
-//            ossFile.setUploadFilePath(from, "image/jpeg");
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        ossFile.enableUploadCheckMd5sum();
-//        Log.d("Publish", ossFile.toString());
-//        ossFile.uploadInBackground(new SaveCallback() {
-//            @Override
-//            public void onSuccess(String s) {
-//                Log.d("Publish", "Upload Success!");
-//            }
-//
-//            @Override
-//            public void onProgress(String s, int i, int i1) {
-//
-//            }
-//
-//            @Override
-//            public void onFailure(String s, OSSException e) {
-//
-//            }
-//        });
     }
 
 }
