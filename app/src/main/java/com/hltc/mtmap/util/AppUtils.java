@@ -2,16 +2,28 @@ package com.hltc.mtmap.util;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.ContactsContract;
 
+import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.MainActivity;
+import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.ContactInfo;
 import com.hltc.mtmap.bean.LocalUserInfo;
 
 import android.provider.ContactsContract.CommonDataKinds.*;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 
 import org.json.JSONObject;
 
@@ -85,5 +97,29 @@ public class AppUtils {
             cursor.close();
         }
         return contactInfos;
+    }
+
+    public static void showRemindToLoginWindow(View parent) {
+// 利用layoutInflater获得View
+        LayoutInflater inflater = (LayoutInflater)
+                MyApplication.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View view = inflater.inflate(R.layout.window_remind_login, null);
+        // 下面是两种方法得到宽度和高度 getWindow().getDecorView().getWidth()
+        PopupWindow window = new PopupWindow(view,
+                WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT);
+        // 设置popWindow弹出窗体可点击，这句话必须添加，并且是true
+        window.setFocusable(true);
+        window.showAtLocation(parent, Gravity.VERTICAL_GRAVITY_MASK, 0, 0);
+
+        ImageView iv = (ImageView) view.findViewById(R.id.btn_remind_login);
+        iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MyApplication.getContext(), StartActivity.class);
+                MyApplication.getContext().startActivity(intent);
+                AppManager.getAppManager().finishActivity(MainActivity.class);
+            }
+        });
     }
 }

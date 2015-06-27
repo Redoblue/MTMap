@@ -48,14 +48,13 @@
             android:clickable="true"
             android:padding="15.0dip"
             android:src="@drawable/selector_guide_dot" />
-    </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_guide_enter"
-        android:layout_width="150dp"
-        android:layout_height="50dp"
-        android:layout_centerInParent="true"
-        android:text="@string/guide_enter"
-        android:textSize="20dp"
-        android:visibility="invisible" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:clickable="true"
+            android:padding="15.0dip"
+            android:src="@drawable/selector_guide_dot" />
+    </LinearLayout>
 </RelativeLayout>

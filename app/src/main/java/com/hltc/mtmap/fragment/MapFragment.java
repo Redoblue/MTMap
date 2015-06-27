@@ -1,7 +1,9 @@
 package com.hltc.mtmap.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -36,11 +38,13 @@ import com.amp.apis.libc.ClusterOverlay;
 import com.amp.apis.libc.ClusterRender;
 import com.capricorn.ArcMenu;
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.publish.CreateGrainActivity;
+import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.bean.GrainItem;
 import com.hltc.mtmap.bean.RegionItem;
 import com.hltc.mtmap.bean.SiteItem;
-import com.hltc.mtmap.bean.GrainItem;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -65,6 +69,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MapFragment extends Fragment implements AMapLocationListener,
@@ -105,16 +110,26 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_map, container, false);
-        ButterKnife.inject(this, view);
-
-        mMapView.onCreate(savedInstanceState);
-//        daoManager = DaoManager.getDaoManager(getActivity());
-
-        initAmap();
-        initArcMenu();
-
-        return view;
+        if (MainActivity.isVisitor) {
+            View view = inflater.inflate(R.layout.window_remind_login, container, false);
+            ImageView iv = (ImageView) view.findViewById(R.id.btn_remind_login);
+            iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), StartActivity.class);
+                    startActivity(intent);
+                    getActivity().finish();
+                }
+            });
+            return view;
+        } else {
+            View view = inflater.inflate(R.layout.fragment_map, container, false);
+            ButterKnife.inject(this, view);
+            mMapView.onCreate(savedInstanceState);
+            initAmap();
+            initArcMenu();
+            return view;
+        }
     }
 
     private void initAmap() {
@@ -402,19 +417,22 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     @Override
     public void onResume() {
         super.onResume();
-        mMapView.onResume();
+        if (mMapView != null)
+            mMapView.onResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mMapView.onPause();
+        if (mMapView != null)
+            mMapView.onPause();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mMapView.onSaveInstanceState(outState);
+        if (mMapView != null)
+            mMapView.onSaveInstanceState(outState);
     }
 
     @Override

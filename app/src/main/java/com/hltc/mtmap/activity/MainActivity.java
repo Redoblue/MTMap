@@ -1,5 +1,6 @@
 package com.hltc.mtmap.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -9,13 +10,19 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.amap.api.location.AMapLocationListener;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.publish.PublishActivity;
+import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.fragment.GrainFragment;
@@ -55,6 +62,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private static final int TAB_PUBLISH = 2;
     private static final int TAB_MESSAGE = 3;
     private static final int TAB_PRIVATE = 4;
+    public static boolean isVisitor;
     public MyApplication application;
     @InjectView(R.id.tab_item_map)
     TextView tabMap;
@@ -77,7 +85,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private int currentTabIndex = 0;
     private List<Fragment> fragmentList;
     private List<TextView> tabItemList;
-//    public DaoManager daoManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,23 +93,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-        Log.d("MainActivity", "onCreate");///
-        fgManager = getSupportFragmentManager();
-        application = (MyApplication) getApplication();
-//        daoManager = DaoManager.getDaoManager(this);
+        isVisitor = MyApplication.signInStatus.equals("10");
+
         initView();
-
-        if (!AppUtils.isNetworkConnected(this)) {
-            ToastUtils.showShort(this, R.string.network_not_connected);
-        }
-
-//        application.initLoginInfo();
-
         // 检查是否需要下载欢迎图片
         checkWelcomeImage();
     }
 
     private void initView() {
+        fgManager = getSupportFragmentManager();
+
         fragmentList = new ArrayList<>(TAB_ITEM_NUM);
         for (int i = 0; i < TAB_ITEM_NUM; i++) {
             fragmentList.add(i, null);
@@ -119,18 +119,20 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             item.setOnClickListener(this);
         }
 
-        setChioceItem(0); // 首先看到首页
+        Log.d("MT", MyApplication.signInStatus);
+        // 00不会进来 11不需要提示登录 01 不需要提示登录 ///从OnResume进入
+//        if (isVisitor) {
+//            setChioceItem(1);
+//            Log.d("MT", "visit");
+//        } else {
+//            setChioceItem(0);// 首先看到首页
+//        }
     }
 
     @Override
     public void onClick(View view) {
         for (int i = 0; i < ids.length; i++) {
             if (ids[i] == view.getId()) {
-                if (i == 2) {
-                    Intent intent = new Intent(this, PublishActivity.class);
-                    startActivity(intent);
-                    break;
-                }
                 currentTabIndex = i;
                 setChioceItem(i);
                 break;
@@ -200,7 +202,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         //通过结构查询是否有更新的图片，并得到列表，然后使用HttpUtils进行下载
     }
 
-
     /**
      * ********************** Life Cycle ***********************
      */
@@ -208,8 +209,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
-        setChioceItem(currentTabIndex);
-        Log.d("MainActivity", "onResume");
+        if (isVisitor)
+            setChioceItem(1);
+        else
+            setChioceItem(currentTabIndex);
+        Log.d("MT", "onResume");
     }
 
     @Override

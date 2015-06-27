@@ -172,10 +172,10 @@ public class GrainFragment extends Fragment {
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
         try {
-            if (AppUtils.isSignedIn(getActivity())) {
+            if (MyApplication.signInStatus.equals("11")) {//11
                 json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
                 json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getToken());
-            } else {
+            } else {//10
                 json.put("vid", "Android");
             }
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
@@ -187,9 +187,9 @@ public class GrainFragment extends Fragment {
 
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.POST,
-                AppUtils.isSignedIn(getActivity()) ?
-                        "http://www.maitianditu.com/maitian/v1/grain/getRecommendGrain.json" :
-                        "http://www.maitianditu.com/maitian/v1/visitor/getRecommendGrain.json",
+                MyApplication.signInStatus.equals("11") ?
+                        ApiUtils.getGrainRecommandUrl() :
+                        ApiUtils.getVisitorRecommandUrl(),
                 params,
                 new RequestCallBack<String>() {
                     @Override

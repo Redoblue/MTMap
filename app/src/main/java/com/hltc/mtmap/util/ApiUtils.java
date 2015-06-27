@@ -1,12 +1,9 @@
 package com.hltc.mtmap.util;
 
-/**
- * Created by Redoblue on 2015/4/25.
- */
 public class ApiUtils {
 
     public static final String URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
-//    public static final String URL_ROOT = "http://171.113.182.61/maitian/v1";
+//    public static final String URL_ROOT = "http://192.168.0.109/maitian/v1/";
 
     public static final String URL_REQ_VCODE_0 = "user/register/verify_code.json";
     public static final String URL_VAL_VCODE_0 = "user/register/verify.json";
@@ -21,6 +18,7 @@ public class ApiUtils {
     public static final String URL_RST_PASSWD = "user/login/forget/reset_password.json";
     // 游客模块
     public static final String URL_REC_GRAIN_1 = "visitor/getRecommendGrain.json";
+    public static final String URL_VISITOR_RECOMMAND = "visitor/getRecommendGrain.json";
     // 检索通讯录
     public static final String URL_CHE_CONTACT = "user/register/check_contact.json";
     // 反馈
@@ -29,6 +27,7 @@ public class ApiUtils {
     public static final String URL_FEDERATION_TOKEN = "auth/oss_federation_token.json";
     // 麦粒
     public static final String URL_GRAIN_QUERY = "grain/home_query.json";
+    public static final String URL_GRAIN_RECOMMAND = "grain/getRecommendGrain.json";
     // 登录
     public static final String URL_LOGIN_BY_TOKEN = "user/login/login_by_token.json";
 
@@ -127,4 +126,14 @@ public class ApiUtils {
     public static String getLoginByTokenUrl() {
         return URL_ROOT + URL_LOGIN_BY_TOKEN;
     }
+
+    public static String getVisitorRecommandUrl() {
+        return URL_ROOT + URL_VISITOR_RECOMMAND;
+    }
+
+    public static String getGrainRecommandUrl() {
+        return URL_ROOT + URL_GRAIN_RECOMMAND;
+    }
+
+
 }
