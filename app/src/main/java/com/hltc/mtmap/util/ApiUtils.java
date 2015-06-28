@@ -1,5 +1,26 @@
 package com.hltc.mtmap.util;
 
+import android.util.Log;
+import android.widget.Toast;
+
+import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.bean.ContactItem;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.http.client.HttpRequest;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
+
 public class ApiUtils {
 
     public static final String URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
@@ -28,8 +49,11 @@ public class ApiUtils {
     // 麦粒
     public static final String URL_GRAIN_QUERY = "grain/home_query.json";
     public static final String URL_GRAIN_RECOMMAND = "grain/getRecommendGrain.json";
+    public static final String URL_GRAIN_NUMBER = "my/grain_statistic.json";
     // 登录
     public static final String URL_LOGIN_BY_TOKEN = "user/login/login_by_token.json";
+    // 朋友
+    public static final String URL_FRIEND_ADD_FRIEND = "friend/add_friend.json";
 
     public static final String KEY_SOURCE = "source";
     public static final String KEY_PHONE = "phone_number";
@@ -70,6 +94,13 @@ public class ApiUtils {
     public static final String KEY_GRAIN_LON = "lon";
     public static final String KEY_GRAIN_LAT = "lat";
     public static final String KEY_GRAIN_RADIUS = "radius";
+    public static final String KEY_GRAIN_CHIHE = "chihe";
+    public static final String KEY_GRAIN_WANLE = "wanle";
+    public static final String KEY_GRAIN_OTHER = "other";
+    //朋友
+    public static final String KEY_FRIEND_TOID = "toId";
+    public static final String KEY_FRIEND_TEXT = "text";
+    public static final String KEY_FRIEND_REMARK = "remark";
 
     public static String getRequestVCodeUrl(int source) {
         return source == 0 ?
@@ -135,5 +166,61 @@ public class ApiUtils {
         return URL_ROOT + URL_GRAIN_RECOMMAND;
     }
 
+    public static String getFriendAddFriendUrl() {
+        return URL_ROOT + URL_FRIEND_ADD_FRIEND;
+    }
 
+    public static void httpAddFriend(List<ContactItem> list, int position) {
+        ContactItem contact = list.get(position);
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(MyApplication.getContext()).getConfToken());
+            json.put(ApiUtils.KEY_FRIEND_TOID, contact.getUserId());
+            json.put(ApiUtils.KEY_FRIEND_TEXT, contact.getText());
+            json.put(ApiUtils.KEY_FRIEND_REMARK, contact.getName());
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpUtils http = new HttpUtils();
+        http.send(HttpRequest.HttpMethod.POST,
+                ApiUtils.getFriendAddFriendUrl(),
+                params,
+                new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        Log.d("MT", responseInfo.toString());
+                        String result = responseInfo.result;
+                        if (StringUtils.isEmpty(result)) {
+                            Toast.makeText(MyApplication.getContext(), "添加失败", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        try {
+                            JSONObject farther = new JSONObject(result);
+                            if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
+                                Toast.makeText(MyApplication.getContext(), "添加成功", Toast.LENGTH_SHORT).show();
+                            } else {
+                                String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
+                                if (errorMsg != null) {
+                                    // 登录失败
+                                    // TODO 没有验证错误码
+                                    Toast.makeText(MyApplication.getContext(), errorMsg, Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                    }
+                });
+    }
 }

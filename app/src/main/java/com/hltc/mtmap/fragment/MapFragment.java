@@ -328,7 +328,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getToken());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getConfToken());
 //            if (currentCategory != 0) {
             json.put(ApiUtils.KEY_GRAIN_MCATEID, CreateGrainActivity.mCateId[cateId]);
 //            }

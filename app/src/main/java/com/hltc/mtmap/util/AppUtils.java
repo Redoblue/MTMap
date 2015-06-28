@@ -7,6 +7,13 @@ import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.PopupWindow;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
@@ -15,17 +22,6 @@ import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.ContactInfo;
-import com.hltc.mtmap.bean.LocalUserInfo;
-
-import android.provider.ContactsContract.CommonDataKinds.*;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
-
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -79,24 +75,25 @@ public class AppUtils {
      * @return
      */
     public static List<ContactInfo> getContacts(Context context) {
-        List<ContactInfo> contactInfos = new ArrayList<>();
+        List<ContactInfo> cis = new ArrayList<>();
         ContentResolver resolver = context.getContentResolver();
         Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                String number = cursor.getString(PHONES_NUMBER_INDEX);
-                if (StringUtils.isEmpty(number)) {
+                String number = StringUtils.getFormatedPhone(cursor.getString(PHONES_NUMBER_INDEX));
+                if (StringUtils.isEmpty(number)
+                        || number.equals(AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrPhone())) {
                     continue;
                 }
                 String name = cursor.getString(PHONES_DISPLAY_NAME_INDEX);
-                ContactInfo contactInfo = new ContactInfo();
-                contactInfo.setDisplayName(name);
-                contactInfo.setNumber(number);
-                contactInfos.add(contactInfo);
+                ContactInfo ci = new ContactInfo();
+                ci.setDisplayName(name);
+                ci.setNumber(number);
+                cis.add(ci);
             }
             cursor.close();
         }
-        return contactInfos;
+        return cis;
     }
 
     public static void showRemindToLoginWindow(View parent) {

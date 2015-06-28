@@ -2,23 +2,21 @@ package com.hltc.mtmap.activity.publish;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.ColorDrawable;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
@@ -39,7 +37,6 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -94,6 +91,8 @@ public class DonePublishDialog extends Activity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_done_publish_home:
+//                Intent intent = new Intent(this, MainActivity.class);
+//                startActivity(intent);
                 AppManager.getAppManager().finishActivity(this);
                 AppManager.getAppManager().finishActivity(CreateGrainActivity.class);
                 break;

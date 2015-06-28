@@ -25,10 +25,11 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/tv_profile_chihe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="32"
+                android:text="0"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -47,10 +48,11 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/tv_profile_wanle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="10"
+                android:text="0"
                 android:textSize="16sp" />
         </LinearLayout>
 
@@ -69,18 +71,16 @@
                 android:textSize="16sp" />
 
             <TextView
+                android:id="@+id/tv_profile_other"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="5"
+                android:text="0"
                 android:textSize="16sp" />
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#205db84d" />
+    <TextView style="@style/separator" />
 
     <Button
         android:id="@+id/btn_profile_maitian"
@@ -93,10 +93,7 @@
         android:textColor="@color/profile_text"
         android:textSize="16sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#205db84d" />
+    <TextView style="@style/separator" />
 
     <Button
         android:id="@+id/btn_profile_favourite"
@@ -109,10 +106,7 @@
         android:textColor="@color/profile_text"
         android:textSize="16sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#205db84d" />
+    <TextView style="@style/separator" />
 
     <Button
         android:id="@+id/btn_profile_friend"
@@ -125,24 +119,6 @@
         android:textColor="@color/profile_text"
         android:textSize="16sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#205db84d" />
+    <TextView style="@style/separator" />
 
-    <Button
-        android:id="@+id/btn_profile_gallery"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/transparent"
-        android:gravity="center_vertical|start"
-        android:paddingLeft="40dp"
-        android:text="我的相册"
-        android:textColor="@color/profile_text"
-        android:textSize="16sp" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#205db84d" />
 </LinearLayout>

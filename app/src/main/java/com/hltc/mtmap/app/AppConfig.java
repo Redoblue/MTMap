@@ -6,8 +6,6 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 
 import com.hltc.mtmap.bean.LocalUserInfo;
-import com.hltc.mtmap.bean.TokenInfo;
-
 import com.hltc.mtmap.util.StringUtils;
 import com.lidroid.xutils.util.LogUtils;
 
@@ -27,6 +25,7 @@ public class AppConfig {
     public static final String APP_CONFIG = "config";
     public static final String CONF_FIRST_USE = "first_use";
     public static final String CONF_TOKEN = "token.value";
+    public static final String CONF_TMP_TOKEN = "token.tmp";
     public static final String CONF_TOKEN_EXPIRESIN = "token.expires_in";
     public static final String CONF_USR_USER_ID = "user.userId";
     public static final String CONF_USER_USERNAME = "user.userName";
@@ -43,7 +42,6 @@ public class AppConfig {
     private static AppConfig config;
     private Context mContext;
     private LocalUserInfo mUserInfo;
-    private TokenInfo mTokenInfo;
 
     public static AppConfig getAppConfig(Context context) {
         if (config == null) {
@@ -57,38 +55,23 @@ public class AppConfig {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public String getToken() {
+    /**
+     * ******************************* Token ******************************
+     */
+    public String getConfToken() {
         return get(CONF_TOKEN);
     }
 
-    /**
-     * *************************** Token ******************************
-     */
-    public void setToken(String token) {
+    public void setConfToken(String token) {
         set(CONF_TOKEN, token);
     }
 
-    public long getExpiresIn() {
-        return StringUtils.toLong(get(CONF_TOKEN_EXPIRESIN));
+    public String getConfTmpToken() {
+        return get(CONF_TMP_TOKEN);
     }
 
-    public void setExpiresIn(long expiresIn) {
-        set(CONF_TOKEN_EXPIRESIN, String.valueOf(expiresIn));
-    }
-
-    public TokenInfo getTokenInfo() {
-        if (mTokenInfo == null && !StringUtils.isEmpty(getToken())) {
-            mTokenInfo = new TokenInfo();
-            mTokenInfo.setToken(getToken());
-            mTokenInfo.setExpiresIn(getExpiresIn());
-        }
-        return mTokenInfo;
-    }
-
-    public void setTokenInfo(TokenInfo tokenInfo) {
-        mTokenInfo = tokenInfo;
-        this.setToken(mTokenInfo.getToken());
-        this.setExpiresIn(mTokenInfo.getExpiresIn());
+    public void setConfTmpToken(String token) {
+        set(CONF_TMP_TOKEN, token);
     }
 
     /**

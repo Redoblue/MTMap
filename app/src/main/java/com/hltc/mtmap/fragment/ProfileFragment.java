@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.hltc.mtmap.R;
@@ -16,8 +17,24 @@ import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.profile.FriendListActivity;
 import com.hltc.mtmap.activity.profile.SettingsActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
+import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.util.AMapUtils;
+import com.hltc.mtmap.util.ApiUtils;
+import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ToastUtils;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.http.client.HttpRequest;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -51,9 +68,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView() {
-        View headerView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_header_view, null, false);
-        View zoomView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_zoom_view, null, false);
-        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.profile_content_view, null, false);
+        View headerView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_profile_header_view, null, false);
+        View zoomView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_profile_zoom_view, null, false);
+        View contentView = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_profile_content_view, null, false);
         scrollView.setHeaderView(headerView);
         scrollView.setZoomView(zoomView);
         scrollView.setScrollContentView(contentView);
@@ -70,7 +87,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         scrollView.getPullRootView().findViewById(R.id.btn_profile_maitian).setOnClickListener(this);
         scrollView.getPullRootView().findViewById(R.id.btn_profile_favourite).setOnClickListener(this);
         scrollView.getPullRootView().findViewById(R.id.btn_profile_friend).setOnClickListener(this);
-        scrollView.getPullRootView().findViewById(R.id.btn_profile_gallery).setOnClickListener(this);
+
+        //更新麦粒数量
+        httpGetGrainNumber();
     }
 
     @Override
@@ -88,8 +107,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.btn_profile_friend:
                 toClass = FriendListActivity.class;
                 break;
-            case R.id.btn_profile_gallery:
-                break;
             default:
                 break;
         }
@@ -97,4 +114,64 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         startActivity(intent);
     }
 
+    private void httpGetGrainNumber() {
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_SOURCE, "Android");
+            json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getConfToken());
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpUtils http = new HttpUtils();
+        http.send(HttpRequest.HttpMethod.POST,
+                ApiUtils.URL_ROOT + ApiUtils.URL_GRAIN_NUMBER,
+                params,
+                new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+                        if (StringUtils.isEmpty(result))
+                            return;
+                        try {
+                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                                JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
+                                ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_chihe))
+                                        .setText(String.valueOf(data.getInt(ApiUtils.KEY_GRAIN_CHIHE)));
+                                ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_wanle))
+                                        .setText(String.valueOf(data.getInt(ApiUtils.KEY_GRAIN_WANLE)));
+                                ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_other))
+                                        .setText(String.valueOf(data.getInt(ApiUtils.KEY_GRAIN_OTHER)));
+                            } else {
+                                JSONObject girl = new JSONObject(result);
+                                String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
+                                if (errorMsg != null) {
+                                    // 发送验证码失败
+                                    // TODO 没有验证错误码
+                                    ToastUtils.showShort(getActivity(), errorMsg);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+
+                    }
+                });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        httpGetGrainNumber();
+    }
 }

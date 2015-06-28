@@ -190,7 +190,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
 
                 ParcelableGrain grain = new ParcelableGrain();
                 grain.userId = AppConfig.getAppConfig(this).getConfUsrUserId();
-                grain.token = AppConfig.getAppConfig(this).getToken();
+                grain.token = AppConfig.getAppConfig(this).getConfToken();
                 grain.mcateId = mCateId[intentType];
 
                 if (poiTitles.contains(returnedValue)) {

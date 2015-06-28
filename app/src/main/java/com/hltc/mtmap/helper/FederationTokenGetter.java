@@ -42,7 +42,7 @@ public class FederationTokenGetter {
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(MyApplication.getContext()).getToken());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(MyApplication.getContext()).getConfToken());
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
             e.printStackTrace();

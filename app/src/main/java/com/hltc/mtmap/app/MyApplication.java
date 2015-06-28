@@ -2,30 +2,18 @@ package com.hltc.mtmap.app;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.util.Log;
 
-import com.alibaba.sdk.android.oss.OSSService;
-import com.alibaba.sdk.android.oss.OSSServiceProvider;
-import com.alibaba.sdk.android.oss.model.AccessControlList;
-import com.alibaba.sdk.android.oss.model.ClientConfiguration;
-import com.alibaba.sdk.android.oss.model.TokenGenerator;
-import com.alibaba.sdk.android.oss.storage.OSSBucket;
-import com.alibaba.sdk.android.oss.util.OSSToolKit;
-import com.hltc.mtmap.activity.start.CheckContactActivity;
 import com.hltc.mtmap.bean.LocalUserInfo;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;
-import com.hltc.mtmap.util.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
-import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -60,13 +48,13 @@ public class MyApplication extends Application {
 
         //用户身份状态检测
         if (AppUtils.isNetworkConnected(mContext)) {
-            if (!StringUtils.isEmpty(AppConfig.getAppConfig(mContext).getToken())) {
+            if (!StringUtils.isEmpty(AppConfig.getAppConfig(mContext).getConfToken())) {
                 httpLoginByToken();
             } else {
                 signInStatus = "10";
             }
         } else {
-            if (!StringUtils.isEmpty(AppConfig.getAppConfig(mContext).getToken())) {
+            if (!StringUtils.isEmpty(AppConfig.getAppConfig(mContext).getConfToken())) {
                 signInStatus = "01";
             } else {
                 signInStatus = "00";
@@ -108,7 +96,7 @@ public class MyApplication extends Application {
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
             json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(mContext).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(mContext).getToken());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(mContext).getConfToken());
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -150,7 +138,7 @@ public class MyApplication extends Application {
                                 if (errorMsg != null) {
                                     // 发送验证码失败
                                     // TODO 没有验证错误码
-
+                                    signInStatus = "10";
                                 }
                             }
                         } catch (JSONException e) {
@@ -160,6 +148,7 @@ public class MyApplication extends Application {
 
                     @Override
                     public void onFailure(HttpException e, String s) {
+                        signInStatus = "10";
                     }
                 });
     }

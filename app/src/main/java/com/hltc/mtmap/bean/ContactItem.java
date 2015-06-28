@@ -5,11 +5,21 @@ package com.hltc.mtmap.bean;
  */
 public class ContactItem {
 
+    private long userId;
     private String portraitSmall;
     private String name;
     private String nickName;
     private String phone;
+    private String text = "";
     private boolean isSelected;
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 
     public String getPortraitSmall() {
         return portraitSmall;
@@ -41,6 +51,14 @@ public class ContactItem {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public boolean isSelected() {

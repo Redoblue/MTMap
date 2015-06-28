@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.LocalUserInfo;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
@@ -136,7 +137,7 @@ public class SignUpActivity extends Activity {
                 break;
             case R.id.btn_signup_send_verifycode:
                 String phone = etSignupPhone.getText().toString();
-                if (!StringUtils.isMobilePhone(phone)) {
+                if (!StringUtils.isPhone(phone)) {
                     ToastUtils.showShort(this, "请输入正确的手机号码");
                     break;
                 }
@@ -227,7 +228,7 @@ public class SignUpActivity extends Activity {
                                 ToastUtils.showShort(SignUpActivity.this, "验证成功");
                                 JSONObject son = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 String tmpToken = son.getString(ApiUtils.KEY_TMP_TOKEN);
-                                AppConfig.getAppConfig(SignUpActivity.this).setToken(tmpToken);     //将临时Token保存
+                                AppConfig.getAppConfig(SignUpActivity.this).setConfTmpToken(tmpToken);     //将临时Token保存
                                 // 进行布局转换
                                 layoutSignupStepOne.setVisibility(View.GONE);
                                 layoutSignupStepTwo.setVisibility(View.VISIBLE);
@@ -253,8 +254,6 @@ public class SignUpActivity extends Activity {
     }
 
     private void httpSignUp() {
-        String tmpToken = AppConfig.getAppConfig(this).getToken();
-
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
@@ -262,7 +261,7 @@ public class SignUpActivity extends Activity {
             json.put(ApiUtils.KEY_SOURCE, "Android");
             json.put(ApiUtils.KEY_PHONE, mPhone);
             json.put(ApiUtils.KEY_PASSWD, StringUtils.toMD5(mPasswd));
-            json.put(ApiUtils.KEY_TMP_TOKEN, tmpToken);
+            json.put(ApiUtils.KEY_TMP_TOKEN, AppConfig.getAppConfig(this).getConfTmpToken());
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -296,9 +295,13 @@ public class SignUpActivity extends Activity {
                                 userInfo.setPortraitSmall(data.getString(ApiUtils.KEY_USR_PORTRAIT_SMALL));
                                 userInfo.setCoverImg(data.getString(ApiUtils.KEY_USR_COVER_IMG));
                                 AppConfig.getAppConfig(SignUpActivity.this).setUserInfo(userInfo);
+                                AppConfig.getAppConfig(SignUpActivity.this).setConfToken(data.getString(ApiUtils.KEY_TOKEN));
                                 //TODO 已注册好 下一步干吗？
                                 ToastUtils.showShort(SignUpActivity.this, "注册成功");
                                 Log.d("SignUpActivity", userInfo.toString());
+
+                                //更新身份状态
+                                MyApplication.signInStatus = "11";
 
                                 Intent intent = new Intent(SignUpActivity.this, CheckContactActivity.class);
                                 startActivity(intent);

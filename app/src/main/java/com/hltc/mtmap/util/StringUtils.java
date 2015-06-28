@@ -1,7 +1,5 @@
 package com.hltc.mtmap.util;
 
-import com.hltc.mtmap.helper.PhotoHelper;
-
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -129,7 +127,7 @@ public class StringUtils {
      * @param str
      * @return
      */
-    public static boolean isMobilePhone(String str) {
+    public static boolean isPhone(String str) {
         Pattern pattern = Pattern
                 .compile(phoneRegexp);
         return pattern.matcher(str).matches();
@@ -149,5 +147,29 @@ public class StringUtils {
 
     public static String getFileNameFromPath(String path) {
         return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
+    }
+
+    public static String getFormatedPhone(String arg) {
+        String phone = "";
+        if (!isPhone(arg)) {
+            if (arg.startsWith("+")) {
+                phone = arg.substring(3);
+            } else if (arg.contains("-")) {
+                for (int i = 0; i < arg.length(); i++) {
+                    if (arg.charAt(i) != '-') {
+                        phone += arg.charAt(i);
+                    }
+                }
+            } else if (arg.contains(" ")) {
+                for (int i = 0; i < arg.length(); i++) {
+                    if (arg.charAt(i) != ' ') {
+                        phone += arg.charAt(i);
+                    }
+                }
+            }
+        } else {
+            phone = arg;
+        }
+        return phone;
     }
 }

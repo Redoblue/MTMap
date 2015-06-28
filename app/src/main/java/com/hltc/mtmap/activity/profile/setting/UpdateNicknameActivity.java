@@ -95,7 +95,7 @@ public class UpdateNicknameActivity extends Activity {
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
             json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getToken());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
             json.put(ApiUtils.KEY_USR_NICKNAME, nickname);
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {

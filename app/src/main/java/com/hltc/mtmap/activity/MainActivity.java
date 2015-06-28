@@ -1,6 +1,5 @@
 package com.hltc.mtmap.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -10,19 +9,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.amap.api.location.AMapLocationListener;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.publish.PublishActivity;
-import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.fragment.GrainFragment;
@@ -31,7 +23,6 @@ import com.hltc.mtmap.fragment.MessageFragment;
 import com.hltc.mtmap.fragment.ProfileFragment;
 import com.hltc.mtmap.fragment.PublishFragment;
 import com.hltc.mtmap.util.AppUtils;
-import com.hltc.mtmap.util.ToastUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,21 +112,23 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         Log.d("MT", MyApplication.signInStatus);
         // 00不会进来 11不需要提示登录 01 不需要提示登录 ///从OnResume进入
-//        if (isVisitor) {
-//            setChioceItem(1);
-//            Log.d("MT", "visit");
-//        } else {
-//            setChioceItem(0);// 首先看到首页
-//        }
     }
 
     @Override
     public void onClick(View view) {
         for (int i = 0; i < ids.length; i++) {
             if (ids[i] == view.getId()) {
+                if (i == 2) {
+                    if (isVisitor)
+                        setChioceItem(2);
+                    else {
+                        Intent intent = new Intent(this, PublishActivity.class);
+                        startActivity(intent);
+                    }
+                    break;
+                }
                 currentTabIndex = i;
                 setChioceItem(i);
-                break;
             }
         }
     }
