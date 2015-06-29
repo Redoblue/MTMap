@@ -85,11 +85,15 @@ public class AppUtils {
                         || number.equals(AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrPhone())) {
                     continue;
                 }
-                String name = cursor.getString(PHONES_DISPLAY_NAME_INDEX);
-                ContactInfo ci = new ContactInfo();
-                ci.setDisplayName(name);
-                ci.setNumber(number);
-                cis.add(ci);
+                for (ContactInfo c : cis) {
+                    if (c.getNumber().equals(number))
+                        continue;
+                    String name = cursor.getString(PHONES_DISPLAY_NAME_INDEX);
+                    ContactInfo ci = new ContactInfo();
+                    ci.setDisplayName(name);
+                    ci.setNumber(number);
+                    cis.add(ci);
+                }
             }
             cursor.close();
         }

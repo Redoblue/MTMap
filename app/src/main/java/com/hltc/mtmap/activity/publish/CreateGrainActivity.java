@@ -34,9 +34,9 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
@@ -103,7 +103,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
     @InjectView(R.id.btn_create_grain_address)
     Button addressButton;
     @InjectView(R.id.create_grain_st_public)
-    Switch publicSwitch;
+    ToggleButton publicToggle;
     @InjectView(R.id.create_grain_et_comment)
     EditText commentEditText;
     @InjectView(R.id.create_grain_gv_photos)
@@ -210,7 +210,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                     grain.latitude = String.valueOf(selectedItem.getLatLonPoint().getLatitude());
                     grain.longitude = String.valueOf(selectedItem.getLatLonPoint().getLongitude());
                     grain.cityCode = selectedItem.getCityCode();
-                    grain.isPublic = "1";
+                    grain.isPublic = String.valueOf(publicToggle.isChecked());
                     grain.text = commentEditText.getText().toString().trim();
                 } else if (poiItems.size() > 0) {
                     PoiItem tempPoi = poiItems.get(0);
@@ -222,7 +222,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                     grain.latitude = String.valueOf(tempPoi.getLatLonPoint().getLatitude());
                     grain.longitude = String.valueOf(tempPoi.getLatLonPoint().getLongitude());
                     grain.cityCode = tempPoi.getCityCode();
-                    grain.isPublic = "1";
+                    grain.isPublic = String.valueOf(publicToggle.isChecked());
                     grain.text = commentEditText.getText().toString().trim();
                 } else {
                     // 未获取到位置

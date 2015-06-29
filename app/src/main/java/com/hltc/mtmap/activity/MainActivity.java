@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.publish.PublishActivity;
+import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.fragment.GrainFragment;
@@ -23,6 +24,7 @@ import com.hltc.mtmap.fragment.MessageFragment;
 import com.hltc.mtmap.fragment.ProfileFragment;
 import com.hltc.mtmap.fragment.PublishFragment;
 import com.hltc.mtmap.util.AppUtils;
+import com.umeng.message.PushAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,6 +79,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private List<Fragment> fragmentList;
     private List<TextView> tabItemList;
 
+    private PushAgent mPushAgent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +91,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         isVisitor = MyApplication.signInStatus.equals("10");
 
         initView();
+        initPushAgent();
         // 检查是否需要下载欢迎图片
         checkWelcomeImage();
     }
@@ -112,6 +117,18 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         Log.d("MT", MyApplication.signInStatus);
         // 00不会进来 11不需要提示登录 01 不需要提示登录 ///从OnResume进入
+    }
+
+    private void initPushAgent() {
+        mPushAgent = PushAgent.getInstance(this);
+        mPushAgent.onAppStart();
+        mPushAgent.enable();
+        try {
+            mPushAgent.getTagManager().add("mtmap");
+            mPushAgent.addAlias(String.valueOf(AppConfig.getAppConfig(this).getConfUsrUserId()), "MT");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -206,7 +223,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             setChioceItem(1);
         else
             setChioceItem(currentTabIndex);
-        Log.d("MT", "onResume");
     }
 
     @Override

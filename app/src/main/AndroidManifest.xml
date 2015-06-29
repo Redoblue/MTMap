@@ -15,6 +15,12 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <!-- 去掉READ_LOGS权限-->
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+    <!--开机启动添加 -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".app.MyApplication"
@@ -40,6 +46,15 @@
         <meta-data
             android:name="BucketName"
             android:value="maitianditu" />
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="5549747467e58ed626001c0a" />
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="297a94e56ebabf3e4d2516726fac4e78" />
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="MTMap" />
 
         <activity
             android:name=".activity.MainActivity"
@@ -109,6 +124,68 @@
         <activity
             android:name=".activity.profile.setting.FeedbackSuccessDialog"
             android:theme="@android:style/Theme.Dialog" />
+
+        <receiver
+            android:name="com.umeng.message.NotificationProxyBroadcastReceiver"
+            android:exported="false" />
+        <receiver android:name="com.umeng.message.RegistrationReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.umeng.message.UmengBroadcastReceiver">
+            <intent-filter>
+                <action android:name="org.agoo.android.intent.action.RECEIVE" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.hltc.mtmap.intent.action.COMMAND" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.agoo.android.intent.action.RE_ELECTION_V2" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.umeng.message.BootBroadcastReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.umeng.message.UmengService"
+            android:exported="true"
+            android:label="PushService"
+            android:process=":pushService_v1">
+            <intent-filter>
+                <action android:name="com.hltc.mtmap.intent.action.START" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.hltc.mtmap.intent.action.COCKROACH" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.agoo.android.intent.action.PING" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="org.android.agoo.service.ElectionService"
+            android:exported="true"
+            android:process=":pushService_v1">
+            <intent-filter>
+                <action android:name="org.agoo.android.intent.action.ELECTION_V2" />
+            </intent-filter>
+        </service>
+        <service android:name="com.umeng.message.UmengIntentService" />
+
+        <!-- If you don't want to use the standard notification bar in SDK, you can define IntentService instead to handle message. -->
+        <service android:name=".service.MyPushIntentService" />
+        <service android:name="com.umeng.message.UmengDownloadResourceService" />
     </application>
 
 </manifest>
