@@ -8,7 +8,6 @@ import android.net.Uri;
 
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.services.core.LatLonPoint;
-import com.hltc.mtmap.orm.models.MTCategory;
 
 /**
  * Created by Redoblue on 2015/4/7.

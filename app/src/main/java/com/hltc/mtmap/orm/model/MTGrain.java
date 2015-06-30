@@ -1,4 +1,4 @@
-package com.hltc.mtmap.orm.models;
+package com.hltc.mtmap.orm.model;
 
 import java.util.List;
 import com.hltc.mtmap.orm.DaoSession;
@@ -25,7 +25,7 @@ public class MTGrain {
     /** Not-null value. */
     private String description;
     /** Not-null value. */
-    private java.util.Date date;
+    private String date;
     private boolean isPublic;
     private boolean isIngored;
     private double latitude;
@@ -63,7 +63,7 @@ public class MTGrain {
         this.id = id;
     }
 
-    public MTGrain(long id, String description, java.util.Date date, boolean isPublic, boolean isIngored, double latitude, double longitude, long siteId, long categoryId, long userId) {
+    public MTGrain(long id, String description, String date, boolean isPublic, boolean isIngored, double latitude, double longitude, long siteId, long categoryId, long userId) {
         this.id = id;
         this.description = description;
         this.date = date;
@@ -101,12 +101,12 @@ public class MTGrain {
     }
 
     /** Not-null value. */
-    public java.util.Date getDate() {
+    public String getDate() {
         return date;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setDate(java.util.Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

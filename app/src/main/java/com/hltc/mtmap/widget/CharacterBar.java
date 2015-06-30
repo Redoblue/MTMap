@@ -13,27 +13,27 @@ import android.widget.TextView;
 
 import com.hltc.mtmap.R;
 
-public class SideBar extends View {
+public class CharacterBar extends View {
 
-    public static String[] b = {"#", "A", "B", "C", "D", "E", "F", "G", "H", "I",
+    public static String[] b = {"@", "A", "B", "C", "D", "E", "F", "G", "H", "I",
             "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V",
-            "W", "X", "Y", "Z"};
+            "W", "X", "Y", "Z", "#"};
     private OnTouchingLetterChangedListener onTouchingLetterChangedListener;
     private int choose = -1;
     private Paint paint = new Paint();
 
     private TextView mTextDialog;
 
-    public SideBar(Context context, AttributeSet attrs, int defStyle) {
+    public CharacterBar(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
 
-    public SideBar(Context context, AttributeSet attrs) {
+    public CharacterBar(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SideBar(Context context) {
+    public CharacterBar(Context context) {
         super(context);
     }
 

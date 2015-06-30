@@ -137,7 +137,7 @@ public class CheckContactActivity extends Activity implements ProgressGenerator.
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
             JSONArray array = new JSONArray();
             for (ContactInfo contact : contacts) {
@@ -171,10 +171,10 @@ public class CheckContactActivity extends Activity implements ProgressGenerator.
                                 for (int i = 0; i < data.length(); i++) {
                                     JSONObject item = data.getJSONObject(i);
                                     ContactItem contactItem = new ContactItem();
-                                    contactItem.setUserId(item.getLong(ApiUtils.KEY_USR_ID));
+                                    contactItem.setUserId(item.getLong(ApiUtils.KEY_USER_ID));
                                     contactItem.setPhone(item.getString(ApiUtils.KEY_USR_PHONE));
                                     contactItem.setNickName(item.getString(ApiUtils.KEY_USR_NICKNAME));
-                                    contactItem.setPortraitSmall(item.getString(ApiUtils.KEY_USR_PORTRAIT_SMALL));
+                                    contactItem.setPortrait(item.getString(ApiUtils.KEY_USR_PORTRAIT_SMALL));
                                     contactItem.setIsSelected(false);
                                     mContactItems.add(contactItem);
                                 }

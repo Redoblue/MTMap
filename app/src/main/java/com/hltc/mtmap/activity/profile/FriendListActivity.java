@@ -1,10 +1,10 @@
 package com.hltc.mtmap.activity.profile;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -12,19 +12,36 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.adapter.SortAdapter;
+import com.hltc.mtmap.adapter.FriendAdapter;
+import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.bean.SortModel;
+import com.hltc.mtmap.gmodel.Friend;
 import com.hltc.mtmap.helper.PinyinComparator;
 import com.hltc.mtmap.util.AMapUtils;
+import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.CharacterParser;
-import com.hltc.mtmap.widget.ClearEditText;
-import com.hltc.mtmap.widget.SideBar;
-import com.hltc.mtmap.widget.SideBar.OnTouchingLetterChangedListener;
+import com.hltc.mtmap.util.StringUtils;
+import com.hltc.mtmap.util.ToastUtils;
+import com.hltc.mtmap.widget.CharacterBar;
+import com.hltc.mtmap.widget.CharacterBar.OnTouchingLetterChangedListener;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.http.client.HttpRequest;
 
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,14 +51,15 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 
 public class FriendListActivity extends Activity {
-    @InjectView(R.id.ce_friend_list_search)
-    ClearEditText mClearEditText;
+
+    public static final int FOLDER_NEW_FRIEND = 0;
+
     @InjectView(R.id.lv_friend_list)
     ListView sortListView;
     @InjectView(R.id.tv_friend_list_dialog)
     TextView dialog;
     @InjectView(R.id.sb_friend_list_sidebar)
-    SideBar sideBar;
+    CharacterBar characterBar;
     @InjectView(R.id.btn_bar_left)
     Button btnBarLeft;
     @InjectView(R.id.tv_bar_title)
@@ -49,9 +67,9 @@ public class FriendListActivity extends Activity {
     @InjectView(R.id.btn_bar_right)
     Button btnBarRight;
 
-    private SortAdapter adapter;
+    private FriendAdapter adapter;
     private CharacterParser characterParser;
-    private List<SortModel> SourceDateList;
+    private List<Friend> adapterList;
     private PinyinComparator pinyinComparator;
 
     @Override
@@ -67,17 +85,17 @@ public class FriendListActivity extends Activity {
     private void initView() {
         tvBarTitle.setText("好友");
         btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
-        btnBarRight.setBackgroundResource(R.drawable.ic_action_person_add);
+        btnBarRight.setBackgroundResource(R.drawable.ic_action_add_friend);
         btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
         btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
         btnBarRight.setWidth(AMapUtils.dp2px(this, 25));
-        btnBarRight.setHeight(AMapUtils.dp2px(this, 25));
+        btnBarRight.setHeight(AMapUtils.dp2px(this, 23));
 
         characterParser = CharacterParser.getInstance();
         pinyinComparator = new PinyinComparator();
 
-        sideBar.setTextView(dialog);
-        sideBar.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
+        characterBar.setTextView(dialog);
+        characterBar.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
 
             @Override
             public void onTouchingLetterChanged(String s) {
@@ -92,31 +110,25 @@ public class FriendListActivity extends Activity {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(getApplication(), ((SortModel) adapter.getItem(position)).getName(), Toast.LENGTH_SHORT).show();
+                if (position == FOLDER_NEW_FRIEND) {
+                    Intent intent = new Intent(FriendListActivity.this, FriendStatusActivity.class);
+                    startActivity(intent);
+                } else {//点击了联系人
+                    int index = position - 1;
+                    Intent intent = new Intent(FriendListActivity.this, UserDetailActivity.class);
+                    intent.putExtra("userId", adapterList.get(index).getUserId());
+                    startActivity(intent);
+                }
             }
         });
 
-        SourceDateList = filledData(getResources().getStringArray(R.array.date));
-
-        Collections.sort(SourceDateList, pinyinComparator);
-        adapter = new SortAdapter(this, SourceDateList);
+//        adapterList = filledData(getResources().getStringArray(R.array.date));
+//        Collections.sort(adapterList, pinyinComparator);
+        adapterList = new ArrayList<>();
+        adapter = new FriendAdapter(this, adapterList);
         sortListView.setAdapter(adapter);
-
-        mClearEditText.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filterData(s.toString());
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
+        adapter.updateListView(adapterList);
+        httpFetchFriendList();
     }
 
     @OnClick({R.id.btn_bar_left,
@@ -127,40 +139,42 @@ public class FriendListActivity extends Activity {
                 AppManager.getAppManager().finishActivity(this);
                 break;
             case R.id.btn_bar_right:
+                Intent intent = new Intent(this, AddFriendActivity.class);
+                startActivity(intent);
                 break;
         }
     }
 
-    private List<SortModel> filledData(String[] date) {
-        List<SortModel> mSortList = new ArrayList<>();
+    private List<Friend> filledData(String[] date) {
+        List<Friend> list = new ArrayList<>();
 
-        for (int i = 0; i < date.length; i++) {
-            SortModel sortModel = new SortModel();
-            sortModel.setName(date[i]);
+        for (String d : date) {
+            Friend friend = new Friend();
+            friend.setRemark(d);
 
-            String pinyin = characterParser.getSelling(date[i]);
+            String pinyin = characterParser.getSelling(d);
             String sortString = pinyin.substring(0, 1).toUpperCase();
 
             if (sortString.matches("[A-Z]")) {
-                sortModel.setLetter(sortString.toUpperCase());
+                friend.setFirstCharacter(sortString.toUpperCase());
             } else {
-                sortModel.setLetter("#");
+                friend.setFirstCharacter("#");
             }
 
-            mSortList.add(sortModel);
+            list.add(friend);
         }
-        return mSortList;
+        return list;
     }
 
     private void filterData(String filterStr) {
-        List<SortModel> filterDateList = new ArrayList<SortModel>();
+        List<Friend> filterDateList = new ArrayList<>();
 
         if (TextUtils.isEmpty(filterStr)) {
-            filterDateList = SourceDateList;
+            filterDateList = adapterList;
         } else {
             filterDateList.clear();
-            for (SortModel sortModel : SourceDateList) {
-                String name = sortModel.getName();
+            for (Friend sortModel : adapterList) {
+                String name = StringUtils.isEmpty(sortModel.getRemark()) ? sortModel.getNickName() : sortModel.getRemark();
                 if (name.contains(filterStr) || characterParser.getSelling(name).startsWith(filterStr)) {
                     filterDateList.add(sortModel);
                 }
@@ -169,5 +183,62 @@ public class FriendListActivity extends Activity {
 
         Collections.sort(filterDateList, pinyinComparator);
         adapter.updateListView(filterDateList);
+    }
+
+    private void httpFetchFriendList() {
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_SOURCE, "Android");
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpUtils http = new HttpUtils();
+        http.send(HttpRequest.HttpMethod.POST,
+                ApiUtils.URL_ROOT + ApiUtils.URL_FRIEND_GET_LIST,
+                params,
+                new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+                        if (StringUtils.isEmpty(result))
+                            return;
+                        try {
+                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                                Gson gson = new Gson();
+                                JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
+                                List<Friend> friends = gson.fromJson(data.toString(), new TypeToken<List<Friend>>() {
+                                }.getType());
+                                adapterList.addAll(friends);
+                                Collections.sort(adapterList, pinyinComparator);
+                                adapter.updateListView(friends);
+
+                                Log.d("MT", "friends: " + friends.toString());
+                            } else {
+                                JSONObject girl = new JSONObject(result);
+                                String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
+                                if (errorMsg != null) {
+                                    // 发送验证码失败
+                                    // TODO 没有验证错误码
+                                    ToastUtils.showShort(FriendListActivity.this, errorMsg);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+
+                    }
+                });
     }
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -69,10 +70,11 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
             Intent intent = new Intent(this, GuideActivity.class);
             startActivity(intent);
         } else {    //判断登录状态，是则进入主界面，否则进入登录界面
+            Log.d("MT", "splash: " + MyApplication.signInStatus);
             if (MyApplication.signInStatus.equals("11") || MyApplication.signInStatus.equals("01")) {
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
-            } else {
+            } else if (MyApplication.signInStatus.equals("10") || MyApplication.signInStatus.equals("00")) {
                 LogUtils.d("未登录分支");
                 Intent intent = new Intent(this, StartActivity.class);
                 startActivity(intent);

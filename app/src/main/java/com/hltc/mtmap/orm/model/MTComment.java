@@ -1,9 +1,10 @@
-package com.hltc.mtmap.orm.models;
+package com.hltc.mtmap.orm.model;
 
+import java.util.List;
 import com.hltc.mtmap.orm.DaoSession;
 import de.greenrobot.dao.DaoException;
 
-import com.hltc.mtmap.orm.dao.MTFavouriteDao;
+import com.hltc.mtmap.orm.dao.MTCommentDao;
 import com.hltc.mtmap.orm.dao.MTGrainDao;
 import com.hltc.mtmap.orm.dao.MTUserDao;
 
@@ -12,19 +13,24 @@ import com.hltc.mtmap.orm.dao.MTUserDao;
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
 /**
- * Entity mapped to table MTFAVOURITE.
+ * Entity mapped to table MTCOMMENT.
  */
-public class MTFavourite {
+public class MTComment {
 
     private long id;
-    private long userId;
+    /** Not-null value. */
+    private String content;
+    /** Not-null value. */
+    private java.util.Date date;
+    private Long toCommentId;
+    private Long userId;
     private long grainId;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
 
     /** Used for active entity operations. */
-    private transient MTFavouriteDao myDao;
+    private transient MTCommentDao myDao;
 
     private MTUser mTUser;
     private Long mTUser__resolvedKey;
@@ -32,19 +38,26 @@ public class MTFavourite {
     private MTGrain mTGrain;
     private Long mTGrain__resolvedKey;
 
+    private MTComment parent;
+    private Long parent__resolvedKey;
+
+    private List<MTComment> children;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
 
-    public MTFavourite() {
+    public MTComment() {
     }
 
-    public MTFavourite(long id) {
+    public MTComment(long id) {
         this.id = id;
     }
 
-    public MTFavourite(long id, long userId, long grainId) {
+    public MTComment(long id, String content, java.util.Date date, Long toCommentId, Long userId, long grainId) {
         this.id = id;
+        this.content = content;
+        this.date = date;
+        this.toCommentId = toCommentId;
         this.userId = userId;
         this.grainId = grainId;
     }
@@ -52,7 +65,7 @@ public class MTFavourite {
     /** called by internal mechanisms, do not call yourself. */
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getMTFavouriteDao() : null;
+        myDao = daoSession != null ? daoSession.getMTCommentDao() : null;
     }
 
     public long getId() {
@@ -63,11 +76,39 @@ public class MTFavourite {
         this.id = id;
     }
 
-    public long getUserId() {
+    /** Not-null value. */
+    public String getContent() {
+        return content;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    /** Not-null value. */
+    public java.util.Date getDate() {
+        return date;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setDate(java.util.Date date) {
+        this.date = date;
+    }
+
+    public Long getToCommentId() {
+        return toCommentId;
+    }
+
+    public void setToCommentId(Long toCommentId) {
+        this.toCommentId = toCommentId;
+    }
+
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(long userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
@@ -81,7 +122,7 @@ public class MTFavourite {
 
     /** To-one relationship, resolved on first access. */
     public MTUser getMTUser() {
-        long __key = this.userId;
+        Long __key = this.userId;
         if (mTUser__resolvedKey == null || !mTUser__resolvedKey.equals(__key)) {
             if (daoSession == null) {
                 throw new DaoException("Entity is detached from DAO context");
@@ -97,12 +138,9 @@ public class MTFavourite {
     }
 
     public void setMTUser(MTUser mTUser) {
-        if (mTUser == null) {
-            throw new DaoException("To-one property 'userId' has not-null constraint; cannot set to-one to null");
-        }
         synchronized (this) {
             this.mTUser = mTUser;
-            userId = mTUser.getId();
+            userId = mTUser == null ? null : mTUser.getId();
             mTUser__resolvedKey = userId;
         }
     }
@@ -133,6 +171,53 @@ public class MTFavourite {
             grainId = mTGrain.getId();
             mTGrain__resolvedKey = grainId;
         }
+    }
+
+    /** To-one relationship, resolved on first access. */
+    public MTComment getParent() {
+        Long __key = this.toCommentId;
+        if (parent__resolvedKey == null || !parent__resolvedKey.equals(__key)) {
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            MTCommentDao targetDao = daoSession.getMTCommentDao();
+            MTComment parentNew = targetDao.load(__key);
+            synchronized (this) {
+                parent = parentNew;
+            	parent__resolvedKey = __key;
+            }
+        }
+        return parent;
+    }
+
+    public void setParent(MTComment parent) {
+        synchronized (this) {
+            this.parent = parent;
+            toCommentId = parent == null ? null : parent.getId();
+            parent__resolvedKey = toCommentId;
+        }
+    }
+
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
+    public List<MTComment> getChildren() {
+        if (children == null) {
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            MTCommentDao targetDao = daoSession.getMTCommentDao();
+            List<MTComment> childrenNew = targetDao._queryMTComment_Children(id);
+            synchronized (this) {
+                if(children == null) {
+                    children = childrenNew;
+                }
+            }
+        }
+        return children;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    public synchronized void resetChildren() {
+        children = null;
     }
 
     /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */

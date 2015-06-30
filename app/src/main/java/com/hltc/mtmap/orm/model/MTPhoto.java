@@ -1,4 +1,4 @@
-package com.hltc.mtmap.orm.models;
+package com.hltc.mtmap.orm.model;
 
 import com.hltc.mtmap.orm.DaoSession;
 import de.greenrobot.dao.DaoException;

@@ -10,23 +10,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.alibaba.sdk.android.oss.OSSService;
-import com.alibaba.sdk.android.oss.callback.GetFileCallback;
-import com.alibaba.sdk.android.oss.model.OSSException;
-import com.alibaba.sdk.android.oss.storage.OSSBucket;
-import com.alibaba.sdk.android.oss.storage.OSSFile;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.CommonAdapter;
 import com.hltc.mtmap.adapter.CommonViewHolder;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.bean.GrainItem;
 import com.hltc.mtmap.bean.SiteItem;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
-import com.hltc.mtmap.util.AppUtils;
-import com.hltc.mtmap.util.FileUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -43,7 +35,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,7 +88,7 @@ public class GrainFragment extends Fragment {
 //        for (int i = 0; i < 5; i++) {
 //            GrainItem item = new GrainItem();
 //            item.setImage(FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg");
-//            item.setPortraitSmall(FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg");
+//            item.setPortrait(FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg");
 //            item.setText("我只是一个card而已 " + i);
 //            mSwipeItems.add(item);
 //        }
@@ -173,7 +164,7 @@ public class GrainFragment extends Fragment {
         JSONObject json = new JSONObject();
         try {
             if (MyApplication.signInStatus.equals("11")) {//11
-                json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
+                json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
                 json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getConfToken());
             } else {//10
                 json.put("vid", "Android");

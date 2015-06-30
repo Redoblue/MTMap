@@ -71,7 +71,7 @@ public class CompleteAddressActivity extends Activity {
     }
 
     private void initView() {
-        tvBarTitle.setText("修改昵称");
+        tvBarTitle.setText("添加地址");
         btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
         btnBarRight.setBackgroundResource(R.drawable.ic_action_done);
         btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));

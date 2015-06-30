@@ -1,7 +1,5 @@
 package com.hltc.mtmap.orm;
 
-import com.amap.api.maps.model.LatLng;
-
 import de.greenrobot.daogenerator.DaoGenerator;
 import de.greenrobot.daogenerator.Entity;
 import de.greenrobot.daogenerator.Property;
@@ -32,17 +30,17 @@ public class Generator {
          */
         Entity mtUser = schema.addEntity("MTUser");
         mtUser.addIdProperty().primaryKey().notNull();
-        mtUser.addStringProperty("nickname").notNull();
-        mtUser.addDateProperty("createTime").notNull();
+        mtUser.addStringProperty("nickName").notNull();
+        mtUser.addStringProperty("createTime").notNull();
         mtUser.addStringProperty("phone").notNull();
-        mtUser.addStringProperty("avatarURL").notNull();
-        mtUser.addStringProperty("rawAvatarURL").notNull();
-        mtUser.addStringProperty("coverURL").notNull();
+        mtUser.addStringProperty("portrait").notNull();
+        mtUser.addStringProperty("coverImg").notNull();
+        mtUser.addStringProperty("signature").notNull();
 
         Entity mtGrain = schema.addEntity("MTGrain");
         mtGrain.addIdProperty().primaryKey().notNull();
         mtGrain.addStringProperty("description").notNull();
-        mtGrain.addDateProperty("date").notNull();
+        mtGrain.addStringProperty("date").notNull();
         mtGrain.addBooleanProperty("isPublic").notNull();
         mtGrain.addBooleanProperty("isIngored").notNull();
         mtGrain.addDoubleProperty("latitude").notNull();

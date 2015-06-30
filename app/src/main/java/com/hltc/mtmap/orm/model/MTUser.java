@@ -1,4 +1,4 @@
-package com.hltc.mtmap.orm.models;
+package com.hltc.mtmap.orm.model;
 
 import java.util.List;
 import com.hltc.mtmap.orm.DaoSession;
@@ -21,17 +21,17 @@ public class MTUser {
 
     private long id;
     /** Not-null value. */
-    private String nickname;
+    private String nickName;
     /** Not-null value. */
-    private java.util.Date createTime;
+    private String createTime;
     /** Not-null value. */
     private String phone;
     /** Not-null value. */
-    private String avatarURL;
+    private String portrait;
     /** Not-null value. */
-    private String rawAvatarURL;
+    private String coverImg;
     /** Not-null value. */
-    private String coverURL;
+    private String signature;
 
     /** Used to resolve relations */
     private transient DaoSession daoSession;
@@ -54,14 +54,14 @@ public class MTUser {
         this.id = id;
     }
 
-    public MTUser(long id, String nickname, java.util.Date createTime, String phone, String avatarURL, String rawAvatarURL, String coverURL) {
+    public MTUser(long id, String nickName, String createTime, String phone, String portrait, String coverImg, String signature) {
         this.id = id;
-        this.nickname = nickname;
+        this.nickName = nickName;
         this.createTime = createTime;
         this.phone = phone;
-        this.avatarURL = avatarURL;
-        this.rawAvatarURL = rawAvatarURL;
-        this.coverURL = coverURL;
+        this.portrait = portrait;
+        this.coverImg = coverImg;
+        this.signature = signature;
     }
 
     /** called by internal mechanisms, do not call yourself. */
@@ -79,22 +79,22 @@ public class MTUser {
     }
 
     /** Not-null value. */
-    public String getNickname() {
-        return nickname;
+    public String getNickName() {
+        return nickName;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
     }
 
     /** Not-null value. */
-    public java.util.Date getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setCreateTime(java.util.Date createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -109,33 +109,33 @@ public class MTUser {
     }
 
     /** Not-null value. */
-    public String getAvatarURL() {
-        return avatarURL;
+    public String getPortrait() {
+        return portrait;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setAvatarURL(String avatarURL) {
-        this.avatarURL = avatarURL;
+    public void setPortrait(String portrait) {
+        this.portrait = portrait;
     }
 
     /** Not-null value. */
-    public String getRawAvatarURL() {
-        return rawAvatarURL;
+    public String getCoverImg() {
+        return coverImg;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setRawAvatarURL(String rawAvatarURL) {
-        this.rawAvatarURL = rawAvatarURL;
+    public void setCoverImg(String coverImg) {
+        this.coverImg = coverImg;
     }
 
     /** Not-null value. */
-    public String getCoverURL() {
-        return coverURL;
+    public String getSignature() {
+        return signature;
     }
 
     /** Not-null value; ensure this value is available before it is saved to the database. */
-    public void setCoverURL(String coverURL) {
-        this.coverURL = coverURL;
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
     /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */

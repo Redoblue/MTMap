@@ -1,4 +1,4 @@
-package com.hltc.mtmap.orm.models;
+package com.hltc.mtmap.orm.model;
 
 import java.util.List;
 import com.hltc.mtmap.orm.DaoSession;

@@ -165,7 +165,7 @@ public class MyApplication extends Application {
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(mContext).getConfUsrUserId());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(mContext).getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(mContext).getConfToken());
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
@@ -188,13 +188,13 @@ public class MyApplication extends Application {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                                 JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 LocalUserInfo userInfo = new LocalUserInfo();
-                                userInfo.setUserId(data.getLong(ApiUtils.KEY_USR_ID));
+                                userInfo.setUserId(data.getLong(ApiUtils.KEY_USER_ID));
                                 userInfo.setUserName(data.getString(ApiUtils.KEY_USR_NAME));
                                 userInfo.setIsLogin(StringUtils.toBool(data.getString(ApiUtils.KEY_USR_IS_LOG_IN)));
                                 userInfo.setNickName(data.getString(ApiUtils.KEY_USR_NICKNAME));
                                 userInfo.setPhone(data.getString(ApiUtils.KEY_USR_PHONE));
                                 userInfo.setCreateTime(data.getString(ApiUtils.KEY_USR_CREATE_TIME));
-                                userInfo.setPortrait(data.getString(ApiUtils.KEY_USR_PORTRAIT));
+                                userInfo.setPortrait(data.getString(ApiUtils.KEY_PORTRAIT));
                                 userInfo.setPortraitSmall(data.getString(ApiUtils.KEY_USR_PORTRAIT_SMALL));
                                 userInfo.setCoverImg(data.getString(ApiUtils.KEY_USR_COVER_IMG));
                                 AppConfig.getAppConfig(mContext).setUserInfo(userInfo);
@@ -212,6 +212,7 @@ public class MyApplication extends Application {
                                 }
                             }
                         } catch (JSONException e) {
+                            signInStatus = "10";
                             e.printStackTrace();
                         }
                     }

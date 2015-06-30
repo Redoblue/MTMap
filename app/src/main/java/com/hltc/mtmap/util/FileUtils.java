@@ -8,7 +8,13 @@ import android.util.Log;
 
 import com.hltc.mtmap.app.AppConfig;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -264,6 +270,12 @@ public class FileUtils {
         if (file.isFile()) {
             file.delete();
         }
+        file.exists();
+    }
+
+    public static void delFile(File file) {
+        if (file.isFile())
+            file.delete();
         file.exists();
     }
 

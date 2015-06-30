@@ -13,9 +13,9 @@ import de.greenrobot.dao.internal.DaoConfig;
 import de.greenrobot.dao.query.Query;
 import de.greenrobot.dao.query.QueryBuilder;
 
-import com.hltc.mtmap.orm.models.MTComment;
-import com.hltc.mtmap.orm.models.MTGrain;
-import com.hltc.mtmap.orm.models.MTUser;
+import com.hltc.mtmap.orm.model.MTComment;
+import com.hltc.mtmap.orm.model.MTGrain;
+import com.hltc.mtmap.orm.model.MTUser;
 
 import com.hltc.mtmap.orm.DaoSession;
 
@@ -26,25 +26,12 @@ import com.hltc.mtmap.orm.DaoSession;
 public class MTCommentDao extends AbstractDao<MTComment, Long> {
 
     public static final String TABLENAME = "MTCOMMENT";
-
-    /**
-     * Properties of entity MTComment.<br/>
-     * Can be used for QueryBuilder and for referencing column names.
-    */
-    public static class Properties {
-        public final static Property Id = new Property(0, long.class, "id", true, "_id");
-        public final static Property Content = new Property(1, String.class, "content", false, "CONTENT");
-        public final static Property Date = new Property(2, java.util.Date.class, "date", false, "DATE");
-        public final static Property ToCommentId = new Property(3, Long.class, "toCommentId", false, "TO_COMMENT_ID");
-        public final static Property UserId = new Property(4, Long.class, "userId", false, "USER_ID");
-        public final static Property GrainId = new Property(5, long.class, "grainId", false, "GRAIN_ID");
-    };
-
     private DaoSession daoSession;
-
+    ;
     private Query<MTComment> mTUser_Comments2UserQuery;
     private Query<MTComment> mTGrain_Comments2GrainQuery;
     private Query<MTComment> mTComment_ChildrenQuery;
+    private String selectDeep;
 
     public MTCommentDao(DaoConfig config) {
         super(config);
@@ -195,8 +182,6 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         return query.list();
     }
 
-    private String selectDeep;
-
     protected String getSelectDeep() {
         if (selectDeep == null) {
             StringBuilder builder = new StringBuilder("SELECT ");
@@ -216,7 +201,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         }
         return selectDeep;
     }
-    
+
     protected MTComment loadCurrentDeep(Cursor cursor, boolean lock) {
         MTComment entity = loadCurrent(cursor, 0, lock);
         int offset = getAllColumns().length;
@@ -234,7 +219,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         MTComment parent = loadCurrentOther(daoSession.getMTCommentDao(), cursor, offset);
         entity.setParent(parent);
 
-        return entity;    
+        return entity;
     }
 
     public MTComment loadDeep(Long key) {
@@ -247,10 +232,10 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         builder.append("WHERE ");
         SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
         String sql = builder.toString();
-        
+
         String[] keyArray = new String[] { key.toString() };
         Cursor cursor = db.rawQuery(sql, keyArray);
-        
+
         try {
             boolean available = cursor.moveToFirst();
             if (!available) {
@@ -263,12 +248,12 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
             cursor.close();
         }
     }
-    
+
     /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
     public List<MTComment> loadAllDeepFromCursor(Cursor cursor) {
         int count = cursor.getCount();
         List<MTComment> list = new ArrayList<MTComment>(count);
-        
+
         if (cursor.moveToFirst()) {
             if (identityScope != null) {
                 identityScope.lock();
@@ -295,11 +280,23 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         }
     }
     
-
     /** A raw-style query where you can pass any WHERE clause and arguments. */
     public List<MTComment> queryDeep(String where, String... selectionArg) {
         Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
         return loadDeepAllAndCloseCursor(cursor);
     }
- 
+
+    /**
+     * Properties of entity MTComment.<br/>
+     * Can be used for QueryBuilder and for referencing column names.
+     */
+    public static class Properties {
+        public final static Property Id = new Property(0, long.class, "id", true, "_id");
+        public final static Property Content = new Property(1, String.class, "content", false, "CONTENT");
+        public final static Property Date = new Property(2, java.util.Date.class, "date", false, "DATE");
+        public final static Property ToCommentId = new Property(3, Long.class, "toCommentId", false, "TO_COMMENT_ID");
+        public final static Property UserId = new Property(4, Long.class, "userId", false, "USER_ID");
+        public final static Property GrainId = new Property(5, long.class, "grainId", false, "GRAIN_ID");
+    }
+
 }

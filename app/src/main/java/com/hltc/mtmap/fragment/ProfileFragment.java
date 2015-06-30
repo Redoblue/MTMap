@@ -1,7 +1,16 @@
 package com.hltc.mtmap.fragment;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -10,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.hltc.mtmap.R;
@@ -18,8 +28,10 @@ import com.hltc.mtmap.activity.profile.FriendListActivity;
 import com.hltc.mtmap.activity.profile.SettingsActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
+import com.hltc.mtmap.util.FileUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -28,21 +40,35 @@ import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
+    /**
+     * 请求码
+     */
+    private static final int IMAGE_REQUEST_CODE = 0;
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int RESULT_REQUEST_CODE = 2;
+
     @InjectView(R.id.sv_profile)
     PullToZoomScrollViewEx scrollView;
+
+    private String[] ways = new String[]{"选择本地图片", "拍照"};
+
+    private CircleImageView portraitCiv;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,6 +114,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         scrollView.getPullRootView().findViewById(R.id.btn_profile_favourite).setOnClickListener(this);
         scrollView.getPullRootView().findViewById(R.id.btn_profile_friend).setOnClickListener(this);
 
+        //编辑头像
+        portraitCiv = (CircleImageView) scrollView.getPullRootView().findViewById(R.id.civ_profile_header_pic);
+        ImageLoader.getInstance().displayImage(AppConfig.getAppConfig(getActivity()).getConfUsrPortraitSmall(), portraitCiv);
+        portraitCiv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDialog();
+            }
+        });
         //更新麦粒数量
         httpGetGrainNumber();
     }
@@ -114,13 +149,123 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         startActivity(intent);
     }
 
+    private void showDialog() {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("设置头像")
+                .setItems(ways, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                Intent intentFromGallery = new Intent();
+                                intentFromGallery.setType("image/*"); // 设置文件类型
+                                intentFromGallery.setAction(Intent.ACTION_GET_CONTENT);
+                                startActivityForResult(intentFromGallery,
+                                        IMAGE_REQUEST_CODE);
+                                break;
+                            case 1:
+                                Intent intentFromCapture = new Intent(
+                                        MediaStore.ACTION_IMAGE_CAPTURE);
+                                // 判断存储卡是否可以用，可用进行存储
+                                String state = Environment.getExternalStorageState();
+                                if (state.equals(Environment.MEDIA_MOUNTED)) {
+                                    File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+                                    File file = new File(path, "avatar.jpg");
+                                    intentFromCapture.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+                                }
+
+                                startActivityForResult(intentFromCapture, CAMERA_REQUEST_CODE);
+                                break;
+                        }
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+// 结果码不等于取消时候
+        if (resultCode != Activity.RESULT_CANCELED) {
+            switch (requestCode) {
+                case IMAGE_REQUEST_CODE:
+                    startPhotoZoom(data.getData());
+                    break;
+                case CAMERA_REQUEST_CODE:
+                    // 判断存储卡是否可以用，可用进行存储
+                    String state = Environment.getExternalStorageState();
+                    if (state.equals(Environment.MEDIA_MOUNTED)) {
+                        File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+                        File tempFile = new File(path, "avatar.jpg");
+                        startPhotoZoom(Uri.fromFile(tempFile));
+                    } else {
+                        Toast.makeText(getActivity(), "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case RESULT_REQUEST_CODE: // 图片缩放完成后
+                    if (data != null) {
+                        getImageToView(data);
+                        String path = Environment.getExternalStoragePublicDirectory(
+                                Environment.DIRECTORY_DCIM).getAbsolutePath() + "/avatar.jpg";
+                        OssManager.getOssManager().uploadImage(path, OssManager.getRemotePath(path));
+                        File file = new File(path);
+                        FileUtils.delFile(file);
+                        String remotePath = OssManager.bucketName + "." + OssManager.ossHost + "/"
+                                + OssManager.getRemotePath(path);
+                        httpUpdatePortrait(remotePath);
+                    }
+                    break;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * 裁剪图片方法实现
+     *
+     * @param uri
+     */
+    public void startPhotoZoom(Uri uri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        // 设置裁剪
+        intent.putExtra("crop", "true");
+        // aspectX aspectY 是宽高的比例
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        // outputX outputY 是裁剪图片宽高
+        intent.putExtra("outputX", 340);
+        intent.putExtra("outputY", 340);
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, RESULT_REQUEST_CODE);
+    }
+
+    /**
+     * 保存裁剪之后的图片数据
+     *
+     * @param data
+     */
+    private void getImageToView(Intent data) {
+        Bundle extras = data.getExtras();
+        if (extras != null) {
+            Bitmap photo = extras.getParcelable("data");
+            Drawable drawable = new BitmapDrawable(this.getResources(), photo);
+            portraitCiv.setImageDrawable(drawable);
+        }
+    }
+
     private void httpGetGrainNumber() {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getConfToken());
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
@@ -148,6 +293,56 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                         .setText(String.valueOf(data.getInt(ApiUtils.KEY_GRAIN_WANLE)));
                                 ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_other))
                                         .setText(String.valueOf(data.getInt(ApiUtils.KEY_GRAIN_OTHER)));
+                            } else {
+                                JSONObject girl = new JSONObject(result);
+                                String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
+                                if (errorMsg != null) {
+                                    // 发送验证码失败
+                                    // TODO 没有验证错误码
+                                    ToastUtils.showShort(getActivity(), errorMsg);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+
+                    }
+                });
+    }
+
+    private void httpUpdatePortrait(String path) {
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_SOURCE, "Android");
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getConfToken());
+            json.put(ApiUtils.KEY_PORTRAIT, path);
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpUtils http = new HttpUtils();
+        http.send(HttpRequest.HttpMethod.POST,
+                ApiUtils.URL_ROOT + ApiUtils.URL_GRAIN_NUMBER,
+                params,
+                new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+                        if (StringUtils.isEmpty(result))
+                            return;
+                        try {
+                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                                Toast.makeText(getActivity(), "头像更新成功", Toast.LENGTH_SHORT).show();
                             } else {
                                 JSONObject girl = new JSONObject(result);
                                 String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);

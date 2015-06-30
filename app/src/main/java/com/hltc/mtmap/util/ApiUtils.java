@@ -19,12 +19,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 public class ApiUtils {
 
-    //    public static final String URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
-    public static final String URL_ROOT = "http://192.168.0.109/maitian/v1/";
+    public static final String URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
+//    public static final String URL_ROOT = "http://192.168.0.109/maitian/v1/";
 
     public static final String URL_REQ_VCODE_0 = "user/register/verify_code.json";
     public static final String URL_VAL_VCODE_0 = "user/register/verify.json";
@@ -54,6 +53,12 @@ public class ApiUtils {
     public static final String URL_LOGIN_BY_TOKEN = "user/login/login_by_token.json";
     // 朋友
     public static final String URL_FRIEND_ADD_FRIEND = "friend/add_friend.json";
+    public static final String URL_FRIEND_GET_LIST = "my/friends.json";
+    public static final String URL_FRIEND_GET_STATUS = "my/friends/adding.json";
+    public static final String URL_FRIEND_AGREE = "friend/agree.json";
+    //个人
+    public static final String URL_UPDATE__PORTRAIT = "my/update_portrait.json";
+    public static final String URL_SEARCH_FRIEND_BY_KEYWORD = "my/friends/search.json";
 
     public static final String KEY_SOURCE = "source";
     public static final String KEY_PHONE = "phone_number";
@@ -68,12 +73,12 @@ public class ApiUtils {
     public static final String KEY_UNIQUE_INFO = "unique_info";
 
     //注册
-    public static final String KEY_USR_ID = "userId";
+    public static final String KEY_USER_ID = "userId";
     public static final String KEY_USR_NAME = "userName";
     public static final String KEY_USR_IS_LOG_IN = "isLogin";
     public static final String KEY_USR_NICKNAME = "nickName";
     public static final String KEY_USR_PHONE = "phone";
-    public static final String KEY_USR_PORTRAIT = "portrait";
+    public static final String KEY_PORTRAIT = "portrait";
     public static final String KEY_USR_PORTRAIT_SMALL = "portraitSmall";
     public static final String KEY_USR_CREATE_TIME = "createTime";
     public static final String KEY_USR_COVER_IMG = "coverImg";
@@ -98,9 +103,12 @@ public class ApiUtils {
     public static final String KEY_GRAIN_WANLE = "wanle";
     public static final String KEY_GRAIN_OTHER = "other";
     //朋友
-    public static final String KEY_FRIEND_TOID = "toId";
-    public static final String KEY_FRIEND_TEXT = "text";
-    public static final String KEY_FRIEND_REMARK = "remark";
+    public static final String KEY_TOID = "toId";
+    public static final String KEY_TEXT = "text";
+    public static final String KEY_REMARK = "remark";
+    public static final String KEY_FIRST_CHARACTER = "firstCharacter";
+    public static final String KEY_FROM_ID = "fromId";
+    public static final String KEY_KEYWORD = "keyword";
 
     public static String getRequestVCodeUrl(int source) {
         return source == 0 ?
@@ -170,17 +178,16 @@ public class ApiUtils {
         return URL_ROOT + URL_FRIEND_ADD_FRIEND;
     }
 
-    public static void httpAddFriend(List<ContactItem> list, int position) {
-        ContactItem contact = list.get(position);
+    public static void httpAddFriend(ContactItem contact) {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
         try {
-            json.put(ApiUtils.KEY_USR_ID, AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrUserId());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(MyApplication.getContext()).getConfToken());
-            json.put(ApiUtils.KEY_FRIEND_TOID, contact.getUserId());
-            json.put(ApiUtils.KEY_FRIEND_TEXT, contact.getText());
-            json.put(ApiUtils.KEY_FRIEND_REMARK, contact.getName());
+            json.put(ApiUtils.KEY_TOID, contact.getUserId());
+            json.put(ApiUtils.KEY_TEXT, contact.getText());
+            json.put(ApiUtils.KEY_REMARK, contact.getName());
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
             e.printStackTrace();

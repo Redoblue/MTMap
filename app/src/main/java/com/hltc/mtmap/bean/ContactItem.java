@@ -6,7 +6,7 @@ package com.hltc.mtmap.bean;
 public class ContactItem {
 
     private long userId;
-    private String portraitSmall;
+    private String portrait;
     private String name;
     private String nickName;
     private String phone;
@@ -21,12 +21,12 @@ public class ContactItem {
         this.userId = userId;
     }
 
-    public String getPortraitSmall() {
-        return portraitSmall;
+    public String getPortrait() {
+        return portrait;
     }
 
-    public void setPortraitSmall(String portraitSmall) {
-        this.portraitSmall = portraitSmall;
+    public void setPortrait(String portrait) {
+        this.portrait = portrait;
     }
 
     public String getName() {

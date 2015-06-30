@@ -124,6 +124,18 @@
         <activity
             android:name=".activity.profile.setting.FeedbackSuccessDialog"
             android:theme="@android:style/Theme.Dialog" />
+        <activity
+            android:name=".activity.profile.FriendStatusActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.profile.UserDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.profile.AddFriendActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.profile.SearchFriendActivity"
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name="com.umeng.message.NotificationProxyBroadcastReceiver"

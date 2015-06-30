@@ -60,7 +60,7 @@ public class CheckContactListAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        ImageLoader.getInstance().displayImage(getItem(position).getPortraitSmall(), holder.portrait);
+        ImageLoader.getInstance().displayImage(getItem(position).getPortrait(), holder.portrait);
         holder.name.setText(getItem(position).getName());
         holder.nickName.setText(getItem(position).getNickName());
         holder.select.setChecked(getItem(position).isSelected());
@@ -70,7 +70,7 @@ public class CheckContactListAdapter extends BaseAdapter {
                 if (!getItem(position).isSelected()) {
                     list.get(position).setIsSelected(true);
                     // 加好友请求
-                    ApiUtils.httpAddFriend(list, position);
+                    ApiUtils.httpAddFriend(list.get(position));
                 } else {
                     list.get(position).setIsSelected(true);
                 }

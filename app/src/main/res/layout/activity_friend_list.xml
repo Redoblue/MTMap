@@ -9,18 +9,6 @@
 
     <include layout="@layout/bar_green" />
 
-    <com.hltc.mtmap.widget.ClearEditText
-        android:id="@+id/ce_friend_list_search"
-        android:layout_width="fill_parent"
-        android:layout_height="38dp"
-        android:layout_margin="5dp"
-        android:background="@drawable/shape_search_bar"
-        android:drawableLeft="@drawable/search_bar_icon_normal"
-        android:hint="请输入关键字"
-        android:inputType="text"
-        android:singleLine="true"
-        android:textSize="15sp" />
-
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
@@ -44,12 +32,13 @@
             android:textSize="30.0dip"
             android:visibility="invisible" />
 
-        <com.hltc.mtmap.widget.SideBar
+        <com.hltc.mtmap.widget.CharacterBar
             android:id="@+id/sb_friend_list_sidebar"
             android:layout_width="30.0dip"
             android:layout_height="match_parent"
             android:layout_gravity="end|center"
-            android:layout_marginBottom="3dp" />
+            android:layout_marginBottom="3dp"
+            android:visibility="visible" />
     </FrameLayout>
 
 </LinearLayout>

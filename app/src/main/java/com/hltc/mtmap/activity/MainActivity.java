@@ -14,6 +14,7 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.profile.ProfileActivity;
 import com.hltc.mtmap.activity.publish.PublishActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;

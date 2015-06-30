@@ -79,6 +79,7 @@ public class AppUtils {
         ContentResolver resolver = context.getContentResolver();
         Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
         if (cursor != null) {
+            outer:
             while (cursor.moveToNext()) {
                 String number = StringUtils.getFormatedPhone(cursor.getString(PHONES_NUMBER_INDEX));
                 if (StringUtils.isEmpty(number)
@@ -87,13 +88,13 @@ public class AppUtils {
                 }
                 for (ContactInfo c : cis) {
                     if (c.getNumber().equals(number))
-                        continue;
-                    String name = cursor.getString(PHONES_DISPLAY_NAME_INDEX);
-                    ContactInfo ci = new ContactInfo();
-                    ci.setDisplayName(name);
-                    ci.setNumber(number);
-                    cis.add(ci);
+                        continue outer;
                 }
+                String name = cursor.getString(PHONES_DISPLAY_NAME_INDEX);
+                ContactInfo ci = new ContactInfo();
+                ci.setDisplayName(name);
+                ci.setNumber(number);
+                cis.add(ci);
             }
             cursor.close();
         }
