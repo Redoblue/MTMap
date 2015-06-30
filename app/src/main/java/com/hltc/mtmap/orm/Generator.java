@@ -29,7 +29,7 @@ public class Generator {
          * 建立数据库
          */
         Entity mtUser = schema.addEntity("MTUser");
-        mtUser.addIdProperty().primaryKey().notNull();
+        mtUser.addLongProperty("userId").primaryKey().notNull();
         mtUser.addStringProperty("nickName").notNull();
         mtUser.addStringProperty("createTime").notNull();
         mtUser.addStringProperty("phone").notNull();

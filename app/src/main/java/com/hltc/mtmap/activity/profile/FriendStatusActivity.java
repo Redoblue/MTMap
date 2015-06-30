@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.adapter.FriendStatusAdapter;
+import com.hltc.mtmap.adapter.FriendStatusListAdapter;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
@@ -45,6 +45,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 
 /**
  * Created by redoblue on 15-6-29.
@@ -66,7 +67,7 @@ public class FriendStatusActivity extends Activity {
     ListView lvNewFriend;
 
     private List<FriendStatus> adapterList;
-    private FriendStatusAdapter adapter;
+    private FriendStatusListAdapter adapter;
     private List<ContactInfo> contacts;
 
     @Override
@@ -99,11 +100,16 @@ public class FriendStatusActivity extends Activity {
         });
 
         adapterList = new ArrayList<>();
-        adapter = new FriendStatusAdapter(this, adapterList);
+        adapter = new FriendStatusListAdapter(this, adapterList);
         lvNewFriend.setAdapter(adapter);
         httpFetchFriendStatusList();
         contacts = AppUtils.getContacts(this);
         httpCheckContact();
+    }
+
+    @OnClick(R.id.btn_bar_left)
+    public void onClick() {
+        AppManager.getAppManager().finishActivity(this);
     }
 
     private void httpFetchFriendStatusList() {

@@ -203,7 +203,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
             SqlUtils.appendColumns(builder, "T2", daoSession.getMTCategoryDao().getAllColumns());
             builder.append(" FROM MTGRAIN T");
             builder.append(" LEFT JOIN MTSITE T0 ON T.'SITE_ID'=T0.'_id'");
-            builder.append(" LEFT JOIN MTUSER T1 ON T.'USER_ID'=T1.'_id'");
+            builder.append(" LEFT JOIN MTUSER T1 ON T.'USER_ID'=T1.'USER_ID'");
             builder.append(" LEFT JOIN MTCATEGORY T2 ON T.'CATEGORY_ID'=T2.'_id'");
             builder.append(' ');
             selectDeep = builder.toString();

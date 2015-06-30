@@ -35,7 +35,7 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MTUSER' (" + //
-                "'_id' INTEGER PRIMARY KEY NOT NULL ," + // 0: id
+                "'USER_ID' INTEGER PRIMARY KEY NOT NULL ," + // 0: userId
                 "'NICK_NAME' TEXT NOT NULL ," + // 1: nickName
                 "'CREATE_TIME' TEXT NOT NULL ," + // 2: createTime
                 "'PHONE' TEXT NOT NULL ," + // 3: phone
@@ -54,7 +54,7 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, MTUser entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+        stmt.bindLong(1, entity.getUserId());
         stmt.bindString(2, entity.getNickName());
         stmt.bindString(3, entity.getCreateTime());
         stmt.bindString(4, entity.getPhone());
@@ -79,7 +79,7 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
     @Override
     public MTUser readEntity(Cursor cursor, int offset) {
         MTUser entity = new MTUser( //
-            cursor.getLong(offset + 0), // id
+                cursor.getLong(offset + 0), // userId
                 cursor.getString(offset + 1), // nickName
                 cursor.getString(offset + 2), // createTime
             cursor.getString(offset + 3), // phone
@@ -93,7 +93,7 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTUser entity, int offset) {
-        entity.setId(cursor.getLong(offset + 0));
+        entity.setUserId(cursor.getLong(offset + 0));
         entity.setNickName(cursor.getString(offset + 1));
         entity.setCreateTime(cursor.getString(offset + 2));
         entity.setPhone(cursor.getString(offset + 3));
@@ -105,7 +105,7 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTUser entity, long rowId) {
-        entity.setId(rowId);
+        entity.setUserId(rowId);
         return rowId;
     }
     
@@ -113,7 +113,7 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
     @Override
     public Long getKey(MTUser entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.getUserId();
         } else {
             return null;
         }
@@ -130,7 +130,7 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, long.class, "id", true, "_id");
+        public final static Property UserId = new Property(0, long.class, "userId", true, "USER_ID");
         public final static Property NickName = new Property(1, String.class, "nickName", false, "NICK_NAME");
         public final static Property CreateTime = new Property(2, String.class, "createTime", false, "CREATE_TIME");
         public final static Property Phone = new Property(3, String.class, "phone", false, "PHONE");

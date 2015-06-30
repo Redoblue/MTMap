@@ -215,7 +215,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         OssManager.getOssManager().uploadImage(path, OssManager.getRemotePath(path));
                         File file = new File(path);
                         FileUtils.delFile(file);
-                        String remotePath = OssManager.bucketName + "." + OssManager.ossHost + "/"
+                        String remotePath = "http://" + OssManager.bucketName + "." + OssManager.ossHost + "/"
                                 + OssManager.getRemotePath(path);
                         httpUpdatePortrait(remotePath);
                     }
@@ -332,7 +332,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.URL_ROOT + ApiUtils.URL_GRAIN_NUMBER,
+                ApiUtils.URL_ROOT + ApiUtils.URL_UPDATE_PORTRAIT,
                 params,
                 new RequestCallBack<String>() {
                     @Override

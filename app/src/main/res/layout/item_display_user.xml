@@ -10,7 +10,7 @@
         android:gravity="center_vertical">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/civ_item_check_contact_portrait"
+            android:id="@+id/civ_portrait"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="20dp"
@@ -22,28 +22,31 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/civ_item_check_contact_portrait"
-            android:layout_toRightOf="@+id/civ_item_check_contact_portrait"
+            android:layout_marginRight="20dp"
+            android:layout_toEndOf="@+id/civ_portrait"
+            android:layout_toRightOf="@+id/civ_portrait"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_item_check_contact_name"
+                android:id="@+id/tv_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:text="Allen S.T"
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/tv_check_contact_nickname"
+                android:id="@+id/tv_signature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:singleLine="true"
                 android:text="没错我就是第二美男"
                 android:textSize="12sp" />
         </LinearLayout>
 
         <ToggleButton
-            android:id="@+id/tb_item_check_contact_select"
+            android:id="@+id/tb_select"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentEnd="true"

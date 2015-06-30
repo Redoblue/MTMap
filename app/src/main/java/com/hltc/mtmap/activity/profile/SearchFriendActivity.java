@@ -52,7 +52,7 @@ import butterknife.OnClick;
 /**
  * Created by redoblue on 15-6-30.
  */
-public class SearchFriendActivity extends Activity implements TextView.OnEditorActionListener {
+public class SearchFriendActivity extends Activity implements EditText.OnEditorActionListener {
 
     @InjectView(R.id.et_search_friend)
     EditText etSearchFriend;
@@ -84,6 +84,7 @@ public class SearchFriendActivity extends Activity implements TextView.OnEditorA
     }
 
     private void initView() {
+        etSearchFriend.setOnEditorActionListener(this);
         etSearchFriend.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -104,6 +105,9 @@ public class SearchFriendActivity extends Activity implements TextView.OnEditorA
                     return;
                 }
                 list.clear();
+                if (users == null) {
+                    return;
+                }
                 for (MTUser user : users) {
                     if (user.getPhone().startsWith(phon)) {
                         list.add(user);
@@ -137,7 +141,7 @@ public class SearchFriendActivity extends Activity implements TextView.OnEditorA
                     httpSearchFriendByKeyword(phone);
                 }
         }
-        return false;
+        return true;
     }
 
     private void httpCheckContact() {

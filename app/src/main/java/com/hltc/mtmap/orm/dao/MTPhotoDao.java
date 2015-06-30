@@ -164,7 +164,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
             builder.append(',');
             SqlUtils.appendColumns(builder, "T1", daoSession.getMTGrainDao().getAllColumns());
             builder.append(" FROM MTPHOTO T");
-            builder.append(" LEFT JOIN MTUSER T0 ON T.'USER_ID'=T0.'_id'");
+            builder.append(" LEFT JOIN MTUSER T0 ON T.'USER_ID'=T0.'USER_ID'");
             builder.append(" LEFT JOIN MTGRAIN T1 ON T.'GRAIN_ID'=T1.'_id'");
             builder.append(' ');
             selectDeep = builder.toString();

@@ -193,7 +193,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
             builder.append(',');
             SqlUtils.appendColumns(builder, "T2", daoSession.getMTCommentDao().getAllColumns());
             builder.append(" FROM MTCOMMENT T");
-            builder.append(" LEFT JOIN MTUSER T0 ON T.'USER_ID'=T0.'_id'");
+            builder.append(" LEFT JOIN MTUSER T0 ON T.'USER_ID'=T0.'USER_ID'");
             builder.append(" LEFT JOIN MTGRAIN T1 ON T.'GRAIN_ID'=T1.'_id'");
             builder.append(" LEFT JOIN MTCOMMENT T2 ON T.'TO_COMMENT_ID'=T2.'_id'");
             builder.append(' ');

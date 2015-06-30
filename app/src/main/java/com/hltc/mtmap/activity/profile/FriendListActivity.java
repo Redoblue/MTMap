@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.adapter.FriendAdapter;
+import com.hltc.mtmap.adapter.FriendListAdapter;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.gmodel.Friend;
@@ -67,7 +67,7 @@ public class FriendListActivity extends Activity {
     @InjectView(R.id.btn_bar_right)
     Button btnBarRight;
 
-    private FriendAdapter adapter;
+    private FriendListAdapter adapter;
     private CharacterParser characterParser;
     private List<Friend> adapterList;
     private PinyinComparator pinyinComparator;
@@ -125,7 +125,7 @@ public class FriendListActivity extends Activity {
 //        adapterList = filledData(getResources().getStringArray(R.array.date));
 //        Collections.sort(adapterList, pinyinComparator);
         adapterList = new ArrayList<>();
-        adapter = new FriendAdapter(this, adapterList);
+        adapter = new FriendListAdapter(this, adapterList);
         sortListView.setAdapter(adapter);
         adapter.updateListView(adapterList);
         httpFetchFriendList();

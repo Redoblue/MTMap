@@ -19,11 +19,11 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class FriendAdapter extends BaseAdapter implements SectionIndexer {
+public class FriendListAdapter extends BaseAdapter implements SectionIndexer {
     private List<Friend> list = null;
     private Context mContext;
 
-    public FriendAdapter(Context mContext, List<Friend> list) {
+    public FriendListAdapter(Context mContext, List<Friend> list) {
         this.mContext = mContext;
         this.list = list;
     }

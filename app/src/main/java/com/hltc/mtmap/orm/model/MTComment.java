@@ -140,7 +140,7 @@ public class MTComment {
     public void setMTUser(MTUser mTUser) {
         synchronized (this) {
             this.mTUser = mTUser;
-            userId = mTUser == null ? null : mTUser.getId();
+            userId = mTUser == null ? null : mTUser.getUserId();
             mTUser__resolvedKey = userId;
         }
     }

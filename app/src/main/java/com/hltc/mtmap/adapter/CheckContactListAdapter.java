@@ -50,19 +50,19 @@ public class CheckContactListAdapter extends BaseAdapter {
         final ViewHolder holder;
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext)
-                    .inflate(R.layout.item_check_contact, parent, false);
+                    .inflate(R.layout.item_display_user, parent, false);
             holder = new ViewHolder();
-            holder.portrait = (CircleImageView) convertView.findViewById(R.id.civ_item_check_contact_portrait);
-            holder.name = (TextView) convertView.findViewById(R.id.tv_item_check_contact_name);
-            holder.nickName = (TextView) convertView.findViewById(R.id.tv_check_contact_nickname);
-            holder.select = (ToggleButton) convertView.findViewById(R.id.tb_item_check_contact_select);
+            holder.portrait = (CircleImageView) convertView.findViewById(R.id.civ_portrait);
+            holder.name = (TextView) convertView.findViewById(R.id.tv_name);
+            holder.signature = (TextView) convertView.findViewById(R.id.tv_signature);
+            holder.select = (ToggleButton) convertView.findViewById(R.id.tb_select);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         ImageLoader.getInstance().displayImage(getItem(position).getPortrait(), holder.portrait);
         holder.name.setText(getItem(position).getName());
-        holder.nickName.setText(getItem(position).getNickName());
+        holder.signature.setText(getItem(position).getNickName());
         holder.select.setChecked(getItem(position).isSelected());
         holder.select.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +83,7 @@ public class CheckContactListAdapter extends BaseAdapter {
     private class ViewHolder {
         CircleImageView portrait;
         TextView name;
-        TextView nickName;
+        TextView signature;
         ToggleButton select;
     }
 }

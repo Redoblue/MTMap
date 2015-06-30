@@ -8,27 +8,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_gravity="center_vertical"
         android:background="@color/grey"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:padding="8dp">
 
         <EditText
-            android:id="@+id/et_search_friend"
+            android:id="@+id/et_edit"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/shape_et_search"
-            android:drawableLeft="@drawable/ic_action_search"
             android:drawablePadding="8dp"
-            android:drawableStart="@drawable/ic_action_search"
-            android:hint="搜索手机号码"
-            android:imeOptions="actionSearch"
-            android:inputType="phone"
-            android:paddingLeft="8dp"
+            android:hint="打个招呼吧"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:paddingLeft="10dp"
             android:singleLine="true" />
 
         <Button
-            android:id="@+id/btn_search_friend_cancel"
+            android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginLeft="8dp"
@@ -40,9 +39,4 @@
             android:textColor="@color/white"
             android:textSize="15sp" />
     </LinearLayout>
-
-    <ListView
-        android:id="@+id/lv_search_friend"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 </LinearLayout>

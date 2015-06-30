@@ -102,7 +102,7 @@ public class MTFavourite {
         }
         synchronized (this) {
             this.mTUser = mTUser;
-            userId = mTUser.getId();
+            userId = mTUser.getUserId();
             mTUser__resolvedKey = userId;
         }
     }

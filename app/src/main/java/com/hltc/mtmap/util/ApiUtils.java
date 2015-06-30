@@ -57,7 +57,7 @@ public class ApiUtils {
     public static final String URL_FRIEND_GET_STATUS = "my/friends/adding.json";
     public static final String URL_FRIEND_AGREE = "friend/agree.json";
     //个人
-    public static final String URL_UPDATE__PORTRAIT = "my/update_portrait.json";
+    public static final String URL_UPDATE_PORTRAIT = "my/update_portrait.json";
     public static final String URL_SEARCH_FRIEND_BY_KEYWORD = "my/friends/search.json";
 
     public static final String KEY_SOURCE = "source";

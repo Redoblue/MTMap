@@ -1,6 +1,7 @@
 package com.hltc.mtmap.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.profile.FriendRequestActivity;
 import com.hltc.mtmap.activity.profile.FriendStatusActivity;
 import com.hltc.mtmap.gmodel.FriendStatus;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -20,12 +22,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by redoblue on 15-6-29.
  */
-public class FriendStatusAdapter extends BaseAdapter {
+public class FriendStatusListAdapter extends BaseAdapter {
 
     private List<FriendStatus> list = null;
     private Context mContext;
 
-    public FriendStatusAdapter(Context mContext, List<FriendStatus> list) {
+    public FriendStatusListAdapter(Context mContext, List<FriendStatus> list) {
         this.mContext = mContext;
         this.list = list;
     }
@@ -46,7 +48,7 @@ public class FriendStatusAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder = new ViewHolder();
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_friend_status, null);
@@ -62,7 +64,7 @@ public class FriendStatusAdapter extends BaseAdapter {
         ImageLoader.getInstance().displayImage(getItem(position).getUserPortrait(), holder.portrait);
         holder.name.setText(getItem(position).getNickName());
         holder.text.setText(getItem(position).getText());
-        String s = getItem(position).getStatus();
+        final String s = getItem(position).getStatus();
         if (s.equals(FriendStatusActivity.STATUS_WAITING)) {
             holder.status.setText("等待验证");
             holder.status.setBackgroundResource(R.color.transparent);
@@ -76,6 +78,18 @@ public class FriendStatusAdapter extends BaseAdapter {
             holder.status.setText("已添加");
             holder.status.setBackgroundResource(R.color.transparent);
         }
+
+        holder.status.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (s.equals(FriendStatusActivity.STATUS_ADDABLE)) {
+                    Intent intent = new Intent(mContext, FriendRequestActivity.class);
+                    intent.putExtra("toId", getItem(position).getUserId());
+                    intent.putExtra("remark", getItem(position).getText());
+                    mContext.startActivity(intent);
+                }
+            }
+        });
 
         return convertView;
     }

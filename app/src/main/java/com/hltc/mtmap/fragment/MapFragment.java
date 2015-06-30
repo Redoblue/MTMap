@@ -41,7 +41,7 @@ import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.publish.CreateGrainActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
-import com.hltc.mtmap.bean.GrainItem;
+import com.hltc.mtmap.bean.SwipeGrainItem;
 import com.hltc.mtmap.bean.RegionItem;
 import com.hltc.mtmap.bean.SiteItem;
 import com.hltc.mtmap.util.AMapUtils;
@@ -103,7 +103,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     private LocationManagerProxy locationManagerProxy;
     private String cityCode;
 
-    private List<GrainItem> grains;
+    private List<SwipeGrainItem> grains;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -356,12 +356,12 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                                 grains = new ArrayList<>();
                                 JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
                                 for (int i = 0; i < data.length(); i++) {
-                                    GrainItem grainItem = new GrainItem();
+                                    SwipeGrainItem swipeGrainItem = new SwipeGrainItem();
                                     JSONObject grain = data.getJSONObject(i);
-                                    grainItem.setGrainId(grain.getLong("grainId"));
-                                    grainItem.setText(grain.getString("text"));
-                                    grainItem.setUserId(grain.getLong("userId"));
-                                    grainItem.setPortraitSmall(grain.getString("userSmallPortait"));
+                                    swipeGrainItem.setGrainId(grain.getLong("grainId"));
+                                    swipeGrainItem.setText(grain.getString("text"));
+                                    swipeGrainItem.setUserId(grain.getLong("userId"));
+                                    swipeGrainItem.setPortrait(grain.getString("userSmallPortait"));
 
                                     SiteItem siteItem = new SiteItem();
                                     JSONObject site = grain.getJSONObject("site");
@@ -372,18 +372,18 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                                     siteItem.setAddress(site.getString("address"));
                                     siteItem.setPhone(site.getString("phone"));
 
-                                    grainItem.setSite(siteItem);
-                                    grains.add(grainItem);
+                                    swipeGrainItem.setSite(siteItem);
+                                    grains.add(swipeGrainItem);
 
                                     //显示到overlay
-                                    for (GrainItem g : grains) {
+                                    for (SwipeGrainItem g : grains) {
                                         LatLng latlng = new LatLng(g.getSite().getLat(), g.getSite().getLon());
-                                        RegionItem item = new RegionItem(latlng, g.getPortraitSmall());
+                                        RegionItem item = new RegionItem(latlng, g.getPortrait());
                                         overlay.addClusterItem(item);
                                     }
 
                                     //保存到数据库
-                                    for (GrainItem g : grains) {
+                                    for (SwipeGrainItem g : grains) {
                                         //TODO
                                     }
                                 }

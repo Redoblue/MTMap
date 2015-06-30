@@ -19,7 +19,7 @@ import com.hltc.mtmap.orm.dao.MTUserDao;
  */
 public class MTUser {
 
-    private long id;
+    private long userId;
     /** Not-null value. */
     private String nickName;
     /** Not-null value. */
@@ -50,12 +50,12 @@ public class MTUser {
     public MTUser() {
     }
 
-    public MTUser(long id) {
-        this.id = id;
+    public MTUser(long userId) {
+        this.userId = userId;
     }
 
-    public MTUser(long id, String nickName, String createTime, String phone, String portrait, String coverImg, String signature) {
-        this.id = id;
+    public MTUser(long userId, String nickName, String createTime, String phone, String portrait, String coverImg, String signature) {
+        this.userId = userId;
         this.nickName = nickName;
         this.createTime = createTime;
         this.phone = phone;
@@ -70,12 +70,12 @@ public class MTUser {
         myDao = daoSession != null ? daoSession.getMTUserDao() : null;
     }
 
-    public long getId() {
-        return id;
+    public long getUserId() {
+        return userId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setUserId(long userId) {
+        this.userId = userId;
     }
 
     /** Not-null value. */
@@ -145,7 +145,7 @@ public class MTUser {
                 throw new DaoException("Entity is detached from DAO context");
             }
             MTCommentDao targetDao = daoSession.getMTCommentDao();
-            List<MTComment> comments2UserNew = targetDao._queryMTUser_Comments2User(id);
+            List<MTComment> comments2UserNew = targetDao._queryMTUser_Comments2User(userId);
             synchronized (this) {
                 if(comments2User == null) {
                     comments2User = comments2UserNew;
@@ -167,7 +167,7 @@ public class MTUser {
                 throw new DaoException("Entity is detached from DAO context");
             }
             MTFavouriteDao targetDao = daoSession.getMTFavouriteDao();
-            List<MTFavourite> favourite2UserNew = targetDao._queryMTUser_Favourite2User(id);
+            List<MTFavourite> favourite2UserNew = targetDao._queryMTUser_Favourite2User(userId);
             synchronized (this) {
                 if(favourite2User == null) {
                     favourite2User = favourite2UserNew;
@@ -189,7 +189,7 @@ public class MTUser {
                 throw new DaoException("Entity is detached from DAO context");
             }
             MTGrainDao targetDao = daoSession.getMTGrainDao();
-            List<MTGrain> grains2UserNew = targetDao._queryMTUser_Grains2User(id);
+            List<MTGrain> grains2UserNew = targetDao._queryMTUser_Grains2User(userId);
             synchronized (this) {
                 if(grains2User == null) {
                     grains2User = grains2UserNew;
@@ -211,7 +211,7 @@ public class MTUser {
                 throw new DaoException("Entity is detached from DAO context");
             }
             MTPhotoDao targetDao = daoSession.getMTPhotoDao();
-            List<MTPhoto> photo2UserNew = targetDao._queryMTUser_Photo2User(id);
+            List<MTPhoto> photo2UserNew = targetDao._queryMTUser_Photo2User(userId);
             synchronized (this) {
                 if(photo2User == null) {
                     photo2User = photo2UserNew;
