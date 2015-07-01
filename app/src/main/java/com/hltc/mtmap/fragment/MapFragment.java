@@ -41,9 +41,10 @@ import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.publish.CreateGrainActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
-import com.hltc.mtmap.bean.SwipeGrainItem;
+import com.hltc.mtmap.bean.MapInfo;
 import com.hltc.mtmap.bean.RegionItem;
 import com.hltc.mtmap.bean.SiteItem;
+import com.hltc.mtmap.bean.SwipeGrainItem;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -101,13 +102,14 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     private LatLng myLocation;
     private LatLng lastLocation;
     private LocationManagerProxy locationManagerProxy;
-    private String cityCode;
+    private MapInfo mMapInfo;
 
     private List<SwipeGrainItem> grains;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("MapFragment", "onCreateView");
         if (MainActivity.isVisitor) {
             View view = inflater.inflate(R.layout.window_remind_login, container, false);
             ImageView iv = (ImageView) view.findViewById(R.id.btn_remind_login);
@@ -124,10 +126,15 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             View view = inflater.inflate(R.layout.fragment_map, container, false);
             ButterKnife.inject(this, view);
             mMapView.onCreate(savedInstanceState);
+            initData();
             initAmap();
             initArcMenu();
             return view;
         }
+    }
+
+    private void initData() {
+        mMapInfo = AppConfig.getAppConfig(getActivity()).getMapInfo();
     }
 
     private void initAmap() {
@@ -211,6 +218,14 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     @Override
     public void onMapLoaded() {
         Log.d("MapFragment", "onMapLoaded");
+
+        //加载完地图进入上次最后地点
+        if (!StringUtils.isEmpty(mMapInfo.getLatitude())) {
+            LatLng latLng = new LatLng(StringUtils.toDouble(
+                    mMapInfo.getLatitude()), StringUtils.toDouble(mMapInfo.getLongitude()));
+            mAmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, defaultZoom));
+        }
+
         overlay = new
                 ClusterOverlay(mAmap, AMapUtils.dp2px(getActivity(), clusterRadius), getActivity());
         overlay.setClusterRenderer(new ClusterRender() {
@@ -245,7 +260,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         });
 
 //        fillDataFromDb();
-        httpQueryGrain(0);
+        httpQueryGrain(currentCategory);
     }
 
     @Override
@@ -265,8 +280,16 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             myLocation = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
             mAmap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, defaultZoom));
             lastLocation = mAmap.getCameraPosition().target;
-            cityCode = aMapLocation.getCityCode();
             currentZoom = mAmap.getCameraPosition().zoom;
+
+            //更新位置信息
+            mMapInfo.setLatitude(String.valueOf(aMapLocation.getLatitude()));
+            mMapInfo.setLongitude(String.valueOf(aMapLocation.getLongitude()));
+            mMapInfo.setCityCode(aMapLocation.getCityCode());
+            mMapInfo.setProvince(aMapLocation.getProvince());
+            mMapInfo.setAdCode(aMapLocation.getAdCode());
+            mMapInfo.setDistrict(aMapLocation.getDistrict());
+            mMapInfo.setCity(aMapLocation.getCity());
         }
     }
 
@@ -327,12 +350,12 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         try {
             json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getConfToken());
-//            if (currentCategory != 0) {
-            json.put(ApiUtils.KEY_GRAIN_MCATEID, CreateGrainActivity.mCateId[cateId]);
-//            }
-            json.put(ApiUtils.KEY_GRAIN_CITYCODE, cityCode);
-            json.put(ApiUtils.KEY_GRAIN_LON, mAmap.getCameraPosition().target.longitude);
-            json.put(ApiUtils.KEY_GRAIN_LAT, mAmap.getCameraPosition().target.latitude);
+            if (currentCategory != 0) {
+                json.put(ApiUtils.KEY_GRAIN_MCATEID, CreateGrainActivity.mCateId[cateId]);
+            }
+            json.put(ApiUtils.KEY_GRAIN_CITYCODE, mMapInfo.getCityCode());
+            json.put(ApiUtils.KEY_GRAIN_LON, String.valueOf(mAmap.getCameraPosition().target.longitude));
+            json.put(ApiUtils.KEY_GRAIN_LAT, String.valueOf(mAmap.getCameraPosition().target.latitude));
             json.put(ApiUtils.KEY_GRAIN_RADIUS, String.valueOf(radius));
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
@@ -415,6 +438,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("MapFragment", "onResume");
         if (mMapView != null)
             mMapView.onResume();
     }
@@ -422,6 +446,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     @Override
     public void onPause() {
         super.onPause();
+        Log.d("MapFragment", "onPause");
         if (mMapView != null)
             mMapView.onPause();
     }

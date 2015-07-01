@@ -18,9 +18,10 @@
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/civ_profile_header_pic"
-        android:layout_width="98dp"
-        android:layout_height="98dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_centerInParent="true"
+        android:scaleType="centerCrop"
         android:src="@drawable/profile_header_pic"
         app:border_color="@color/white"
         app:border_width="4dp" />

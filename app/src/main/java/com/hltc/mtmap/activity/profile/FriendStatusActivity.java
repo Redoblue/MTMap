@@ -18,7 +18,7 @@ import com.hltc.mtmap.adapter.FriendStatusListAdapter;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.bean.ContactInfo;
+import com.hltc.mtmap.bean.PhoneContact;
 import com.hltc.mtmap.bean.ContactItem;
 import com.hltc.mtmap.gmodel.FriendStatus;
 import com.hltc.mtmap.util.AMapUtils;
@@ -68,7 +68,7 @@ public class FriendStatusActivity extends Activity {
 
     private List<FriendStatus> adapterList;
     private FriendStatusListAdapter adapter;
-    private List<ContactInfo> contacts;
+    private List<PhoneContact> contacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +176,7 @@ public class FriendStatusActivity extends Activity {
             json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
             JSONArray array = new JSONArray();
-            for (ContactInfo contact : contacts) {
+            for (PhoneContact contact : contacts) {
                 array.put(contact.getNumber());
                 Log.d("MT", contact.getNumber());
             }
@@ -210,7 +210,7 @@ public class FriendStatusActivity extends Activity {
                                 }.getType());
 
                                 for (ContactItem ci : cis) {
-                                    for (ContactInfo c : contacts) {
+                                    for (PhoneContact c : contacts) {
                                         if (ci.getPhone().equals(c.getNumber())) {
                                             ci.setName(c.getDisplayName());
 
@@ -254,7 +254,7 @@ public class FriendStatusActivity extends Activity {
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
             json.put(ApiUtils.KEY_FROM_ID, adapterList.get(index).getUserId());
             JSONArray array = new JSONArray();
-            for (ContactInfo contact : contacts) {
+            for (PhoneContact contact : contacts) {
                 array.put(contact.getNumber());
             }
             json.put("phoneNumbers", array);

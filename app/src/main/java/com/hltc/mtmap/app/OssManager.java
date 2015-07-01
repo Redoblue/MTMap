@@ -6,19 +6,16 @@ import android.util.Log;
 
 import com.alibaba.sdk.android.oss.OSSService;
 import com.alibaba.sdk.android.oss.OSSServiceProvider;
-import com.alibaba.sdk.android.oss.callback.SaveCallback;
 import com.alibaba.sdk.android.oss.model.AccessControlList;
 import com.alibaba.sdk.android.oss.model.AuthenticationType;
 import com.alibaba.sdk.android.oss.model.ClientConfiguration;
 import com.alibaba.sdk.android.oss.model.OSSException;
-import com.alibaba.sdk.android.oss.model.OSSFederationToken;
-import com.alibaba.sdk.android.oss.model.StsTokenGetter;
 import com.alibaba.sdk.android.oss.model.TokenGenerator;
 import com.alibaba.sdk.android.oss.storage.OSSBucket;
 import com.alibaba.sdk.android.oss.storage.OSSFile;
 import com.alibaba.sdk.android.oss.util.OSSToolKit;
-import com.hltc.mtmap.helper.FederationTokenGetter;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 
 /**
@@ -127,6 +124,11 @@ public class OssManager {
             e.printStackTrace();
         } catch (OSSException e) {
             e.printStackTrace();
+        } finally {
+            //删除掉文件
+            File file = new File(from);
+            if (file.exists())
+                file.delete();
         }
     }
 

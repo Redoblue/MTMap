@@ -7,13 +7,17 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.profile.setting.FeedbackActivity;
 import com.hltc.mtmap.activity.profile.setting.UpdateNicknameActivity;
 import com.hltc.mtmap.activity.start.SignUpActivity;
+import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.util.AMapUtils;
+import com.hltc.mtmap.util.AppUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -43,6 +47,8 @@ public class SettingsActivity extends Activity {
     Button btnSettingsRecommend;
     @InjectView(R.id.btn_settings_about)
     Button btnSettingsAbout;
+    @InjectView(R.id.btn_settings_logout)
+    Button btnSettingsLogout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +110,16 @@ public class SettingsActivity extends Activity {
             intent.putExtra("source", 1);
         }
         startActivity(intent);
+    }
+
+    @OnClick(R.id.btn_settings_logout)
+    public void onClick() {
+        AppUtils.logout();
+        Toast.makeText(this, "退出成功", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, StartActivity.class);
+        startActivity(intent);
+        AppManager.getAppManager().finishActivity(this);
+        AppManager.getAppManager().finishActivity(MainActivity.class);
     }
 
 }

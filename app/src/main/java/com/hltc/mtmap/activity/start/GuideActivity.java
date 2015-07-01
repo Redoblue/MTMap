@@ -4,23 +4,17 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.adapter.GuidePagerAdapter;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.util.AppUtils;
-import com.lidroid.xutils.util.LogUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +23,6 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 
 /**
  * Created by Redoblue on 2015/4/18.
@@ -142,7 +135,7 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
                 }
                 if (x.get(x.size() - 1) < average) {
                     // 设置第一次使用为False
-                    AppConfig.getAppConfig(this).set(AppConfig.CONF_FIRST_USE, "false");
+                    AppConfig.getAppConfig(this).set(AppConfig.CONFIG_APP, AppConfig.CONF_FIRST_USE, "false");
 
                     Intent intent = new Intent(this, StartActivity.class);
                     startActivity(intent);

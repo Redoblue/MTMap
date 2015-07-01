@@ -10,7 +10,7 @@
         android:gravity="center_vertical">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/civ_portrait"
+            android:id="@+id/civ_item_grain_card_portrait"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="20dp"
@@ -23,8 +23,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="20dp"
-            android:layout_toEndOf="@+id/civ_portrait"
-            android:layout_toRightOf="@+id/civ_portrait"
+            android:layout_toEndOf="@+id/civ_item_grain_card_portrait"
+            android:layout_toRightOf="@+id/civ_item_grain_card_portrait"
             android:orientation="vertical">
 
             <TextView

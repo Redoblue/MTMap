@@ -226,10 +226,15 @@ public class FileUtils {
 
     public static String saveBitmap(Bitmap bm, String picName) {
         Log.e("", "保存图片");
-        String path = AppConfig.DEFAULT_APP_ROOT_PATH + "photo/" + picName + ".jpg";
+        String folder = AppConfig.DEFAULT_APP_ROOT_PATH + "photo/";
+        String path = folder + picName + ".jpg";
         try {
             if (!isFileExist("")) {
                 File tempf = createSDDir("");
+            }
+            File f0 = new File(folder);
+            if (!f0.exists()) {
+                f0.mkdirs();
             }
             File f = new File(path);
             if (f.exists()) {

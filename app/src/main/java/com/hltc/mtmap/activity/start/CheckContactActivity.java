@@ -18,7 +18,7 @@ import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.adapter.CheckContactListAdapter;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.bean.ContactInfo;
+import com.hltc.mtmap.bean.PhoneContact;
 import com.hltc.mtmap.bean.ContactItem;
 import com.hltc.mtmap.helper.ProgressGenerator;
 import com.hltc.mtmap.util.AMapUtils;
@@ -71,7 +71,7 @@ public class CheckContactActivity extends Activity implements ProgressGenerator.
     private List<ContactItem> mContactItems;
     private CheckContactListAdapter mAdapter;
 
-    private List<ContactInfo> contacts;
+    private List<PhoneContact> contacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +140,7 @@ public class CheckContactActivity extends Activity implements ProgressGenerator.
             json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
             JSONArray array = new JSONArray();
-            for (ContactInfo contact : contacts) {
+            for (PhoneContact contact : contacts) {
                 array.put(contact.getNumber());
             }
             json.put("phoneNumbers", array);
@@ -181,7 +181,7 @@ public class CheckContactActivity extends Activity implements ProgressGenerator.
 
                                 for (ContactItem citem : mContactItems) {
                                     Log.d("MT", "contact: " + citem.toString());
-                                    for (ContactInfo cinfo : contacts) {
+                                    for (PhoneContact cinfo : contacts) {
                                         String name = cinfo.getDisplayName();
                                         if (citem.getPhone().equals(cinfo.getNumber())) {
                                             citem.setName(name);

@@ -116,7 +116,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             item.setOnClickListener(this);
         }
 
-        Log.d("MT", MyApplication.signInStatus);
         // 00不会进来 11不需要提示登录 01 不需要提示登录 ///从OnResume进入
     }
 

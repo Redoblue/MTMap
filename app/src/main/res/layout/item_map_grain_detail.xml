@@ -61,7 +61,7 @@
         android:id="@+id/tv_map_grain_address"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:drawableLeft="@drawable/ic_green_location"
+        android:drawableLeft="@drawable/pic_location"
         android:drawablePadding="10dp"
         android:gravity="center_vertical"
         android:maxLines="1"

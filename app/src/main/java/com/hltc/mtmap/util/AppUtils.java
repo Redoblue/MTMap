@@ -21,9 +21,9 @@ import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.bean.ContactInfo;
+import com.hltc.mtmap.bean.LocalUserInfo;
+import com.hltc.mtmap.bean.PhoneContact;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,20 +40,25 @@ public class AppUtils {
 
 
     public static boolean isFirstTimeToUse(Context context) {
-        File file = new File(context.getDir(AppConfig.APP_CONFIG, Context.MODE_PRIVATE).getPath()
-                + File.separator + AppConfig.APP_CONFIG);
-        if (!file.exists()) {
-            return true;
-        } else {
-            String value = AppConfig.getAppConfig(context).get(AppConfig.CONF_FIRST_USE);
-            return value == null || value.equals("true");
-        }
+//        File file = new File(context.getDir(AppConfig.CONFIG, Context.MODE_PRIVATE).getPath()
+//                + File.separator + AppConfig.CONFIG_APP);
+//        if (!file.exists()) {
+//            return true;
+//        } else {
+        String value = AppConfig.getAppConfig(context).get(AppConfig.CONFIG_APP, AppConfig.CONF_FIRST_USE);
+        return value.equals("") || value.equals("true");
+//        }
     }
 
     public static boolean isSignedIn(Context context) {
         if (AppConfig.getAppConfig(context).getConfUsrUserId() > 0)
             return true;
         return false;
+    }
+
+    public static void logout() {
+        LocalUserInfo info = new LocalUserInfo();
+        AppConfig.getAppConfig(MyApplication.getContext()).setUserInfo(info);
     }
 
     /**
@@ -74,8 +79,8 @@ public class AppUtils {
      * @param context
      * @return
      */
-    public static List<ContactInfo> getContacts(Context context) {
-        List<ContactInfo> cis = new ArrayList<>();
+    public static List<PhoneContact> getContacts(Context context) {
+        List<PhoneContact> cis = new ArrayList<>();
         ContentResolver resolver = context.getContentResolver();
         Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
         if (cursor != null) {
@@ -86,12 +91,12 @@ public class AppUtils {
                         || number.equals(AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrPhone())) {
                     continue;
                 }
-                for (ContactInfo c : cis) {
+                for (PhoneContact c : cis) {
                     if (c.getNumber().equals(number))
                         continue outer;
                 }
                 String name = cursor.getString(PHONES_DISPLAY_NAME_INDEX);
-                ContactInfo ci = new ContactInfo();
+                PhoneContact ci = new PhoneContact();
                 ci.setDisplayName(name);
                 ci.setNumber(number);
                 cis.add(ci);

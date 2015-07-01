@@ -52,7 +52,7 @@ public class SearchFriendListAdapter extends BaseAdapter {
         ViewHolder holder = new ViewHolder();
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_display_user, null);
-            holder.portrait = (CircleImageView) convertView.findViewById(R.id.civ_portrait);
+            holder.portrait = (CircleImageView) convertView.findViewById(R.id.civ_item_grain_card_portrait);
             holder.name = (TextView) convertView.findViewById(R.id.tv_name);
             holder.signature = (TextView) convertView.findViewById(R.id.tv_signature);
             holder.select = (ToggleButton) convertView.findViewById(R.id.tb_select);

@@ -70,8 +70,18 @@ public class StringUtils {
         try {
             return Boolean.parseBoolean(b);
         } catch (Exception e) {
+            e.printStackTrace();
         }
         return false;
+    }
+
+    public static double toDouble(String s) {
+        try {
+            return Double.parseDouble(s);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     /**

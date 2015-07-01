@@ -9,4 +9,6 @@
 
     <dimen name="margin_left">15dp</dimen>
     <dimen name="margin_right">15dp</dimen>
+
+    <dimen name="pager_margin">10dp</dimen>
 </resources>

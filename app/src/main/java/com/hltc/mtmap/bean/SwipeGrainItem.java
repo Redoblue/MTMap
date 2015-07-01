@@ -11,7 +11,16 @@ public class SwipeGrainItem {
     private long userId;
     private String portrait;
     private SiteItem site;
+    private int status;
     private int cover;
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
     public int getCover() {
         return cover;

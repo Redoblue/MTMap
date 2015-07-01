@@ -2,7 +2,6 @@ package com.hltc.mtmap.activity.publish;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -16,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
@@ -185,7 +183,7 @@ public class DonePublishDialog extends Activity {
             json.put("text", grain.text);
             JSONArray array = new JSONArray();
             for (String s : PhotoHelper.larges) {
-                array.put(OssManager.bucketName + "." + OssManager.ossHost + "/"
+                array.put("http://" + OssManager.bucketName + "." + OssManager.ossHost + "/"
                         + OssManager.getRemotePath(s));
             }
             json.put("images", array);

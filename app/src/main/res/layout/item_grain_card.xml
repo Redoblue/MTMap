@@ -3,38 +3,38 @@
     android:layout_width="320dp"
     android:layout_height="390dp"
     android:layout_gravity="center_horizontal"
-    android:layout_marginTop="75dp">
+    android:layout_marginTop="75dp"
+    android:background="@color/white">
 
     <ImageView
-        android:id="@+id/iv_cover"
+        android:id="@+id/iv_item_grain_card_cover"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <ImageView
-        android:id="@+id/iv_image"
+        android:id="@+id/iv_item_grain_card_image"
         android:layout_width="match_parent"
         android:layout_height="320dp"
-        android:background="@color/white"
-        android:src="@drawable/pic_1" />
+        android:background="@color/white" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/iv_image"
+        android:layout_below="@+id/iv_item_grain_card_image"
         android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/civ_portrait"
+            android:id="@+id/civ_item_grain_card_portrait"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="10dp"
             android:src="@drawable/cluster_pic" />
 
         <TextView
-            android:id="@+id/tv_comment"
+            android:id="@+id/tv_item_grain_card_comment"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="15dp"

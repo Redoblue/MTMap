@@ -62,4 +62,11 @@
 
     <TextView style="@style/separator" />
 
+    <Button
+        android:id="@+id/btn_settings_logout"
+        style="@style/SettingButton"
+        android:text="退出账号" />
+
+    <TextView style="@style/separator" />
+
 </LinearLayout>

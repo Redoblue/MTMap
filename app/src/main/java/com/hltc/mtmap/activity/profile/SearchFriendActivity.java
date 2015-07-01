@@ -22,7 +22,7 @@ import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.SearchFriendListAdapter;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.bean.ContactInfo;
+import com.hltc.mtmap.bean.PhoneContact;
 import com.hltc.mtmap.orm.model.MTUser;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
@@ -61,7 +61,7 @@ public class SearchFriendActivity extends Activity implements EditText.OnEditorA
     @InjectView(R.id.lv_search_friend)
     ListView lvSearchFriend;
 
-    private List<ContactInfo> contacts;
+    private List<PhoneContact> contacts;
     private List<MTUser> users;
     private SearchFriendListAdapter adapter;
     private List<MTUser> list = new ArrayList<>();
@@ -153,7 +153,7 @@ public class SearchFriendActivity extends Activity implements EditText.OnEditorA
             json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
             JSONArray array = new JSONArray();
-            for (ContactInfo contact : contacts) {
+            for (PhoneContact contact : contacts) {
                 array.put(contact.getNumber());
                 Log.d("MT", contact.getNumber());
             }
@@ -214,7 +214,7 @@ public class SearchFriendActivity extends Activity implements EditText.OnEditorA
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
             json.put(ApiUtils.KEY_KEYWORD, keyword);
             JSONArray array = new JSONArray();
-            for (ContactInfo contact : contacts) {
+            for (PhoneContact contact : contacts) {
                 array.put(contact.getNumber());
                 Log.d("MT", contact.getNumber());
             }

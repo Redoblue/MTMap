@@ -116,7 +116,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         //编辑头像
         portraitCiv = (CircleImageView) scrollView.getPullRootView().findViewById(R.id.civ_profile_header_pic);
-        ImageLoader.getInstance().displayImage(AppConfig.getAppConfig(getActivity()).getConfUsrPortraitSmall(), portraitCiv);
+        ImageLoader.getInstance().displayImage(AppConfig.getAppConfig(getActivity()).getConfUsrPortrait(), portraitCiv);
         portraitCiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +124,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             }
         });
         //更新麦粒数量
-        httpGetGrainNumber();
+//        httpGetGrainNumber();
     }
 
     @Override
@@ -209,15 +209,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     break;
                 case RESULT_REQUEST_CODE: // 图片缩放完成后
                     if (data != null) {
-                        getImageToView(data);
-                        String path = Environment.getExternalStoragePublicDirectory(
-                                Environment.DIRECTORY_DCIM).getAbsolutePath() + "/avatar.jpg";
-                        OssManager.getOssManager().uploadImage(path, OssManager.getRemotePath(path));
-                        File file = new File(path);
-                        FileUtils.delFile(file);
+                        Bitmap bitmap = data.getExtras().getParcelable("data");
+                        String where = FileUtils.saveBitmap(bitmap, StringUtils.getUUID());
+                        getImageToView(bitmap);
                         String remotePath = "http://" + OssManager.bucketName + "." + OssManager.ossHost + "/"
-                                + OssManager.getRemotePath(path);
-                        httpUpdatePortrait(remotePath);
+                                + OssManager.getRemotePath(where);
+                        httpUpdatePortrait(where, remotePath);
+                        //删除头像
+//                        File file = new File(path);
+//                        FileUtils.delFile(file);
                     }
                     break;
             }
@@ -248,13 +248,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     /**
      * 保存裁剪之后的图片数据
      *
-     * @param data
+     * @param
      */
-    private void getImageToView(Intent data) {
-        Bundle extras = data.getExtras();
-        if (extras != null) {
-            Bitmap photo = extras.getParcelable("data");
-            Drawable drawable = new BitmapDrawable(this.getResources(), photo);
+    private void getImageToView(Bitmap bitmap) {
+        if (bitmap != null) {
+            Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
             portraitCiv.setImageDrawable(drawable);
         }
     }
@@ -314,7 +312,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 });
     }
 
-    private void httpUpdatePortrait(String path) {
+    private void httpUpdatePortrait(final String path, final String remote) {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
@@ -322,7 +320,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             json.put(ApiUtils.KEY_SOURCE, "Android");
             json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getConfToken());
-            json.put(ApiUtils.KEY_PORTRAIT, path);
+            json.put(ApiUtils.KEY_PORTRAIT, remote);
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -342,14 +340,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                             return;
                         try {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                                AppConfig.getAppConfig(getActivity()).setConfUsrPortrait(remote);
                                 Toast.makeText(getActivity(), "头像更新成功", Toast.LENGTH_SHORT).show();
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        OssManager.getOssManager().uploadImage(path, OssManager.getRemotePath(path));
+                                    }
+                                }).start();
                             } else {
                                 JSONObject girl = new JSONObject(result);
                                 String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
                                 if (errorMsg != null) {
                                     // 发送验证码失败
                                     // TODO 没有验证错误码
-                                    ToastUtils.showShort(getActivity(), errorMsg);
+                                    Toast.makeText(getActivity(), "头像更新失败", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         } catch (JSONException e) {
@@ -359,7 +364,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-
+                        Toast.makeText(getActivity(), "头像更新失败", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -368,5 +373,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         httpGetGrainNumber();
+//        ImageLoader.getInstance().displayImage(
+//                AppConfig.getAppConfig(getActivity()).getConfUsrPortrait(), portraitCiv);
     }
 }

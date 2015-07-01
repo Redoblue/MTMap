@@ -3,7 +3,7 @@ package com.hltc.mtmap.bean;
 /**
  * Created by redoblue on 15-6-23.
  */
-public class ContactInfo {
+public class PhoneContact {
     private String displayName;
     private String number;
 

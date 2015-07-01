@@ -17,6 +17,7 @@ import com.hltc.mtmap.bean.SiteItem;
 import com.hltc.mtmap.bean.SwipeGrainItem;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
+import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -44,6 +45,10 @@ import butterknife.OnClick;
 
 public class GrainFragment extends Fragment {
 
+    public static final int SWIPE_GRAIN = 0;
+    public static final int SWIPE_OFFLINE = 1;
+    public static final int SWIPE_NOMORE = 2;
+
     @InjectView(R.id.btn_grain_ignore)
     Button btnGrainIgnore;
     @InjectView(R.id.btn_grain_favourite)
@@ -57,8 +62,8 @@ public class GrainFragment extends Fragment {
     @InjectView(R.id.btn_bar_right)
     Button btnBarRight;
 
-    private List<SwipeGrainItem> mSwipeItems;
-    private GrainSwipeViewAdapter mSwipeAdapter;
+    private List<SwipeGrainItem> list = new ArrayList<>();
+    private GrainSwipeViewAdapter adapter;
     private List<HashMap<Long, Integer>> states = new ArrayList<>();
 
     @Override
@@ -77,27 +82,22 @@ public class GrainFragment extends Fragment {
         btnBarLeft.setWidth(AMapUtils.dp2px(getActivity(), 25));
         btnBarLeft.setHeight(AMapUtils.dp2px(getActivity(), 25));
 
-        mSwipeItems = new ArrayList<>();
+        list = new ArrayList<>();
+        if (!AppUtils.isNetworkConnected(getActivity())) {
+            Log.d("MT", "no network");
+            setSwipeBack(SWIPE_OFFLINE);
+//            viewGrainSwipe.setEnabled(false);
+        } else {
+            httpLoadData(); //首次加载数据
+        }
 
-//        FileUtils.getAppCache(getActivity(), "swipe");
-//        OssManager.getOssManager().downloadImage(
-//                FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg",
-//                "users/300204/180176e4-5103-4ec1-8c1e-48b481788136.jpg");
-//        for (int i = 0; i < 5; i++) {
-//            SwipeGrainItem item = new SwipeGrainItem();
-//            item.setImage(FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg");
-//            item.setPortrait(FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg");
-//            item.setText("我只是一个card而已 " + i);
-//            mSwipeItems.add(item);
-//        }
-        mSwipeAdapter = new GrainSwipeViewAdapter(getActivity(), mSwipeItems);
-        viewGrainSwipe.setAdapter(mSwipeAdapter);
-        httpLoadData(); //首次加载数据
+        adapter = new GrainSwipeViewAdapter(getActivity(), R.layout.item_grain_card, list);
+        viewGrainSwipe.setAdapter(adapter);
         viewGrainSwipe.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
-                mSwipeItems.remove(0);
-                mSwipeAdapter.notifyDataSetChanged();
+                list.remove(0);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -125,7 +125,7 @@ public class GrainFragment extends Fragment {
 //                    SwipeGrainItem item = new SwipeGrainItem();
 //                    item.setImage(FileUtils.getAppCache(getActivity(), "swipe")
 //                            + "180176e4-5103-4ec1-8c1e-48b481788136.jpg");
-                    httpLoadData();
+//                    httpLoadData();
                     //TODO
                 }
             }
@@ -135,17 +135,43 @@ public class GrainFragment extends Fragment {
 
             }
         });
+
+//        FileUtils.getAppCache(getActivity(), "swipe");
+//        OssManager.getOssManager().downloadImage(
+//                FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg",
+//                "users/300204/180176e4-5103-4ec1-8c1e-48b481788136.jpg");
+//        for (int i = 0; i < 5; i++) {
+//            SwipeGrainItem item = new SwipeGrainItem();
+//            item.setImage(FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg");
+//            item.setPortrait(FileUtils.getAppCache(getActivity(), "swipe") + "180176e4-5103-4ec1-8c1e-48b481788136.jpg");
+//            item.setText("我只是一个card而已 " + i);
+//            list.add(item);
+//        }
+
+    }
+
+    private void setSwipeBack(int status) {
+        SwipeGrainItem item = new SwipeGrainItem();
+        item.setImage("");
+        item.setPortrait("");
+        item.setText("");
+        item.setStatus(status);
+        list.add(item);
+        adapter.notifyDataSetChanged();
     }
 
     @OnClick({R.id.btn_grain_ignore,
             R.id.btn_grain_favourite})
     public void onClick(View v) {
+        Log.d("MT", "list.size():" + list.size());
         switch (v.getId()) {
             case R.id.btn_grain_ignore:
-                viewGrainSwipe.getTopCardListener().selectLeft();
+                if (!list.isEmpty())
+                    viewGrainSwipe.getTopCardListener().selectLeft();
                 break;
             case R.id.btn_grain_favourite:
-                viewGrainSwipe.getTopCardListener().selectRight();
+                if (!list.isEmpty())
+                    viewGrainSwipe.getTopCardListener().selectRight();
                 break;
         }
     }
@@ -184,36 +210,45 @@ public class GrainFragment extends Fragment {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result = responseInfo.result;
-                        if (StringUtils.isEmpty(result))
+                        if (StringUtils.isEmpty(result)) {
                             return;
+                        }
                         try {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                                 JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 JSONArray array = data.getJSONArray("grain");
-                                for (int i = 0; i < array.length(); i++) {
-                                    SwipeGrainItem swipeGrainItem = new SwipeGrainItem();
-                                    JSONObject grain = array.getJSONObject(i);
-                                    swipeGrainItem.setGrainId(grain.getLong("grainId"));
-                                    swipeGrainItem.setText(grain.getString("text"));
-                                    swipeGrainItem.setImage(grain.getString("image"));
-                                    swipeGrainItem.setUserId(grain.getLong("userId"));
-                                    swipeGrainItem.setPortrait(grain.getString("portraitSmall"));
+                                Log.d("MT", array.toString());
+                                if (array.length() > 0) {
+                                    if (list.size() > 0 && list.get(list.size() - 1).getStatus() != SWIPE_GRAIN)
+                                        list.clear();
+                                    for (int i = 0; i < array.length(); i++) {
+                                        SwipeGrainItem swipeGrainItem = new SwipeGrainItem();
+                                        JSONObject grain = array.getJSONObject(i);
+                                        swipeGrainItem.setGrainId(grain.getLong("grainId"));
+                                        swipeGrainItem.setText(grain.getString("text"));
+                                        swipeGrainItem.setImage(grain.getString("image"));
+                                        swipeGrainItem.setUserId(grain.getLong("userId"));
+                                        swipeGrainItem.setPortrait(grain.getString("portraitSmall"));
+                                        swipeGrainItem.setStatus(GrainFragment.SWIPE_GRAIN);
 
-                                    SiteItem siteItem = new SiteItem();
-                                    JSONObject site = grain.getJSONObject("site");
-                                    siteItem.setSiteId(site.getString("siteId"));
-                                    siteItem.setLon(site.getDouble("lon"));
-                                    siteItem.setLat(site.getDouble("lat"));
-                                    siteItem.setName(site.getString("name"));
-                                    siteItem.setAddress(site.getString("address"));
-                                    siteItem.setPhone(site.getString("phone"));
-                                    siteItem.setMtype(site.getString("mtype"));
-                                    siteItem.setGtype(site.getString("gtype"));
+                                        SiteItem siteItem = new SiteItem();
+                                        JSONObject site = grain.getJSONObject("site");
+                                        siteItem.setSiteId(site.getString("siteId"));
+                                        siteItem.setLon(site.getDouble("lon"));
+                                        siteItem.setLat(site.getDouble("lat"));
+                                        siteItem.setName(site.getString("name"));
+                                        siteItem.setAddress(site.getString("address"));
+                                        siteItem.setPhone(site.getString("phone"));
+                                        siteItem.setMtype(site.getString("mtype"));
+                                        siteItem.setGtype(site.getString("gtype"));
 
-                                    swipeGrainItem.setSite(siteItem);
-                                    mSwipeItems.add(swipeGrainItem);
+                                        swipeGrainItem.setSite(siteItem);
+                                        list.add(swipeGrainItem);
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                } else {
+                                    setSwipeBack(SWIPE_NOMORE);
                                 }
-                                mSwipeAdapter.notifyDataSetChanged();
                             } else {
                                 JSONObject girl = new JSONObject(result);
                                 String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
@@ -231,9 +266,10 @@ public class GrainFragment extends Fragment {
                     @Override
                     public void onFailure(HttpException e, String s) {
                         SwipeGrainItem item = new SwipeGrainItem();
-                        item.setCover(R.drawable.grain_404);
-                        mSwipeItems.add(item);
-                        mSwipeAdapter.notifyDataSetChanged();
+                        item.setStatus(SWIPE_OFFLINE);
+                        list.clear();
+                        list.add(item);
+                        adapter.notifyDataSetChanged();
                     }
                 });
     }
