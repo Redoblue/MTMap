@@ -3,6 +3,7 @@ package com.hltc.mtmap.app;
 import android.app.Application;
 import android.app.Notification;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -43,6 +44,13 @@ import java.io.UnsupportedEncodingException;
 public class MyApplication extends Application {
 
     public static String signInStatus = ""; // "00", "01", "10", "11" 第一位: 1 在线 0 离线  第二位： 1 登录 0 未登录
+    //显示图片的配置
+    public static DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
+            .cacheInMemory(true)
+            .cacheOnDisk(true)
+            .bitmapConfig(Bitmap.Config.RGB_565)
+            .build();
+
     private static Context mContext;
 
     private PushAgent mPushAgent;
@@ -58,13 +66,13 @@ public class MyApplication extends Application {
 
         //用户身份状态检测
         if (AppUtils.isNetworkConnected(mContext)) {
-            if (!StringUtils.isEmpty(AppConfig.getAppConfig(mContext).getConfToken())) {
+            if (!StringUtils.isEmpty(AppConfig.getAppConfig().getConfToken())) {
                 httpLoginByToken();
             } else {
                 signInStatus = "10";
             }
         } else {
-            if (!StringUtils.isEmpty(AppConfig.getAppConfig(mContext).getConfToken())) {
+            if (!StringUtils.isEmpty(AppConfig.getAppConfig().getConfToken())) {
                 signInStatus = "01";
             } else {
                 signInStatus = "00";
@@ -165,8 +173,8 @@ public class MyApplication extends Application {
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(mContext).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(mContext).getConfToken());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -197,7 +205,7 @@ public class MyApplication extends Application {
                                 userInfo.setPortrait(data.getString(ApiUtils.KEY_PORTRAIT));
                                 userInfo.setPortraitSmall(data.getString(ApiUtils.KEY_USR_PORTRAIT_SMALL));
                                 userInfo.setCoverImg(data.getString(ApiUtils.KEY_USR_COVER_IMG));
-                                AppConfig.getAppConfig(mContext).setUserInfo(userInfo);
+                                AppConfig.getAppConfig().setUserInfo(userInfo);
 
                                 Log.d("MyApplication", userInfo.toString());
 

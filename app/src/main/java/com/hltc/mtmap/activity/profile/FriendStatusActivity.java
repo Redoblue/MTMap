@@ -1,30 +1,30 @@
 package com.hltc.mtmap.activity.profile;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.adapter.FriendStatusListAdapter;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.PhoneContact;
-import com.hltc.mtmap.bean.ContactItem;
-import com.hltc.mtmap.gmodel.FriendStatus;
+import com.hltc.mtmap.orm.model.MTFriendStatus;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
-import com.hltc.mtmap.util.AppUtils;
-import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -32,20 +32,20 @@ import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by redoblue on 15-6-29.
@@ -56,7 +56,7 @@ public class FriendStatusActivity extends Activity {
     public static final String STATUS_UNACCEPTED = "unaccepted";
     public static final String STATUS_ADDABLE = "addable";
     public static final String STATUS_ACCEPTED = "accepted";
-
+    public static List<MTFriendStatus> adapterList;
     @InjectView(R.id.btn_bar_left)
     Button btnBarLeft;
     @InjectView(R.id.tv_bar_title)
@@ -65,8 +65,6 @@ public class FriendStatusActivity extends Activity {
     Button btnBarRight;
     @InjectView(R.id.lv_new_friend)
     ListView lvNewFriend;
-
-    private List<FriendStatus> adapterList;
     private FriendStatusListAdapter adapter;
     private List<PhoneContact> contacts;
 
@@ -99,12 +97,9 @@ public class FriendStatusActivity extends Activity {
             }
         });
 
-        adapterList = new ArrayList<>();
+        adapterList = DaoManager.getManager().daoSession.getMTFriendStatusDao().loadAll();
         adapter = new FriendStatusListAdapter(this, adapterList);
         lvNewFriend.setAdapter(adapter);
-        httpFetchFriendStatusList();
-        contacts = AppUtils.getContacts(this);
-        httpCheckContact();
     }
 
     @OnClick(R.id.btn_bar_left)
@@ -112,152 +107,14 @@ public class FriendStatusActivity extends Activity {
         AppManager.getAppManager().finishActivity(this);
     }
 
-    private void httpFetchFriendStatusList() {
-        RequestParams params = new RequestParams();
-        params.addHeader("Content-Type", "application/json");
-        JSONObject json = new JSONObject();
-        try {
-            json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
-            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        HttpUtils http = new HttpUtils();
-        http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.URL_ROOT + ApiUtils.URL_FRIEND_GET_STATUS,
-                params,
-                new RequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        String result = responseInfo.result;
-                        if (StringUtils.isEmpty(result))
-                            return;
-                        try {
-                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                                Gson gson = new Gson();
-                                JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
-                                List<FriendStatus> friendStatuses = gson.fromJson(data.toString(), new TypeToken<List<FriendStatus>>() {
-                                }.getType());
-
-                                adapterList.addAll(friendStatuses);
-                            } else {
-                                JSONObject girl = new JSONObject(result);
-                                String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
-                                if (errorMsg != null) {
-                                    // 发送验证码失败
-                                    // TODO 没有验证错误码
-                                    ToastUtils.showShort(FriendStatusActivity.this, errorMsg);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-
-                    }
-                });
-    }
-
-    private void httpCheckContact() {
-        contacts = AppUtils.getContacts(this);
-        RequestParams params = new RequestParams();
-        params.addHeader("Content-Type", "application/json");
-        JSONObject json = new JSONObject();
-        try {
-            json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
-            JSONArray array = new JSONArray();
-            for (PhoneContact contact : contacts) {
-                array.put(contact.getNumber());
-                Log.d("MT", contact.getNumber());
-            }
-            json.put("phoneNumbers", array);
-            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        HttpUtils http = new HttpUtils();
-        http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.getCheckContactUrl(),
-                params,
-                new RequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        Log.d("MT", responseInfo.toString());
-                        String result = responseInfo.result;
-                        if (StringUtils.isEmpty(result)) {
-                            Toast.makeText(FriendStatusActivity.this, "检索失败", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        try {
-                            JSONObject farther = new JSONObject(result);
-                            if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
-                                Gson gson = new Gson();
-                                JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
-                                List<ContactItem> cis = gson.fromJson(data.toString(), new TypeToken<List<ContactItem>>() {
-                                }.getType());
-
-                                for (ContactItem ci : cis) {
-                                    for (PhoneContact c : contacts) {
-                                        if (ci.getPhone().equals(c.getNumber())) {
-                                            ci.setName(c.getDisplayName());
-
-                                            FriendStatus fs = new FriendStatus();
-                                            fs.setUserPortrait(ci.getPortrait());
-                                            fs.setUserId(ci.getUserId());
-                                            fs.setNickName(ci.getNickName());
-                                            fs.setText(ci.getName());
-                                            fs.setStatus(STATUS_ADDABLE);
-
-                                            adapterList.add(fs);
-                                        }
-                                    }
-                                }
-                                adapter.notifyDataSetChanged();
-                            } else {
-                                String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
-                                if (errorMsg != null) {
-                                    // 登录失败
-                                    // TODO 没有验证错误码
-                                    ToastUtils.showShort(FriendStatusActivity.this, errorMsg);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                    }
-                });
-    }
-
     private void httpAgreeRequest(final int index) {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
         try {
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             json.put(ApiUtils.KEY_FROM_ID, adapterList.get(index).getUserId());
-            JSONArray array = new JSONArray();
-            for (PhoneContact contact : contacts) {
-                array.put(contact.getNumber());
-            }
-            json.put("phoneNumbers", array);
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -274,13 +131,10 @@ public class FriendStatusActivity extends Activity {
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         Log.d("MT", responseInfo.toString());
                         String result = responseInfo.result;
-                        if (StringUtils.isEmpty(result)) {
-                            Toast.makeText(FriendStatusActivity.this, "检索失败", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
                         try {
                             JSONObject farther = new JSONObject(result);
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
+                                updateStatusInDb(adapterList.get(index), STATUS_ACCEPTED);
                                 adapterList.get(index).setStatus(STATUS_ACCEPTED);
                                 adapter.notifyDataSetChanged();
                             } else {
@@ -303,13 +157,13 @@ public class FriendStatusActivity extends Activity {
     }
 
     private void httpAddFriend(final int index) {
-        FriendStatus fs = adapterList.get(index);
+        final MTFriendStatus fs = adapterList.get(index);
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
         try {
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(MyApplication.getContext()).getConfToken());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             json.put(ApiUtils.KEY_TOID, fs.getUserId());
             json.put(ApiUtils.KEY_TEXT, "服不服");///////TODO 弹出窗口等待输入
             json.put(ApiUtils.KEY_REMARK, fs.getText());
@@ -327,15 +181,11 @@ public class FriendStatusActivity extends Activity {
                 new RequestCallBack<String>() {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
-                        Log.d("MT", responseInfo.toString());
                         String result = responseInfo.result;
-                        if (StringUtils.isEmpty(result)) {
-                            Toast.makeText(MyApplication.getContext(), "添加失败", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
                         try {
                             JSONObject farther = new JSONObject(result);
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
+                                updateStatusInDb(fs, STATUS_WAITING);
                                 adapterList.get(index).setStatus(STATUS_WAITING);
                                 adapter.notifyDataSetChanged();
                             } else {
@@ -358,8 +208,111 @@ public class FriendStatusActivity extends Activity {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (adapter != null)
+            adapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         AppManager.getAppManager().finishActivity(this);
+    }
+
+    private void updateStatusInDb(MTFriendStatus fs, String status) {
+        MTFriendStatus m = new MTFriendStatus();
+        m.setUserId(fs.getUserId());
+        m.setNickName(fs.getNickName());
+        m.setText(fs.getText());
+        m.setUserPortrait(fs.getUserPortrait());
+        m.setStatus(status);
+        DaoManager.getManager().daoSession.getMTFriendStatusDao().update(m);
+    }
+
+    public class FriendStatusListAdapter extends BaseAdapter {
+
+        private List<MTFriendStatus> list = null;
+        private Context mContext;
+
+        public FriendStatusListAdapter(Context mContext, List<MTFriendStatus> list) {
+            this.mContext = mContext;
+            this.list = list;
+        }
+
+        @Override
+        public int getCount() {
+            return list.size();
+        }
+
+        @Override
+        public MTFriendStatus getItem(int position) {
+            return list.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = new ViewHolder();
+            if (convertView == null) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_friend_status, null);
+                holder.portrait = (CircleImageView) convertView.findViewById(R.id.civ_item_friend_status_portrait);
+                holder.name = (TextView) convertView.findViewById(R.id.tv_item_friend_status_name);
+                holder.text = (TextView) convertView.findViewById(R.id.tv_item_friend_status_text);
+                holder.status = (TextView) convertView.findViewById(R.id.btn_item_friend_status_status);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+            ImageLoader.getInstance().displayImage(getItem(position).getUserPortrait(), holder.portrait);
+            holder.name.setText(getItem(position).getNickName());
+            holder.text.setText(getItem(position).getText());
+            final String s = getItem(position).getStatus();
+            if (s.equals(FriendStatusActivity.STATUS_WAITING)) {
+                holder.status.setText("等待验证");
+                holder.status.setBackgroundResource(R.color.transparent);
+            } else if (s.equals(FriendStatusActivity.STATUS_UNACCEPTED)) {
+                holder.status.setText("接受");
+                holder.status.setBackgroundResource(R.drawable.selector_btn_green_press);
+            } else if (s.equals(FriendStatusActivity.STATUS_ADDABLE)) {
+                holder.status.setText("添加");
+                holder.status.setBackgroundResource(R.drawable.selector_btn_blue_press);
+            } else if (s.equals(FriendStatusActivity.STATUS_ACCEPTED)) {
+                holder.status.setText("已添加");
+                holder.status.setBackgroundResource(R.color.transparent);
+            }
+
+            holder.status.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (s) {
+                        case FriendStatusActivity.STATUS_ADDABLE:
+                            Intent intent = new Intent(mContext, FriendRequestActivity.class);
+                            intent.putExtra("positon", position);
+                            intent.putExtra("toId", getItem(position).getUserId());
+                            intent.putExtra("remark", getItem(position).getText());
+                            mContext.startActivity(intent);
+                            break;
+                        case FriendStatusActivity.STATUS_UNACCEPTED:
+                            httpAgreeRequest(position);
+                            break;
+                    }
+                }
+            });
+
+            return convertView;
+        }
+
+        class ViewHolder {
+            CircleImageView portrait;
+            TextView name;
+            TextView text;
+            TextView status;
+        }
     }
 }

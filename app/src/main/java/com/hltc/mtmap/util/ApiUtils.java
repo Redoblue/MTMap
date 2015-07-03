@@ -5,7 +5,7 @@ import android.widget.Toast;
 
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.bean.ContactItem;
+import com.hltc.mtmap.gmodel.ContactItem;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -183,8 +183,8 @@ public class ApiUtils {
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
         try {
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(MyApplication.getContext()).getConfToken());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             json.put(ApiUtils.KEY_TOID, contact.getUserId());
             json.put(ApiUtils.KEY_TEXT, contact.getText());
             json.put(ApiUtils.KEY_REMARK, contact.getName());

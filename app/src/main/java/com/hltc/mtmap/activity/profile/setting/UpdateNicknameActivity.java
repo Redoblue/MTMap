@@ -69,7 +69,7 @@ public class UpdateNicknameActivity extends Activity {
         btnBarRight.setWidth(AMapUtils.dp2px(this, 25));
         btnBarRight.setHeight(AMapUtils.dp2px(this, 25));
 
-        String nickname = AppConfig.getAppConfig(this).getConfUsrNickName();
+        String nickname = AppConfig.getAppConfig().getConfUsrNickName();
         etSingleLine.setText(nickname);
         etSingleLine.setSelection(nickname.length());
     }
@@ -94,8 +94,8 @@ public class UpdateNicknameActivity extends Activity {
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             json.put(ApiUtils.KEY_USR_NICKNAME, nickname);
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
@@ -117,7 +117,7 @@ public class UpdateNicknameActivity extends Activity {
                         try {
                             JSONObject farther = new JSONObject(result);
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
-                                AppConfig.getAppConfig(getApplicationContext()).setConfUsrNickName(nickname);
+                                AppConfig.getAppConfig().setConfUsrNickName(nickname);
 
                                 AppManager.getAppManager().finishActivity(UpdateNicknameActivity.class);
                                 AppManager.getAppManager().finishActivity(SettingsActivity.class);

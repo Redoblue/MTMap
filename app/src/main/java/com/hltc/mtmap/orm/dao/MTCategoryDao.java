@@ -18,14 +18,24 @@ import com.hltc.mtmap.orm.DaoSession;
 public class MTCategoryDao extends AbstractDao<MTCategory, Long> {
 
     public static final String TABLENAME = "MTCATEGORY";
+
+    /**
+     * Properties of entity MTCategory.<br/>
+     * Can be used for QueryBuilder and for referencing column names.
+    */
+    public static class Properties {
+        public final static Property Id = new Property(0, long.class, "id", true, "_id");
+        public final static Property Name = new Property(1, String.class, "name", false, "NAME");
+        public final static Property IconURL = new Property(2, String.class, "iconURL", false, "ICON_URL");
+    };
+
     private DaoSession daoSession;
-    ;
+
 
     public MTCategoryDao(DaoConfig config) {
         super(config);
     }
-
-
+    
     public MTCategoryDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
         this.daoSession = daoSession;
@@ -65,7 +75,7 @@ public class MTCategoryDao extends AbstractDao<MTCategory, Long> {
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
-    }
+    }    
 
     /** @inheritdoc */
     @Override
@@ -77,7 +87,7 @@ public class MTCategoryDao extends AbstractDao<MTCategory, Long> {
         );
         return entity;
     }
-
+     
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTCategory entity, int offset) {
@@ -85,7 +95,7 @@ public class MTCategoryDao extends AbstractDao<MTCategory, Long> {
         entity.setName(cursor.getString(offset + 1));
         entity.setIconURL(cursor.getString(offset + 2));
      }
-
+    
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTCategory entity, long rowId) {
@@ -104,19 +114,9 @@ public class MTCategoryDao extends AbstractDao<MTCategory, Long> {
     }
 
     /** @inheritdoc */
-    @Override
+    @Override    
     protected boolean isEntityUpdateable() {
         return true;
     }
-
-    /**
-     * Properties of entity MTCategory.<br/>
-     * Can be used for QueryBuilder and for referencing column names.
-     */
-    public static class Properties {
-        public final static Property Id = new Property(0, long.class, "id", true, "_id");
-        public final static Property Name = new Property(1, String.class, "name", false, "NAME");
-        public final static Property IconURL = new Property(2, String.class, "iconURL", false, "ICON_URL");
-    }
-
+    
 }

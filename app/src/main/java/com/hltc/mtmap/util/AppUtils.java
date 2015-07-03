@@ -45,20 +45,20 @@ public class AppUtils {
 //        if (!file.exists()) {
 //            return true;
 //        } else {
-        String value = AppConfig.getAppConfig(context).get(AppConfig.CONFIG_APP, AppConfig.CONF_FIRST_USE);
+        String value = AppConfig.getAppConfig().get(AppConfig.CONFIG_APP, AppConfig.CONF_FIRST_USE);
         return value.equals("") || value.equals("true");
 //        }
     }
 
     public static boolean isSignedIn(Context context) {
-        if (AppConfig.getAppConfig(context).getConfUsrUserId() > 0)
+        if (AppConfig.getAppConfig().getConfUsrUserId() > 0)
             return true;
         return false;
     }
 
     public static void logout() {
         LocalUserInfo info = new LocalUserInfo();
-        AppConfig.getAppConfig(MyApplication.getContext()).setUserInfo(info);
+        AppConfig.getAppConfig().setUserInfo(info);
     }
 
     /**
@@ -88,7 +88,7 @@ public class AppUtils {
             while (cursor.moveToNext()) {
                 String number = StringUtils.getFormatedPhone(cursor.getString(PHONES_NUMBER_INDEX));
                 if (StringUtils.isEmpty(number)
-                        || number.equals(AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrPhone())) {
+                        || number.equals(AppConfig.getAppConfig().getConfUsrPhone())) {
                     continue;
                 }
                 for (PhoneContact c : cis) {

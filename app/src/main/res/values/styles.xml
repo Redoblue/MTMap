@@ -34,7 +34,7 @@
         <item name="android:layout_height">48dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">#ffffff</item>
-        <item name="android:background">@drawable/selector_btn_blue</item>
+        <item name="android:background">@drawable/selector_btn_blue_enable</item>
         <item name="android:paddingLeft">15dp</item>
         <item name="android:paddingRight">15dp</item>
         <item name="android:gravity">center</item>
@@ -45,7 +45,7 @@
         <item name="android:layout_height">48dp</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textColor">#ffffff</item>
-        <item name="android:background">@drawable/selector_btn_green</item>
+        <item name="android:background">@drawable/selector_btn_green_enable</item>
         <item name="android:paddingLeft">15dp</item>
         <item name="android:paddingRight">15dp</item>
         <item name="android:gravity">center</item>

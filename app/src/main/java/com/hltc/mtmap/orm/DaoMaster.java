@@ -9,6 +9,7 @@ import de.greenrobot.dao.AbstractDaoMaster;
 import de.greenrobot.dao.identityscope.IdentityScopeType;
 
 import com.hltc.mtmap.orm.dao.MTUserDao;
+import com.hltc.mtmap.orm.dao.MTFriendStatusDao;
 import com.hltc.mtmap.orm.dao.MTGrainDao;
 import com.hltc.mtmap.orm.dao.MTSiteDao;
 import com.hltc.mtmap.orm.dao.MTPhotoDao;
@@ -27,6 +28,7 @@ public class DaoMaster extends AbstractDaoMaster {
     public DaoMaster(SQLiteDatabase db) {
         super(db, SCHEMA_VERSION);
         registerDaoClass(MTUserDao.class);
+        registerDaoClass(MTFriendStatusDao.class);
         registerDaoClass(MTGrainDao.class);
         registerDaoClass(MTSiteDao.class);
         registerDaoClass(MTPhotoDao.class);
@@ -40,6 +42,7 @@ public class DaoMaster extends AbstractDaoMaster {
      */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
         MTUserDao.createTable(db, ifNotExists);
+        MTFriendStatusDao.createTable(db, ifNotExists);
         MTGrainDao.createTable(db, ifNotExists);
         MTSiteDao.createTable(db, ifNotExists);
         MTPhotoDao.createTable(db, ifNotExists);
@@ -51,6 +54,7 @@ public class DaoMaster extends AbstractDaoMaster {
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(SQLiteDatabase db, boolean ifExists) {
         MTUserDao.dropTable(db, ifExists);
+        MTFriendStatusDao.dropTable(db, ifExists);
         MTGrainDao.dropTable(db, ifExists);
         MTSiteDao.dropTable(db, ifExists);
         MTPhotoDao.dropTable(db, ifExists);

@@ -1,4 +1,4 @@
-package com.hltc.mtmap.bean;
+package com.hltc.mtmap.gmodel;
 
 /**
  * Created by redoblue on 15-6-23.

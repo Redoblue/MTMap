@@ -3,8 +3,6 @@ package com.hltc.mtmap.activity.profile;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -13,37 +11,21 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.FriendListAdapter;
-import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.DaoManager;
+import com.hltc.mtmap.bean.PhoneContact;
 import com.hltc.mtmap.gmodel.Friend;
+import com.hltc.mtmap.gmodel.FriendStatus;
 import com.hltc.mtmap.helper.PinyinComparator;
+import com.hltc.mtmap.orm.model.MTUser;
 import com.hltc.mtmap.util.AMapUtils;
-import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.CharacterParser;
-import com.hltc.mtmap.util.StringUtils;
-import com.hltc.mtmap.util.ToastUtils;
 import com.hltc.mtmap.widget.CharacterBar;
 import com.hltc.mtmap.widget.CharacterBar.OnTouchingLetterChangedListener;
-import com.lidroid.xutils.HttpUtils;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
-import com.lidroid.xutils.http.ResponseInfo;
-import com.lidroid.xutils.http.callback.RequestCallBack;
-import com.lidroid.xutils.http.client.HttpRequest;
 
-import org.apache.http.entity.StringEntity;
-import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -53,7 +35,7 @@ import butterknife.OnClick;
 public class FriendListActivity extends Activity {
 
     public static final int FOLDER_NEW_FRIEND = 0;
-
+    public static List<FriendStatus> friendStatuses = new ArrayList<>();
     @InjectView(R.id.lv_friend_list)
     ListView sortListView;
     @InjectView(R.id.tv_friend_list_dialog)
@@ -66,10 +48,11 @@ public class FriendListActivity extends Activity {
     TextView tvBarTitle;
     @InjectView(R.id.btn_bar_right)
     Button btnBarRight;
+    private List<PhoneContact> contacts = new ArrayList<>();
 
     private FriendListAdapter adapter;
     private CharacterParser characterParser;
-    private List<Friend> adapterList;
+    private List<MTUser> adapterList;
     private PinyinComparator pinyinComparator;
 
     @Override
@@ -124,11 +107,11 @@ public class FriendListActivity extends Activity {
 
 //        adapterList = filledData(getResources().getStringArray(R.array.date));
 //        Collections.sort(adapterList, pinyinComparator);
-        adapterList = new ArrayList<>();
+        adapterList = DaoManager.getManager().getAllUsers();
+//        Collections.sort(adapterList, pinyinComparator);
         adapter = new FriendListAdapter(this, adapterList);
         sortListView.setAdapter(adapter);
         adapter.updateListView(adapterList);
-        httpFetchFriendList();
     }
 
     @OnClick({R.id.btn_bar_left,
@@ -164,81 +147,5 @@ public class FriendListActivity extends Activity {
             list.add(friend);
         }
         return list;
-    }
-
-    private void filterData(String filterStr) {
-        List<Friend> filterDateList = new ArrayList<>();
-
-        if (TextUtils.isEmpty(filterStr)) {
-            filterDateList = adapterList;
-        } else {
-            filterDateList.clear();
-            for (Friend sortModel : adapterList) {
-                String name = StringUtils.isEmpty(sortModel.getRemark()) ? sortModel.getNickName() : sortModel.getRemark();
-                if (name.contains(filterStr) || characterParser.getSelling(name).startsWith(filterStr)) {
-                    filterDateList.add(sortModel);
-                }
-            }
-        }
-
-        Collections.sort(filterDateList, pinyinComparator);
-        adapter.updateListView(filterDateList);
-    }
-
-    private void httpFetchFriendList() {
-        RequestParams params = new RequestParams();
-        params.addHeader("Content-Type", "application/json");
-        JSONObject json = new JSONObject();
-        try {
-            json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
-            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        HttpUtils http = new HttpUtils();
-        http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.URL_ROOT + ApiUtils.URL_FRIEND_GET_LIST,
-                params,
-                new RequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        String result = responseInfo.result;
-                        if (StringUtils.isEmpty(result))
-                            return;
-                        try {
-                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                                Gson gson = new Gson();
-                                JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
-                                List<Friend> friends = gson.fromJson(data.toString(), new TypeToken<List<Friend>>() {
-                                }.getType());
-                                adapterList.addAll(friends);
-                                Collections.sort(adapterList, pinyinComparator);
-                                adapter.updateListView(friends);
-
-                                Log.d("MT", "friends: " + friends.toString());
-                            } else {
-                                JSONObject girl = new JSONObject(result);
-                                String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
-                                if (errorMsg != null) {
-                                    // 发送验证码失败
-                                    // TODO 没有验证错误码
-                                    ToastUtils.showShort(FriendListActivity.this, errorMsg);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-
-                    }
-                });
     }
 }

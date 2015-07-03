@@ -28,6 +28,7 @@ import com.hltc.mtmap.activity.profile.FriendListActivity;
 import com.hltc.mtmap.activity.profile.SettingsActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
@@ -116,15 +117,22 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         //编辑头像
         portraitCiv = (CircleImageView) scrollView.getPullRootView().findViewById(R.id.civ_profile_header_pic);
-        ImageLoader.getInstance().displayImage(AppConfig.getAppConfig(getActivity()).getConfUsrPortrait(), portraitCiv);
+        ImageLoader.getInstance().displayImage(AppConfig.getAppConfig()
+                .getConfUsrPortrait(), portraitCiv, MyApplication.displayImageOptions);
         portraitCiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showDialog();
             }
         });
+
         //更新麦粒数量
-//        httpGetGrainNumber();
+        ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_chihe))
+                .setText(AppConfig.getAppConfig().get(AppConfig.CONFIG_GRAIN, AppConfig.CONF_GRAIN_CHIHE));
+        ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_wanle))
+                .setText(AppConfig.getAppConfig().get(AppConfig.CONFIG_GRAIN, AppConfig.CONF_GRAIN_WANLE));
+        ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_other))
+                .setText(AppConfig.getAppConfig().get(AppConfig.CONFIG_GRAIN, AppConfig.CONF_GRAIN_OTHER));
     }
 
     @Override
@@ -257,69 +265,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void httpGetGrainNumber() {
-        RequestParams params = new RequestParams();
-        params.addHeader("Content-Type", "application/json");
-        JSONObject json = new JSONObject();
-        try {
-            json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getConfToken());
-            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        HttpUtils http = new HttpUtils();
-        http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.URL_ROOT + ApiUtils.URL_GRAIN_NUMBER,
-                params,
-                new RequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        String result = responseInfo.result;
-                        if (StringUtils.isEmpty(result))
-                            return;
-                        try {
-                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                                JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
-                                ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_chihe))
-                                        .setText(String.valueOf(data.getInt(ApiUtils.KEY_GRAIN_CHIHE)));
-                                ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_wanle))
-                                        .setText(String.valueOf(data.getInt(ApiUtils.KEY_GRAIN_WANLE)));
-                                ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_other))
-                                        .setText(String.valueOf(data.getInt(ApiUtils.KEY_GRAIN_OTHER)));
-                            } else {
-                                JSONObject girl = new JSONObject(result);
-                                String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
-                                if (errorMsg != null) {
-                                    // 发送验证码失败
-                                    // TODO 没有验证错误码
-                                    ToastUtils.showShort(getActivity(), errorMsg);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-
-                    }
-                });
-    }
-
     private void httpUpdatePortrait(final String path, final String remote) {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getConfToken());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             json.put(ApiUtils.KEY_PORTRAIT, remote);
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
@@ -340,7 +293,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                             return;
                         try {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                                AppConfig.getAppConfig(getActivity()).setConfUsrPortrait(remote);
+                                AppConfig.getAppConfig().setConfUsrPortrait(remote);
                                 Toast.makeText(getActivity(), "头像更新成功", Toast.LENGTH_SHORT).show();
                                 new Thread(new Runnable() {
                                     @Override
@@ -372,8 +325,5 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onResume() {
         super.onResume();
-        httpGetGrainNumber();
-//        ImageLoader.getInstance().displayImage(
-//                AppConfig.getAppConfig(getActivity()).getConfUsrPortrait(), portraitCiv);
     }
 }

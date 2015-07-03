@@ -228,7 +228,7 @@ public class SignUpActivity extends Activity {
                                 ToastUtils.showShort(SignUpActivity.this, "验证成功");
                                 JSONObject son = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 String tmpToken = son.getString(ApiUtils.KEY_TMP_TOKEN);
-                                AppConfig.getAppConfig(SignUpActivity.this).setConfTmpToken(tmpToken);     //将临时Token保存
+                                AppConfig.getAppConfig().setConfTmpToken(tmpToken);     //将临时Token保存
                                 // 进行布局转换
                                 layoutSignupStepOne.setVisibility(View.GONE);
                                 layoutSignupStepTwo.setVisibility(View.VISIBLE);
@@ -261,7 +261,7 @@ public class SignUpActivity extends Activity {
             json.put(ApiUtils.KEY_SOURCE, "Android");
             json.put(ApiUtils.KEY_PHONE, mPhone);
             json.put(ApiUtils.KEY_PASSWD, StringUtils.toMD5(mPasswd));
-            json.put(ApiUtils.KEY_TMP_TOKEN, AppConfig.getAppConfig(this).getConfTmpToken());
+            json.put(ApiUtils.KEY_TMP_TOKEN, AppConfig.getAppConfig().getConfTmpToken());
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -294,8 +294,8 @@ public class SignUpActivity extends Activity {
                                 userInfo.setPortrait(data.getString(ApiUtils.KEY_PORTRAIT));
                                 userInfo.setPortraitSmall(data.getString(ApiUtils.KEY_USR_PORTRAIT_SMALL));
                                 userInfo.setCoverImg(data.getString(ApiUtils.KEY_USR_COVER_IMG));
-                                AppConfig.getAppConfig(SignUpActivity.this).setUserInfo(userInfo);
-                                AppConfig.getAppConfig(SignUpActivity.this).setConfToken(data.getString(ApiUtils.KEY_TOKEN));
+                                AppConfig.getAppConfig().setUserInfo(userInfo);
+                                AppConfig.getAppConfig().setConfToken(data.getString(ApiUtils.KEY_TOKEN));
                                 //TODO 已注册好 下一步干吗？
                                 ToastUtils.showShort(SignUpActivity.this, "注册成功");
                                 Log.d("SignUpActivity", userInfo.toString());

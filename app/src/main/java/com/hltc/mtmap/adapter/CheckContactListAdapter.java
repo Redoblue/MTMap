@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.bean.ContactItem;
+import com.hltc.mtmap.gmodel.ContactItem;
 import com.hltc.mtmap.util.ApiUtils;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

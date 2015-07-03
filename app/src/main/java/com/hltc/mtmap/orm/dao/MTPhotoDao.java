@@ -26,11 +26,23 @@ import com.hltc.mtmap.orm.DaoSession;
 public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
 
     public static final String TABLENAME = "MTPHOTO";
+
+    /**
+     * Properties of entity MTPhoto.<br/>
+     * Can be used for QueryBuilder and for referencing column names.
+    */
+    public static class Properties {
+        public final static Property Id = new Property(0, long.class, "id", true, "_id");
+        public final static Property PreviewURL = new Property(1, String.class, "previewURL", false, "PREVIEW_URL");
+        public final static Property ThumbnailURL = new Property(2, String.class, "thumbnailURL", false, "THUMBNAIL_URL");
+        public final static Property UserId = new Property(3, long.class, "userId", false, "USER_ID");
+        public final static Property GrainId = new Property(4, long.class, "grainId", false, "GRAIN_ID");
+    };
+
     private DaoSession daoSession;
-    ;
+
     private Query<MTPhoto> mTUser_Photo2UserQuery;
     private Query<MTPhoto> mTGrain_Photos2GrainQuery;
-    private String selectDeep;
 
     public MTPhotoDao(DaoConfig config) {
         super(config);
@@ -155,6 +167,8 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         return query.list();
     }
 
+    private String selectDeep;
+
     protected String getSelectDeep() {
         if (selectDeep == null) {
             StringBuilder builder = new StringBuilder("SELECT ");
@@ -171,7 +185,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         }
         return selectDeep;
     }
-
+    
     protected MTPhoto loadCurrentDeep(Cursor cursor, boolean lock) {
         MTPhoto entity = loadCurrent(cursor, 0, lock);
         int offset = getAllColumns().length;
@@ -187,7 +201,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
             entity.setMTGrain(mTGrain);
         }
 
-        return entity;
+        return entity;    
     }
 
     public MTPhoto loadDeep(Long key) {
@@ -200,10 +214,10 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         builder.append("WHERE ");
         SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
         String sql = builder.toString();
-
+        
         String[] keyArray = new String[] { key.toString() };
         Cursor cursor = db.rawQuery(sql, keyArray);
-
+        
         try {
             boolean available = cursor.moveToFirst();
             if (!available) {
@@ -216,12 +230,12 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
             cursor.close();
         }
     }
-
+    
     /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
     public List<MTPhoto> loadAllDeepFromCursor(Cursor cursor) {
         int count = cursor.getCount();
         List<MTPhoto> list = new ArrayList<MTPhoto>(count);
-
+        
         if (cursor.moveToFirst()) {
             if (identityScope != null) {
                 identityScope.lock();
@@ -248,22 +262,11 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         }
     }
     
+
     /** A raw-style query where you can pass any WHERE clause and arguments. */
     public List<MTPhoto> queryDeep(String where, String... selectionArg) {
         Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
         return loadDeepAllAndCloseCursor(cursor);
     }
-
-    /**
-     * Properties of entity MTPhoto.<br/>
-     * Can be used for QueryBuilder and for referencing column names.
-     */
-    public static class Properties {
-        public final static Property Id = new Property(0, long.class, "id", true, "_id");
-        public final static Property PreviewURL = new Property(1, String.class, "previewURL", false, "PREVIEW_URL");
-        public final static Property ThumbnailURL = new Property(2, String.class, "thumbnailURL", false, "THUMBNAIL_URL");
-        public final static Property UserId = new Property(3, long.class, "userId", false, "USER_ID");
-        public final static Property GrainId = new Property(4, long.class, "grainId", false, "GRAIN_ID");
-    }
-
+ 
 }

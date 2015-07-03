@@ -8,13 +8,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.profile.ProfileActivity;
 import com.hltc.mtmap.activity.publish.PublishActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
@@ -24,6 +22,7 @@ import com.hltc.mtmap.fragment.MapFragment;
 import com.hltc.mtmap.fragment.MessageFragment;
 import com.hltc.mtmap.fragment.ProfileFragment;
 import com.hltc.mtmap.fragment.PublishFragment;
+import com.hltc.mtmap.task.SyncDataAsyncTask;
 import com.hltc.mtmap.util.AppUtils;
 import com.umeng.message.PushAgent;
 
@@ -32,7 +31,6 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
@@ -95,6 +93,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         initPushAgent();
         // 检查是否需要下载欢迎图片
         checkWelcomeImage();
+
+        // 更新数据
+        if (MyApplication.signInStatus.equals("11")) {
+            new SyncDataAsyncTask().execute();
+        }
     }
 
     private void initView() {
@@ -123,12 +126,18 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         mPushAgent = PushAgent.getInstance(this);
         mPushAgent.onAppStart();
         mPushAgent.enable();
-        try {
-            mPushAgent.getTagManager().add("mtmap");
-            mPushAgent.addAlias(String.valueOf(AppConfig.getAppConfig(this).getConfUsrUserId()), "MT");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mPushAgent.getTagManager().add("mtmap");
+                    mPushAgent.addAlias(String.valueOf(
+                            AppConfig.getAppConfig().getConfUsrUserId()), "MT");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     @Override
@@ -230,4 +239,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onDestroy();
         AppManager.getAppManager().finishActivity(this);
     }
+
+
 }

@@ -27,12 +27,29 @@ import com.hltc.mtmap.orm.DaoSession;
 public class MTGrainDao extends AbstractDao<MTGrain, Long> {
 
     public static final String TABLENAME = "MTGRAIN";
+
+    /**
+     * Properties of entity MTGrain.<br/>
+     * Can be used for QueryBuilder and for referencing column names.
+    */
+    public static class Properties {
+        public final static Property Id = new Property(0, long.class, "id", true, "_id");
+        public final static Property Description = new Property(1, String.class, "description", false, "DESCRIPTION");
+        public final static Property Date = new Property(2, String.class, "date", false, "DATE");
+        public final static Property IsPublic = new Property(3, boolean.class, "isPublic", false, "IS_PUBLIC");
+        public final static Property IsIngored = new Property(4, boolean.class, "isIngored", false, "IS_INGORED");
+        public final static Property Latitude = new Property(5, double.class, "latitude", false, "LATITUDE");
+        public final static Property Longitude = new Property(6, double.class, "longitude", false, "LONGITUDE");
+        public final static Property SiteId = new Property(7, long.class, "siteId", false, "SITE_ID");
+        public final static Property CategoryId = new Property(8, long.class, "categoryId", false, "CATEGORY_ID");
+        public final static Property UserId = new Property(9, long.class, "userId", false, "USER_ID");
+    };
+
     private DaoSession daoSession;
-    ;
+
     private Query<MTGrain> mTUser_Grains2UserQuery;
     private Query<MTGrain> mTSite_Grains2SiteQuery;
     private Query<MTGrain> mTCategory_Grains2CategoryQuery;
-    private String selectDeep;
 
     public MTGrainDao(DaoConfig config) {
         super(config);
@@ -99,7 +116,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         MTGrain entity = new MTGrain( //
             cursor.getLong(offset + 0), // id
             cursor.getString(offset + 1), // description
-                cursor.getString(offset + 2), // date
+            cursor.getString(offset + 2), // date
             cursor.getShort(offset + 3) != 0, // isPublic
             cursor.getShort(offset + 4) != 0, // isIngored
             cursor.getDouble(offset + 5), // latitude
@@ -191,6 +208,8 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         return query.list();
     }
 
+    private String selectDeep;
+
     protected String getSelectDeep() {
         if (selectDeep == null) {
             StringBuilder builder = new StringBuilder("SELECT ");
@@ -210,7 +229,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         }
         return selectDeep;
     }
-
+    
     protected MTGrain loadCurrentDeep(Cursor cursor, boolean lock) {
         MTGrain entity = loadCurrent(cursor, 0, lock);
         int offset = getAllColumns().length;
@@ -232,7 +251,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
             entity.setMTCategory(mTCategory);
         }
 
-        return entity;
+        return entity;    
     }
 
     public MTGrain loadDeep(Long key) {
@@ -245,10 +264,10 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         builder.append("WHERE ");
         SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
         String sql = builder.toString();
-
+        
         String[] keyArray = new String[] { key.toString() };
         Cursor cursor = db.rawQuery(sql, keyArray);
-
+        
         try {
             boolean available = cursor.moveToFirst();
             if (!available) {
@@ -261,12 +280,12 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
             cursor.close();
         }
     }
-
+    
     /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
     public List<MTGrain> loadAllDeepFromCursor(Cursor cursor) {
         int count = cursor.getCount();
         List<MTGrain> list = new ArrayList<MTGrain>(count);
-
+        
         if (cursor.moveToFirst()) {
             if (identityScope != null) {
                 identityScope.lock();
@@ -293,27 +312,11 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         }
     }
     
+
     /** A raw-style query where you can pass any WHERE clause and arguments. */
     public List<MTGrain> queryDeep(String where, String... selectionArg) {
         Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
         return loadDeepAllAndCloseCursor(cursor);
     }
-
-    /**
-     * Properties of entity MTGrain.<br/>
-     * Can be used for QueryBuilder and for referencing column names.
-     */
-    public static class Properties {
-        public final static Property Id = new Property(0, long.class, "id", true, "_id");
-        public final static Property Description = new Property(1, String.class, "description", false, "DESCRIPTION");
-        public final static Property Date = new Property(2, String.class, "date", false, "DATE");
-        public final static Property IsPublic = new Property(3, boolean.class, "isPublic", false, "IS_PUBLIC");
-        public final static Property IsIngored = new Property(4, boolean.class, "isIngored", false, "IS_INGORED");
-        public final static Property Latitude = new Property(5, double.class, "latitude", false, "LATITUDE");
-        public final static Property Longitude = new Property(6, double.class, "longitude", false, "LONGITUDE");
-        public final static Property SiteId = new Property(7, long.class, "siteId", false, "SITE_ID");
-        public final static Property CategoryId = new Property(8, long.class, "categoryId", false, "CATEGORY_ID");
-        public final static Property UserId = new Property(9, long.class, "userId", false, "USER_ID");
-    }
-
+ 
 }

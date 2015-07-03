@@ -115,8 +115,8 @@ public class FeedbackActivity extends Activity {
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             json.put(ApiUtils.KEY_CONTENT, etFeedbackContent.getText().toString());
             json.put(ApiUtils.KEY_EMAIL, etFeedbackEmail.getText().toString());
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));

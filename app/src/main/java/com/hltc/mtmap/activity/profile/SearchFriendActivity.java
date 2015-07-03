@@ -150,8 +150,8 @@ public class SearchFriendActivity extends Activity implements EditText.OnEditorA
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             JSONArray array = new JSONArray();
             for (PhoneContact contact : contacts) {
                 array.put(contact.getNumber());
@@ -210,8 +210,8 @@ public class SearchFriendActivity extends Activity implements EditText.OnEditorA
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             json.put(ApiUtils.KEY_KEYWORD, keyword);
             JSONArray array = new JSONArray();
             for (PhoneContact contact : contacts) {

@@ -189,8 +189,8 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
                                 userInfo.setPortrait(data.getString(ApiUtils.KEY_PORTRAIT));
                                 userInfo.setPortraitSmall(data.getString(ApiUtils.KEY_USR_PORTRAIT_SMALL));
                                 userInfo.setCoverImg(data.getString(ApiUtils.KEY_USR_COVER_IMG));
-                                AppConfig.getAppConfig(MyApplication.getContext()).setUserInfo(userInfo);
-                                AppConfig.getAppConfig(MyApplication.getContext()).setConfToken(data.getString(ApiUtils.KEY_TOKEN));
+                                AppConfig.getAppConfig().setUserInfo(userInfo);
+                                AppConfig.getAppConfig().setConfToken(data.getString(ApiUtils.KEY_TOKEN));
                                 //更新身份状态
                                 MyApplication.signInStatus = "11";
                                 // 进入主界面

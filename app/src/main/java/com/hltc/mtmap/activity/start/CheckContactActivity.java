@@ -19,7 +19,7 @@ import com.hltc.mtmap.adapter.CheckContactListAdapter;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.bean.PhoneContact;
-import com.hltc.mtmap.bean.ContactItem;
+import com.hltc.mtmap.gmodel.ContactItem;
 import com.hltc.mtmap.helper.ProgressGenerator;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
@@ -137,8 +137,8 @@ public class CheckContactActivity extends Activity implements ProgressGenerator.
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(this).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(this).getConfToken());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             JSONArray array = new JSONArray();
             for (PhoneContact contact : contacts) {
                 array.put(contact.getNumber());

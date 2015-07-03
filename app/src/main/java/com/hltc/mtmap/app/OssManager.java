@@ -43,7 +43,7 @@ public class OssManager {
     }
 
     public static String getRemotePath(String s) {
-        String path = "users/" + AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrUserId()
+        String path = "users/" + AppConfig.getAppConfig().getConfUsrUserId()
                 + "/" + s.substring(s.lastIndexOf("/") + 1);
         return path;
     }

@@ -10,16 +10,35 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.LinearLayout;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
+import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.orm.model.MTUser;
+import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.FileUtils;
 import com.hltc.mtmap.util.StringUtils;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.http.client.HttpRequest;
 import com.lidroid.xutils.util.LogUtils;
 
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -32,6 +51,8 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
 
     @InjectView(R.id.activity_start_view)
     LinearLayout background;
+
+    private String status = MyApplication.signInStatus;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,10 +92,10 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
             startActivity(intent);
         } else {    //判断登录状态，是则进入主界面，否则进入登录界面
             Log.d("MT", "splash: " + MyApplication.signInStatus);
-            if (MyApplication.signInStatus.equals("11") || MyApplication.signInStatus.equals("01")) {
+            if (status.equals("11") || status.equals("01")) {
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
-            } else if (MyApplication.signInStatus.equals("10") || MyApplication.signInStatus.equals("00")) {
+            } else if (status.equals("10") || status.equals("00")) {
                 LogUtils.d("未登录分支");
                 Intent intent = new Intent(this, StartActivity.class);
                 startActivity(intent);
@@ -132,4 +153,6 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
         super.onDestroy();
         AppManager.getAppManager().finishActivity(this);
     }
+
+
 }

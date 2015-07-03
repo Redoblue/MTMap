@@ -10,6 +10,7 @@ import de.greenrobot.dao.identityscope.IdentityScopeType;
 import de.greenrobot.dao.internal.DaoConfig;
 
 import com.hltc.mtmap.orm.model.MTUser;
+import com.hltc.mtmap.orm.model.MTFriendStatus;
 import com.hltc.mtmap.orm.model.MTGrain;
 import com.hltc.mtmap.orm.model.MTSite;
 import com.hltc.mtmap.orm.model.MTPhoto;
@@ -18,6 +19,7 @@ import com.hltc.mtmap.orm.model.MTComment;
 import com.hltc.mtmap.orm.model.MTFavourite;
 
 import com.hltc.mtmap.orm.dao.MTUserDao;
+import com.hltc.mtmap.orm.dao.MTFriendStatusDao;
 import com.hltc.mtmap.orm.dao.MTGrainDao;
 import com.hltc.mtmap.orm.dao.MTSiteDao;
 import com.hltc.mtmap.orm.dao.MTPhotoDao;
@@ -35,6 +37,7 @@ import com.hltc.mtmap.orm.dao.MTFavouriteDao;
 public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig mTUserDaoConfig;
+    private final DaoConfig mTFriendStatusDaoConfig;
     private final DaoConfig mTGrainDaoConfig;
     private final DaoConfig mTSiteDaoConfig;
     private final DaoConfig mTPhotoDaoConfig;
@@ -43,6 +46,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig mTFavouriteDaoConfig;
 
     private final MTUserDao mTUserDao;
+    private final MTFriendStatusDao mTFriendStatusDao;
     private final MTGrainDao mTGrainDao;
     private final MTSiteDao mTSiteDao;
     private final MTPhotoDao mTPhotoDao;
@@ -56,6 +60,9 @@ public class DaoSession extends AbstractDaoSession {
 
         mTUserDaoConfig = daoConfigMap.get(MTUserDao.class).clone();
         mTUserDaoConfig.initIdentityScope(type);
+
+        mTFriendStatusDaoConfig = daoConfigMap.get(MTFriendStatusDao.class).clone();
+        mTFriendStatusDaoConfig.initIdentityScope(type);
 
         mTGrainDaoConfig = daoConfigMap.get(MTGrainDao.class).clone();
         mTGrainDaoConfig.initIdentityScope(type);
@@ -76,6 +83,7 @@ public class DaoSession extends AbstractDaoSession {
         mTFavouriteDaoConfig.initIdentityScope(type);
 
         mTUserDao = new MTUserDao(mTUserDaoConfig, this);
+        mTFriendStatusDao = new MTFriendStatusDao(mTFriendStatusDaoConfig, this);
         mTGrainDao = new MTGrainDao(mTGrainDaoConfig, this);
         mTSiteDao = new MTSiteDao(mTSiteDaoConfig, this);
         mTPhotoDao = new MTPhotoDao(mTPhotoDaoConfig, this);
@@ -84,6 +92,7 @@ public class DaoSession extends AbstractDaoSession {
         mTFavouriteDao = new MTFavouriteDao(mTFavouriteDaoConfig, this);
 
         registerDao(MTUser.class, mTUserDao);
+        registerDao(MTFriendStatus.class, mTFriendStatusDao);
         registerDao(MTGrain.class, mTGrainDao);
         registerDao(MTSite.class, mTSiteDao);
         registerDao(MTPhoto.class, mTPhotoDao);
@@ -94,6 +103,7 @@ public class DaoSession extends AbstractDaoSession {
 
     public void clear() {
         mTUserDaoConfig.getIdentityScope().clear();
+        mTFriendStatusDaoConfig.getIdentityScope().clear();
         mTGrainDaoConfig.getIdentityScope().clear();
         mTSiteDaoConfig.getIdentityScope().clear();
         mTPhotoDaoConfig.getIdentityScope().clear();
@@ -104,6 +114,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public MTUserDao getMTUserDao() {
         return mTUserDao;
+    }
+
+    public MTFriendStatusDao getMTFriendStatusDao() {
+        return mTFriendStatusDao;
     }
 
     public MTGrainDao getMTGrainDao() {

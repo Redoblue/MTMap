@@ -61,7 +61,7 @@
                 android:background="@color/dark_grey">
 
                 <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
-                    android:id="@+id/civ_profile_header_pic"
+                    android:id="@+id/civ_grain_detail_portrait"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_centerInParent="true"
@@ -74,7 +74,7 @@
                     android:id="@+id/tv_profile_header_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/civ_profile_header_pic"
+                    android:layout_below="@id/civ_grain_detail_portrait"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="10dp"
                     android:text="小苹果"

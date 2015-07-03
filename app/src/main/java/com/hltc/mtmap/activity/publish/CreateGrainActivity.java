@@ -56,6 +56,7 @@ import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.bean.ParcelableGrain;
+import com.hltc.mtmap.fragment.MapFragment;
 import com.hltc.mtmap.helper.PhotoHelper;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.AppUtils;
@@ -189,8 +190,8 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                 }
 
                 ParcelableGrain grain = new ParcelableGrain();
-                grain.userId = AppConfig.getAppConfig(this).getConfUsrUserId();
-                grain.token = AppConfig.getAppConfig(this).getConfToken();
+                grain.userId = AppConfig.getAppConfig().getConfUsrUserId();
+                grain.token = AppConfig.getAppConfig().getConfToken();
                 grain.mcateId = mCateId[intentType];
 
                 if (poiTitles.contains(returnedValue)) {
@@ -210,7 +211,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                     grain.latitude = String.valueOf(selectedItem.getLatLonPoint().getLatitude());
                     grain.longitude = String.valueOf(selectedItem.getLatLonPoint().getLongitude());
                     grain.cityCode = selectedItem.getCityCode();
-                    grain.isPublic = String.valueOf(publicToggle.isChecked());
+                    grain.isPublic = publicToggle.isChecked() ? "1" : "0";
                     grain.text = commentEditText.getText().toString().trim();
                 } else if (poiItems.size() > 0) {
                     PoiItem tempPoi = poiItems.get(0);
@@ -222,7 +223,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                     grain.latitude = String.valueOf(tempPoi.getLatLonPoint().getLatitude());
                     grain.longitude = String.valueOf(tempPoi.getLatLonPoint().getLongitude());
                     grain.cityCode = tempPoi.getCityCode();
-                    grain.isPublic = String.valueOf(publicToggle.isChecked());
+                    grain.isPublic = publicToggle.isChecked() ? "1" : "0";
                     grain.text = commentEditText.getText().toString().trim();
                 } else {
                     // 未获取到位置
@@ -349,6 +350,13 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
     @Override
     public void onMapLoaded() {
         Log.d("Publish", "onMapLoader");
+        //加载完地图进入上次最后地点
+        if (!StringUtils.isEmpty(MapFragment.mMapInfo.getLatitude())) {
+            LatLng latLng = new LatLng(StringUtils.toDouble(
+                    MapFragment.mMapInfo.getLatitude()),
+                    StringUtils.toDouble(MapFragment.mMapInfo.getLongitude()));
+            mAmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapFragment.defaultZoom));
+        }
     }
 
     @Override

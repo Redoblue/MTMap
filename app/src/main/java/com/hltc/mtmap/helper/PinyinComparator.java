@@ -1,10 +1,10 @@
 package com.hltc.mtmap.helper;
 
-import com.hltc.mtmap.gmodel.Friend;
+import com.hltc.mtmap.orm.model.MTUser;
 
 import java.util.Comparator;
 
-public class PinyinComparator implements Comparator<Friend> {
+public class PinyinComparator implements Comparator<MTUser> {
 
     //    public int compare(Friend o1, Friend o2) {
 //        if (o1.getLetter().equals("@")
@@ -17,7 +17,7 @@ public class PinyinComparator implements Comparator<Friend> {
 //            return o1.getLetter().compareTo(o2.getLetter());
 //        }
 //    }
-    public int compare(Friend f1, Friend f2) {
+    public int compare(MTUser f1, MTUser f2) {
         return f1.getFirstCharacter().compareTo(f2.getFirstCharacter());
     }
 }

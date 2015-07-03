@@ -2,7 +2,6 @@ package com.hltc.mtmap.activity.profile;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
@@ -47,6 +46,7 @@ public class FriendRequestActivity extends Activity implements EditText.OnEditor
     Button btnCancel;
 
     private MTUser user = new MTUser();
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,7 @@ public class FriendRequestActivity extends Activity implements EditText.OnEditor
     }
 
     private void initData() {
+        position = getIntent().getIntExtra("position", 0);
         user.setUserId(getIntent().getLongExtra("toId", 0));
         user.setNickName(getIntent().getStringExtra("remark").trim());
     }
@@ -88,8 +89,8 @@ public class FriendRequestActivity extends Activity implements EditText.OnEditor
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
         try {
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(MyApplication.getContext()).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(MyApplication.getContext()).getConfToken());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             json.put(ApiUtils.KEY_TOID, user.getUserId());
             json.put(ApiUtils.KEY_TEXT, s);
             json.put(ApiUtils.KEY_REMARK, user.getNickName());
@@ -109,13 +110,14 @@ public class FriendRequestActivity extends Activity implements EditText.OnEditor
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result = responseInfo.result;
                         if (StringUtils.isEmpty(result)) {
-                            Toast.makeText(MyApplication.getContext(), "添加失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MyApplication.getContext(), "发送请求失败", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         try {
                             JSONObject farther = new JSONObject(result);
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
-                                Toast.makeText(MyApplication.getContext(), "添加成功", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(MyApplication.getContext(), "发送请求成功", Toast.LENGTH_SHORT).show();
+                                FriendStatusActivity.adapterList.get(position).setStatus(FriendStatusActivity.STATUS_WAITING);
                                 AppManager.getAppManager().finishActivity(FriendRequestActivity.class);
                             } else {
                                 String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);

@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.helper.PhotoHelper;
+import com.hltc.mtmap.util.FileUtils;
 
 /**
  * Created by redoblue on 15-5-18.
@@ -34,7 +35,12 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
             String path = PhotoHelper.larges.get(i);
             OssManager.getOssManager().uploadImage(path, OssManager.getRemotePath(path));
         }
-//        FileUtils.deleteDir();
+        try {
+            FileUtils.deleteDir();
+            PhotoHelper.clearData();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return true;
     }
 

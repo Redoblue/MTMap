@@ -188,8 +188,8 @@ public class GrainFragment extends Fragment {
         JSONObject json = new JSONObject();
         try {
             if (MyApplication.signInStatus.equals("11")) {//11
-                json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
-                json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getConfToken());
+                json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+                json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             } else {//10
                 json.put("vid", "Android");
             }

@@ -21,7 +21,14 @@ public class AppConfig {
     public static final String CONFIG_USER = "mtmap_user_configuration";
     public static final String CONFIG_APP = "mtmap_app_configuration";
     public static final String CONFIG_MAP = "last_know_location";
+    public static final String CONFIG_GRAIN = "grain_number";
+    //app
     public static final String CONF_FIRST_USE = "first_use";
+    //grain
+    public static final String CONF_GRAIN_CHIHE = "chihe";
+    public static final String CONF_GRAIN_WANLE = "wanle";
+    public static final String CONF_GRAIN_OTHER = "other";
+    //user
     public static final String CONF_USER_TOKEN = "user_token";
     public static final String CONF_USER_TMP_TOKEN = "user_token_tmp";
     public static final String CONF_USR_USER_ID = "user_userId";
@@ -45,13 +52,11 @@ public class AppConfig {
     public static final String DEFAULT_APP_ROOT_PATH =
             Environment.getExternalStorageDirectory() + File.separator + APP_NAME + File.separator;
     private static AppConfig config;
-    private Context mContext;
     private LocalUserInfo mUserInfo;
 
-    public static AppConfig getAppConfig(Context context) {
+    public static AppConfig getAppConfig() {
         if (config == null) {
             config = new AppConfig();
-            config.mContext = context;
         }
         return config;
     }
@@ -272,14 +277,16 @@ public class AppConfig {
 
     /* SharedPreference */
     public void set(String config, String key, String value) {
-        SharedPreferences preferences = mContext.getSharedPreferences(config, Context.MODE_PRIVATE);
+        SharedPreferences preferences = MyApplication.getContext()
+                .getSharedPreferences(config, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString(key, value);
         editor.commit();
     }
 
     public String get(String config, String key) {
-        SharedPreferences preferences = mContext.getSharedPreferences(config, Context.MODE_PRIVATE);
+        SharedPreferences preferences = MyApplication.getContext()
+                .getSharedPreferences(config, Context.MODE_PRIVATE);
         return preferences.getString(key, "");
     }
 }

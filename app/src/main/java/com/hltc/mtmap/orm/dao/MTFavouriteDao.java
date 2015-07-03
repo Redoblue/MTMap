@@ -26,11 +26,21 @@ import com.hltc.mtmap.orm.DaoSession;
 public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
 
     public static final String TABLENAME = "MTFAVOURITE";
+
+    /**
+     * Properties of entity MTFavourite.<br/>
+     * Can be used for QueryBuilder and for referencing column names.
+    */
+    public static class Properties {
+        public final static Property Id = new Property(0, long.class, "id", true, "_id");
+        public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
+        public final static Property GrainId = new Property(2, long.class, "grainId", false, "GRAIN_ID");
+    };
+
     private DaoSession daoSession;
-    ;
+
     private Query<MTFavourite> mTUser_Favourite2UserQuery;
     private Query<MTFavourite> mTGrain_Favourites2GrainQuery;
-    private String selectDeep;
 
     public MTFavouriteDao(DaoConfig config) {
         super(config);
@@ -147,6 +157,8 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         return query.list();
     }
 
+    private String selectDeep;
+
     protected String getSelectDeep() {
         if (selectDeep == null) {
             StringBuilder builder = new StringBuilder("SELECT ");
@@ -163,7 +175,7 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         }
         return selectDeep;
     }
-
+    
     protected MTFavourite loadCurrentDeep(Cursor cursor, boolean lock) {
         MTFavourite entity = loadCurrent(cursor, 0, lock);
         int offset = getAllColumns().length;
@@ -179,7 +191,7 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
             entity.setMTGrain(mTGrain);
         }
 
-        return entity;
+        return entity;    
     }
 
     public MTFavourite loadDeep(Long key) {
@@ -192,10 +204,10 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         builder.append("WHERE ");
         SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
         String sql = builder.toString();
-
+        
         String[] keyArray = new String[] { key.toString() };
         Cursor cursor = db.rawQuery(sql, keyArray);
-
+        
         try {
             boolean available = cursor.moveToFirst();
             if (!available) {
@@ -208,12 +220,12 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
             cursor.close();
         }
     }
-
+    
     /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
     public List<MTFavourite> loadAllDeepFromCursor(Cursor cursor) {
         int count = cursor.getCount();
         List<MTFavourite> list = new ArrayList<MTFavourite>(count);
-
+        
         if (cursor.moveToFirst()) {
             if (identityScope != null) {
                 identityScope.lock();
@@ -240,20 +252,11 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         }
     }
     
+
     /** A raw-style query where you can pass any WHERE clause and arguments. */
     public List<MTFavourite> queryDeep(String where, String... selectionArg) {
         Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
         return loadDeepAllAndCloseCursor(cursor);
     }
-
-    /**
-     * Properties of entity MTFavourite.<br/>
-     * Can be used for QueryBuilder and for referencing column names.
-     */
-    public static class Properties {
-        public final static Property Id = new Property(0, long.class, "id", true, "_id");
-        public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
-        public final static Property GrainId = new Property(2, long.class, "grainId", false, "GRAIN_ID");
-    }
-
+ 
 }

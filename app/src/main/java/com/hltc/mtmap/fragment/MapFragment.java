@@ -81,29 +81,24 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             R.drawable.transparent,
             R.drawable.arc_food
     };
+    public static float defaultZoom = 17f;
+    public static MapInfo mMapInfo;
     @InjectView(R.id.map)
     MapView mMapView;
     @InjectView(R.id.arc_menu)
     ArcMenu mArcMenu;
-
     private AMap mAmap;
-
     //    private DaoManager daoManager;
     private ClusterOverlay overlay;
     //Test by Tab ABC
     private int clusterRadius = 80;
     private int currentCategory = 0;
     private long refreshDistance = 200;
-
-    private float defaultZoom = 17f;
     private float lastZoom = defaultZoom;
     private float currentZoom;
-
     private LatLng myLocation;
     private LatLng lastLocation;
     private LocationManagerProxy locationManagerProxy;
-    private MapInfo mMapInfo;
-
     private List<SwipeGrainItem> grains;
 
     @Override
@@ -134,7 +129,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     }
 
     private void initData() {
-        mMapInfo = AppConfig.getAppConfig(getActivity()).getMapInfo();
+        mMapInfo = AppConfig.getAppConfig().getMapInfo();
     }
 
     private void initAmap() {
@@ -348,8 +343,8 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
         try {
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig(getActivity()).getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig(getActivity()).getConfToken());
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             if (currentCategory != 0) {
                 json.put(ApiUtils.KEY_GRAIN_MCATEID, CreateGrainActivity.mCateId[cateId]);
             }

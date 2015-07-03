@@ -135,7 +135,7 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
                 }
                 if (x.get(x.size() - 1) < average) {
                     // 设置第一次使用为False
-                    AppConfig.getAppConfig(this).set(AppConfig.CONFIG_APP, AppConfig.CONF_FIRST_USE, "false");
+                    AppConfig.getAppConfig().set(AppConfig.CONFIG_APP, AppConfig.CONF_FIRST_USE, "false");
 
                     Intent intent = new Intent(this, StartActivity.class);
                     startActivity(intent);

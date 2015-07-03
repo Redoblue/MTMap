@@ -45,4 +45,11 @@ public class PhotoHelper {
         }
         return bitmap;
     }
+
+    public static void clearData() {
+        bitmaps.clear();
+        addresses.clear();
+        larges.clear();
+        max = 0;
+    }
 }

@@ -30,12 +30,21 @@ public class Generator {
          */
         Entity mtUser = schema.addEntity("MTUser");
         mtUser.addLongProperty("userId").primaryKey().notNull();
-        mtUser.addStringProperty("nickName").notNull();
-        mtUser.addStringProperty("createTime").notNull();
-        mtUser.addStringProperty("phone").notNull();
-        mtUser.addStringProperty("portrait").notNull();
-        mtUser.addStringProperty("coverImg").notNull();
-        mtUser.addStringProperty("signature").notNull();
+        mtUser.addStringProperty("nickName");
+        mtUser.addStringProperty("createTime");
+        mtUser.addStringProperty("phone");
+        mtUser.addStringProperty("portrait");
+        mtUser.addStringProperty("coverImg");
+        mtUser.addStringProperty("signature");
+        mtUser.addStringProperty("remark");
+        mtUser.addStringProperty("firstCharacter");
+
+        Entity mtFriendStatus = schema.addEntity("MTFriendStatus");
+        mtFriendStatus.addLongProperty("userId").primaryKey().notNull();
+        mtFriendStatus.addStringProperty("userPortrait");
+        mtFriendStatus.addStringProperty("nickName");
+        mtFriendStatus.addStringProperty("text");
+        mtFriendStatus.addStringProperty("status");
 
         Entity mtGrain = schema.addEntity("MTGrain");
         mtGrain.addIdProperty().primaryKey().notNull();
