@@ -12,13 +12,14 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.amap.api.maps.MapFragment;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.publish.PublishActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.fragment.AmapFragment;
 import com.hltc.mtmap.fragment.GrainFragment;
-import com.hltc.mtmap.fragment.MapFragment;
 import com.hltc.mtmap.fragment.MessageFragment;
 import com.hltc.mtmap.fragment.ProfileFragment;
 import com.hltc.mtmap.fragment.PublishFragment;
@@ -176,13 +177,14 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         } else {
             transaction.show(fragmentList.get(index));
         }
-        transaction.commit();
+//        transaction.commit();
+        transaction.commitAllowingStateLoss();
     }
 
     private Fragment getFragmentByIndex(int index) {
         switch (index) {
             case TAB_MAP:
-                return new MapFragment();
+                return new AmapFragment();
             case TAB_GRAIN:
                 return new GrainFragment();
             case TAB_PUBLISH:

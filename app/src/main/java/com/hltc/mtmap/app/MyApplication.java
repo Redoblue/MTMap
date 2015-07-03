@@ -21,13 +21,9 @@ import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.UsingFreqLimitedMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
-import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UTrack;
 import com.umeng.message.UmengMessageHandler;
@@ -85,10 +81,10 @@ public class MyApplication extends Application {
 
     private void initImageLoader() {
         //使用默认的ImageLoader配置参数
-//        ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(this);
-//        ImageLoader.getInstance().init(configuration);
+        ImageLoaderConfiguration configuration = ImageLoaderConfiguration.createDefault(this);
+        ImageLoader.getInstance().init(configuration);
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration
+        /*ImageLoaderConfiguration config = new ImageLoaderConfiguration
                 .Builder(mContext)
 //                .memoryCacheExtraOptions(480, 800) // max width, max height，即保存的每个缓存文件的最大长宽
                 .threadPoolSize(3)//线程池内加载的数量
@@ -105,7 +101,7 @@ public class MyApplication extends Application {
                 .imageDownloader(new BaseImageDownloader(mContext, 5 * 1000, 30 * 1000)) // connectTimeout (5 s), readTimeout (30 s)超时时间
                 .writeDebugLogs() // Remove for release app
                 .build();//开始构建
-        ImageLoader.getInstance().init(config);
+        ImageLoader.getInstance().init(config);*/
     }
 
     private void initPushAgent() {

@@ -56,7 +56,7 @@ import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.bean.ParcelableGrain;
-import com.hltc.mtmap.fragment.MapFragment;
+import com.hltc.mtmap.fragment.AmapFragment;
 import com.hltc.mtmap.helper.PhotoHelper;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.AppUtils;
@@ -351,11 +351,11 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
     public void onMapLoaded() {
         Log.d("Publish", "onMapLoader");
         //加载完地图进入上次最后地点
-        if (!StringUtils.isEmpty(MapFragment.mMapInfo.getLatitude())) {
+        if (!StringUtils.isEmpty(AmapFragment.mMapInfo.getLatitude())) {
             LatLng latLng = new LatLng(StringUtils.toDouble(
-                    MapFragment.mMapInfo.getLatitude()),
-                    StringUtils.toDouble(MapFragment.mMapInfo.getLongitude()));
-            mAmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapFragment.defaultZoom));
+                    AmapFragment.mMapInfo.getLatitude()),
+                    StringUtils.toDouble(AmapFragment.mMapInfo.getLongitude()));
+            mAmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, AmapFragment.defaultZoom));
         }
     }
 

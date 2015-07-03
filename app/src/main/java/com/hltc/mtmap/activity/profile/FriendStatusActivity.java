@@ -21,7 +21,6 @@ import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.bean.PhoneContact;
 import com.hltc.mtmap.orm.model.MTFriendStatus;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
@@ -66,7 +65,6 @@ public class FriendStatusActivity extends Activity {
     @InjectView(R.id.lv_new_friend)
     ListView lvNewFriend;
     private FriendStatusListAdapter adapter;
-    private List<PhoneContact> contacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -269,7 +267,8 @@ public class FriendStatusActivity extends Activity {
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            ImageLoader.getInstance().displayImage(getItem(position).getUserPortrait(), holder.portrait);
+            ImageLoader.getInstance().displayImage(
+                    getItem(position).getUserPortrait(), holder.portrait, MyApplication.displayImageOptions);
             holder.name.setText(getItem(position).getNickName());
             holder.text.setText(getItem(position).getText());
             final String s = getItem(position).getStatus();

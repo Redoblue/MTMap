@@ -9,6 +9,7 @@ public class LocalUserInfo {
     private String userName;
     private boolean isLogin;
     private String nickName;
+    private String signature;
     private String phone;
     private String createTime;
     private String portrait;
@@ -29,6 +30,14 @@ public class LocalUserInfo {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    public void setSignature(String signature) {
+        this.signature = signature;
     }
 
     public boolean getIsLogin() {

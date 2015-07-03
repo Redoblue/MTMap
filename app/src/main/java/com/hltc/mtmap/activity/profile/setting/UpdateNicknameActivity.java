@@ -83,64 +83,10 @@ public class UpdateNicknameActivity extends Activity {
                 break;
             case R.id.btn_bar_right:
                 String newNickname = etSingleLine.getText().toString();
-                httpUpdateNickname(newNickname);
+//                httpUpdateNickname(newNickname);
                 break;
         }
     }
 
-    private void httpUpdateNickname(final String nickname) {
-        RequestParams params = new RequestParams();
-        params.addHeader("Content-Type", "application/json");
-        JSONObject json = new JSONObject();
-        try {
-            json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
-            json.put(ApiUtils.KEY_USR_NICKNAME, nickname);
-            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
 
-        HttpUtils http = new HttpUtils();
-        http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.getUpdateNicknameUrl(),
-                params,
-                new RequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        String result = responseInfo.result;
-                        if (StringUtils.isEmpty(result))
-                            return;
-                        try {
-                            JSONObject farther = new JSONObject(result);
-                            if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
-                                AppConfig.getAppConfig().setConfUsrNickName(nickname);
-
-                                AppManager.getAppManager().finishActivity(UpdateNicknameActivity.class);
-                                AppManager.getAppManager().finishActivity(SettingsActivity.class);
-
-                                Toast.makeText(UpdateNicknameActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
-                            } else {
-                                String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
-                                if (errorMsg != null) {
-                                    // 登录失败
-                                    // TODO 没有验证错误码
-                                    ToastUtils.showShort(UpdateNicknameActivity.this, errorMsg);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        Toast.makeText(UpdateNicknameActivity.this, "请检查你的网络", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-    }
 }

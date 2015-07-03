@@ -60,9 +60,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     /**
      * 请求码
      */
-    private static final int IMAGE_REQUEST_CODE = 0;
-    private static final int CAMERA_REQUEST_CODE = 1;
-    private static final int RESULT_REQUEST_CODE = 2;
+    public static final int IMAGE_REQUEST_CODE = 0;
+    public static final int CAMERA_REQUEST_CODE = 1;
+    public static final int RESULT_REQUEST_CODE = 2;
+
+    public static final int EDIT_NICKNAME_REQUEST_CODE = 3;
+    public static final int EDIT_SIGNATURE_REQUEST_CODE = 4;
 
     @InjectView(R.id.sv_profile)
     PullToZoomScrollViewEx scrollView;
@@ -70,6 +73,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private String[] ways = new String[]{"选择本地图片", "拍照"};
 
     private CircleImageView portraitCiv;
+    private TextView nickName;
+    private TextView signature;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -125,6 +130,28 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 showDialog();
             }
         });
+
+        //昵称和签名
+        nickName = (TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_header_nickname);
+        nickName.setText(AppConfig.getAppConfig().getConfUsrNickName());
+//        signature = (TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_header_signature);
+//        signature.setText(AppConfig.getAppConfig().getConfUserSignature());
+//        nickName.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getActivity(), SingleEditActivity.class);
+//                intent.putExtra("old", AppConfig.getAppConfig().getConfUsrNickName());
+//                startActivityForResult(intent, EDIT_NICKNAME_REQUEST_CODE);
+//            }
+//        });
+//        signature.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(getActivity(), SingleEditActivity.class);
+//                intent.putExtra("old", AppConfig.getAppConfig().getConfUserSignature());
+//                startActivityForResult(intent, EDIT_SIGNATURE_REQUEST_CODE);
+//            }
+//        });
 
         //更新麦粒数量
         ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_chihe))
@@ -221,12 +248,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         String where = FileUtils.saveBitmap(bitmap, StringUtils.getUUID());
                         getImageToView(bitmap);
                         String remotePath = "http://" + OssManager.bucketName + "." + OssManager.ossHost + "/"
-                                + OssManager.getRemotePath(where);
+                                + OssManager.getFileKeyByLocalUrl(where);
                         httpUpdatePortrait(where, remotePath);
                         //删除头像
 //                        File file = new File(path);
 //                        FileUtils.delFile(file);
                     }
+                    break;
+                // 昵称和签名
+                case EDIT_NICKNAME_REQUEST_CODE:
+                    String s1 = data.getStringExtra("new");
+                    AppConfig.getAppConfig().setConfUsrNickName(s1);
+                    nickName.setText(s1);
+                    break;
+                case EDIT_SIGNATURE_REQUEST_CODE:
+                    String s2 = data.getStringExtra("new");
+                    AppConfig.getAppConfig().setConfUserSignature(s2);
+                    signature.setText(s2);
                     break;
             }
         }
@@ -298,7 +336,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                 new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        OssManager.getOssManager().uploadImage(path, OssManager.getRemotePath(path));
+                                        OssManager.getOssManager().uploadImage(path, OssManager.getFileKeyByLocalUrl(path));
                                     }
                                 }).start();
                             } else {

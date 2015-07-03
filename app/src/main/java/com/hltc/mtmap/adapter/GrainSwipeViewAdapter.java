@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.bean.SwipeGrainItem;
+import com.hltc.mtmap.bean.GrainItem;
 import com.hltc.mtmap.fragment.GrainFragment;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -20,12 +20,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by redoblue on 15-6-30.
  */
-public class GrainSwipeViewAdapter extends ArrayAdapter<SwipeGrainItem> {
+public class GrainSwipeViewAdapter extends ArrayAdapter<GrainItem> {
 
-    private List<SwipeGrainItem> mList;
+    private List<GrainItem> mList;
     private Context mContext;
 
-    public GrainSwipeViewAdapter(Context context, int resource, List<SwipeGrainItem> objects) {
+    public GrainSwipeViewAdapter(Context context, int resource, List<GrainItem> objects) {
         super(context, resource, objects);
         this.mList = objects;
         this.mContext = context;
@@ -37,7 +37,7 @@ public class GrainSwipeViewAdapter extends ArrayAdapter<SwipeGrainItem> {
     }
 
     @Override
-    public SwipeGrainItem getItem(int position) {
+    public GrainItem getItem(int position) {
         return mList.get(position);
     }
 

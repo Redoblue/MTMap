@@ -9,7 +9,11 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMap.OnCameraChangeListener;
 import com.amap.api.maps.AMap.OnMarkerClickListener;
 import com.amap.api.maps.Projection;
-import com.amap.api.maps.model.*;
+import com.amap.api.maps.model.BitmapDescriptor;
+import com.amap.api.maps.model.CameraPosition;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -242,8 +246,6 @@ public class ClusterOverlay implements OnCameraChangeListener,
 
     @Override
     public void onCameraChange(CameraPosition arg0) {
-        // TODO Auto-generated method stub
-
     }
 
     //放大缩小完成后对聚合点进行重新计算
@@ -266,7 +268,7 @@ public class ClusterOverlay implements OnCameraChangeListener,
         for (Cluster cluster : mClusters) {
             if (arg0.equals(cluster.getMarker())) {
                 mClusterClickListener.onClick(arg0, cluster.getClusterItems());
-                return false;
+                return true;
             }
         }
         return false;

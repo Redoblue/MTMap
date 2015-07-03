@@ -14,6 +14,7 @@ import com.alibaba.sdk.android.oss.model.TokenGenerator;
 import com.alibaba.sdk.android.oss.storage.OSSBucket;
 import com.alibaba.sdk.android.oss.storage.OSSFile;
 import com.alibaba.sdk.android.oss.util.OSSToolKit;
+import com.hltc.mtmap.util.FileUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,10 +43,21 @@ public class OssManager {
         return manager;
     }
 
-    public static String getRemotePath(String s) {
-        String path = "users/" + AppConfig.getAppConfig().getConfUsrUserId()
-                + "/" + s.substring(s.lastIndexOf("/") + 1);
-        return path;
+    public static String getFileKeyByLocalUrl(String s) {//////////////////TODO
+        return "users/" + AppConfig.getAppConfig().getConfUsrUserId()
+                + "/" + FileUtils.getFileName(s);
+    }
+
+    public static String getFileKeyByRemoteUrl(String s) {
+        return s.substring(AppConfig.DEFAULT_REMOTE_OSS_PATH_ROOT.length());
+    }
+
+    public static String getRemoteFileUrl(String s) {
+        return "http://" + bucketName + "." + ossHost + "/" + getFileKeyByLocalUrl(s);
+    }
+
+    public static String getLocalFileUrl(String folder, String s) {
+        return AppConfig.DEFAULT_APP_ROOT_PATH + folder + "/" + FileUtils.getFileName(s);
     }
 
     private void initOssService() {

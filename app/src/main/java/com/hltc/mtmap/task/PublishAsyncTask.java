@@ -33,7 +33,7 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
     protected Boolean doInBackground(Void... params) {
         for (int i = 0; i < PhotoHelper.larges.size(); i++) {
             String path = PhotoHelper.larges.get(i);
-            OssManager.getOssManager().uploadImage(path, OssManager.getRemotePath(path));
+            OssManager.getOssManager().uploadImage(path, OssManager.getFileKeyByLocalUrl(path));
         }
         try {
             FileUtils.deleteDir();

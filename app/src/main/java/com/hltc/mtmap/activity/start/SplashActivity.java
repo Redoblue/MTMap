@@ -61,7 +61,6 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
         setContentView(R.layout.activity_splash);
         ButterKnife.inject(this);
         AppManager.getAppManager().addActivity(this);
-//        loadBackground();
 
         initView();
         initAnimation();

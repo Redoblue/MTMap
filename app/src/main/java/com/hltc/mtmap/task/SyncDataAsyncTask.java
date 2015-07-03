@@ -239,7 +239,7 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                                                     fs.setUserPortrait(ci.getPortrait());
                                                     fs.setUserId(ci.getUserId());
                                                     fs.setNickName(ci.getNickName());
-                                                    fs.setText("手机联系人： " + c.getDisplayName());
+                                                    fs.setText(c.getDisplayName());
                                                     fs.setStatus(FriendStatusActivity.STATUS_ADDABLE);
 
                                                     DaoManager.getManager().daoSession.getMTFriendStatusDao().insert(fs);

@@ -101,7 +101,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.publish.DonePublishDialog"
-            android:theme="@android:style/Theme.Translucent" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".activity.publish.CompleteAddressActivity"
             android:screenOrientation="portrait"
@@ -140,10 +140,15 @@
             android:name=".activity.profile.FriendRequestActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.GrainDetailActivity"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:name=".activity.map.GrainDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.SingleEditActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.map.GrainInfoDialog"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar" />
 
         <receiver
             android:name="com.umeng.message.NotificationProxyBroadcastReceiver"

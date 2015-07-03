@@ -1,9 +1,21 @@
 package com.hltc.mtmap.bean;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by redoblue on 15-6-16.
  */
-public class SiteItem {
+public class SiteItem implements Parcelable {
+    public static final Parcelable.Creator<SiteItem> CREATOR = new Parcelable.Creator<SiteItem>() {
+        public SiteItem createFromParcel(Parcel source) {
+            return new SiteItem(source);
+        }
+
+        public SiteItem[] newArray(int size) {
+            return new SiteItem[size];
+        }
+    };
     private String siteId;
     private double lon;
     private double lat;
@@ -12,6 +24,20 @@ public class SiteItem {
     private String phone;
     private String mtype;
     private String gtype;
+
+    public SiteItem() {
+    }
+
+    protected SiteItem(Parcel in) {
+        this.siteId = in.readString();
+        this.lon = in.readDouble();
+        this.lat = in.readDouble();
+        this.name = in.readString();
+        this.address = in.readString();
+        this.phone = in.readString();
+        this.mtype = in.readString();
+        this.gtype = in.readString();
+    }
 
     public String getSiteId() {
         return siteId;
@@ -75,5 +101,22 @@ public class SiteItem {
 
     public void setGtype(String gtype) {
         this.gtype = gtype;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.siteId);
+        dest.writeDouble(this.lon);
+        dest.writeDouble(this.lat);
+        dest.writeString(this.name);
+        dest.writeString(this.address);
+        dest.writeString(this.phone);
+        dest.writeString(this.mtype);
+        dest.writeString(this.gtype);
     }
 }

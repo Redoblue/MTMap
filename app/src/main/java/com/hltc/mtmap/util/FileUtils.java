@@ -264,6 +264,16 @@ public class FileUtils {
         return dir;
     }
 
+    public static File createAppDir(String dirName) throws IOException {
+        File dir = new File(AppConfig.DEFAULT_APP_ROOT_PATH + dirName);
+        if (Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            dir.mkdirs();
+            return dir;
+        }
+        return null;
+    }
+
     public static boolean isFileExist(String fileName) {
         File file = new File(AppConfig.DEFAULT_APP_ROOT_PATH + "photo/" + fileName);
         file.isFile();

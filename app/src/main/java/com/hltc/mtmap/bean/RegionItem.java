@@ -14,7 +14,6 @@ public class RegionItem implements ClusterItem {
 
     @Override
     public LatLng getPosition() {
-        // TODO Auto-generated method stub
         return mLatLng;
     }
 

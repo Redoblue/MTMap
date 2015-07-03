@@ -86,7 +86,7 @@ public class FriendListAdapter extends BaseAdapter implements SectionIndexer {
             letter.setVisibility(View.GONE);
 
         String remark = getItem(position).getRemark();
-        name.setText(StringUtils.isEmpty(remark) ? getItem(position).getNickName() : remark);
+        name.setText(StringUtils.isEmpty(remark) ? getItem(position).getNickName() : "手机联系人： " + remark);
 
         return view;
     }

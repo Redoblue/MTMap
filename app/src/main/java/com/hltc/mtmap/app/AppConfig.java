@@ -35,6 +35,7 @@ public class AppConfig {
     public static final String CONF_USER_USERNAME = "user_userName";
     public static final String CONF_USER_IS_LOGIN = "user_isLogin";
     public static final String CONF_USR_NICK_NAME = "user_nickName";
+    public static final String CONF_USER_SIGNATURE = "user_signature";
     public static final String CONF_USR_CREATE_TIME = "user_createTime";
     public static final String CONF_USR_PORTRAIT = "user_portrait";
     public static final String CONF_USR_PORTRAIT_SMALL = "user_portraitSmall";
@@ -51,6 +52,8 @@ public class AppConfig {
 
     public static final String DEFAULT_APP_ROOT_PATH =
             Environment.getExternalStorageDirectory() + File.separator + APP_NAME + File.separator;
+    public static final String DEFAULT_REMOTE_OSS_PATH_ROOT =
+            "http://" + OssManager.bucketName + "." + OssManager.ossHost + "/";
     private static AppConfig config;
     private LocalUserInfo mUserInfo;
 
@@ -116,6 +119,14 @@ public class AppConfig {
         set(CONFIG_USER, CONF_USR_NICK_NAME, nickname);
     }
 
+    public String getConfUserSignature() {
+        return get(CONFIG_USER, CONF_USER_SIGNATURE);
+    }
+
+    public void setConfUserSignature(String signature) {
+        set(CONFIG_USER, CONF_USER_SIGNATURE, signature);
+    }
+
     public String getConfUsrPhone() {
         return get(CONFIG_USER, CONF_USR_PHONE);
     }
@@ -168,6 +179,7 @@ public class AppConfig {
             mUserInfo.setPortrait(getConfUsrPortrait());
             mUserInfo.setPortraitSmall(getConfUsrPortraitSmall());
             mUserInfo.setCoverImg(getConfUsrCoverImg());
+            mUserInfo.setSignature(getConfUserSignature());
         }
         return mUserInfo;
     }
@@ -179,6 +191,7 @@ public class AppConfig {
         this.setConfUserUsername(mUserInfo.getUserName());
         this.setConfUserIsLogin(mUserInfo.getIsLogin());
         this.setConfUsrNickName(mUserInfo.getNickName());
+        this.setConfUserSignature(mUserInfo.getSignature());
         this.setConfUsrPhone(mUserInfo.getPhone());
         this.setConfUsrCreateTime(mUserInfo.getCreateTime());
         this.setConfUsrPortrait(mUserInfo.getPortrait());

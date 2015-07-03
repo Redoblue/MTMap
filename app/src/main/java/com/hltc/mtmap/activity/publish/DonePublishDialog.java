@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -64,7 +63,6 @@ public class DonePublishDialog extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppManager.getAppManager().addActivity(this);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_done_publish);
 //        setFinishOnTouchOutside(false);
         ButterKnife.inject(this);
@@ -184,7 +182,7 @@ public class DonePublishDialog extends Activity {
             JSONArray array = new JSONArray();
             for (String s : PhotoHelper.larges) {
                 array.put("http://" + OssManager.bucketName + "." + OssManager.ossHost + "/"
-                        + OssManager.getRemotePath(s));
+                        + OssManager.getFileKeyByLocalUrl(s));
             }
             json.put("images", array);
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
