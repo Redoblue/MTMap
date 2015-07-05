@@ -23,12 +23,12 @@
         arc:fromDegrees="0.0"
         arc:toDegrees="-90.0" />
 
-    <EditText
-        android:id="@+id/et_map_search"
-        style="@style/WhiteBackground"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_margin="13dp"
-        android:drawableLeft="@drawable/ic_action_search"
-        android:drawablePadding="10dp" />
+    <!--    <EditText
+            android:id="@+id/et_map_search"
+            style="@style/WhiteBackground"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_margin="13dp"
+            android:drawableLeft="@drawable/ic_action_search"
+            android:drawablePadding="10dp" />-->
 </RelativeLayout>

@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.bean.GrainItem;
+import com.hltc.mtmap.util.StringUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -55,7 +56,8 @@ public class GrainInfoDialog extends Activity {
 
     private void initView() {
         civGrainInfoPortrait.setImageDrawable(Drawable.createFromPath(mGrainItem.getPortrait()));
-        tvGrainInfoNickname.setText("需要名字");//TODO 需要名字
+        tvGrainInfoNickname.setText(StringUtils.isEmpty(
+                mGrainItem.getRemark()) ? mGrainItem.getNickName() : mGrainItem.getRemark());
         tvGrainInfoAddress.setText(mGrainItem.getSite().getAddress());
         tvGrainInfoText.setText(mGrainItem.getText());
     }

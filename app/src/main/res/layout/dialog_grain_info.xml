@@ -55,14 +55,14 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginTop="10dp"
-                    android:src="@drawable/ic_action_cancel" />
+                    android:src="@drawable/btn_grain_info_exit" />
 
                 <ImageView
                     android:id="@+id/iv_grain_info_ignore"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginTop="10dp"
-                    android:src="@drawable/ic_action_yinyang" />
+                    android:src="@drawable/btn_grain_info_ignore" />
             </LinearLayout>
         </RelativeLayout>
 

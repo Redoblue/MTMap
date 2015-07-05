@@ -67,15 +67,15 @@ public class OssManager {
 //        ossService.setCustomStandardTimeWithEpochSec(System.currentTimeMillis() / 1000);
         ossService.setGlobalDefaultACL(AccessControlList.PRIVATE); // 默认为private
         // 为指定的用户拿取服务其授权需求的FederationToken
-//        ossService.setAuthenticationType(AuthenticationType.FEDERATION_TOKEN);
-//        ossService.setGlobalDefaultStsTokenGetter(new StsTokenGetter() {
-//            @Override
-//            public OSSFederationToken getFederationToken() {
-//                OSSFederationToken token = FederationTokenGetter.getToken();
-//                Log.d("Publish", token.toString());
-//                return token;
-//            }
-//        });
+        /*ossService.setAuthenticationType(AuthenticationType.FEDERATION_TOKEN);
+        ossService.setGlobalDefaultStsTokenGetter(new StsTokenGetter() {
+            @Override
+            public OSSFederationToken getFederationToken() {
+                OSSFederationToken token = FederationTokenGetter.getToken();
+                Log.d("Publish", token.toString());
+                return token;
+            }
+        });*/
         ossService.setAuthenticationType(AuthenticationType.ORIGIN_AKSK);
         ossService.setGlobalDefaultTokenGenerator(new TokenGenerator() {
             @Override

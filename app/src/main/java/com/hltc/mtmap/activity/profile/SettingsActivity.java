@@ -125,16 +125,6 @@ public class SettingsActivity extends Activity {
             case R.id.btn_settings_about:
                 break;
         }
-
-//        if (v.getId() == R.id.btn_bar_left) {
-//            return;
-//        }
-//
-//        Intent intent = new Intent(this, generalClass);
-//        if (generalClass == SignUpActivity.class) {
-//            intent.putExtra("source", 1);
-//        }
-//        startActivity(intent);
     }
 
     @OnClick(R.id.btn_settings_logout)
@@ -143,8 +133,8 @@ public class SettingsActivity extends Activity {
         Toast.makeText(this, "退出成功", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, StartActivity.class);
         startActivity(intent);
-        AppManager.getAppManager().finishActivity(this);
         AppManager.getAppManager().finishActivity(MainActivity.class);
+        AppManager.getAppManager().finishActivity(this);
     }
 
     @Override

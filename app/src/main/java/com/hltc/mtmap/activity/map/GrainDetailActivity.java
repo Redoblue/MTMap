@@ -2,15 +2,20 @@ package com.hltc.mtmap.activity.map;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.bean.GrainDetailPhotoAdapter;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * ViewPager实现画廊效果
@@ -25,6 +30,32 @@ import com.hltc.mtmap.R;
 public class GrainDetailActivity extends FragmentActivity {
 
     private static int TOTAL_COUNT = 5;
+    @InjectView(R.id.btn_bar_back)
+    Button btnBarBack;
+    @InjectView(R.id.btn_bar_favor)
+    Button btnBarFavor;
+    @InjectView(R.id.btn_bar_share)
+    Button btnBarShare;
+    @InjectView(R.id.civ_grain_detail_portrait)
+    CircleImageView civGrainDetailPortrait;
+    @InjectView(R.id.tv_grain_detail_nickname)
+    TextView tvGrainDetailNickname;
+    @InjectView(R.id.tv_grain_detail_text)
+    TextView tvGrainDetailText;
+    @InjectView(R.id.tv_grain_detail_address)
+    TextView tvGrainDetailAddress;
+    @InjectView(R.id.vp_grain_detail)
+    ViewPager vpGrainDetail;
+    @InjectView(R.id.layout_grain_detail_viewpager)
+    RelativeLayout layoutGrainDetailViewpager;
+    @InjectView(R.id.tv_grain_detail_time)
+    TextView tvGrainDetailTime;
+    @InjectView(R.id.btn_grain_detail_operations)
+    Button btnGrainDetailOperations;
+    @InjectView(R.id.tv_grain_detail_praise)
+    TextView tvGrainDetailPraise;
+    @InjectView(R.id.layout_grain_detail_comment)
+    LinearLayout layoutGrainDetailComment;
 
     private RelativeLayout viewPagerContainer;
     private ViewPager photoViewPager;
@@ -33,55 +64,24 @@ public class GrainDetailActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_grain_detail);
+        ButterKnife.inject(this);
 
-        photoViewPager = (ViewPager) findViewById(R.id.view_pager);
-        viewPagerContainer = (RelativeLayout) findViewById(R.id.pager_layout);
-        photoViewPager.setAdapter(new MyPagerAdapter());
-        // to cache all page, or we will see the right item delayed
-        photoViewPager.setOffscreenPageLimit(TOTAL_COUNT);
-        photoViewPager.setPageMargin(getResources().getDimensionPixelSize(R.dimen.pager_margin));
-        photoViewPager.setOnPageChangeListener(new MyOnPageChangeListener());
+        initView();
+    }
 
-        viewPagerContainer.setOnTouchListener(new View.OnTouchListener() {
-
+    private void initView() {
+//        vpGrainDetail.setAdapter(new GrainDetailPhotoAdapter(this,...));
+        // to cache all pages, or we will see the right item delayed
+        vpGrainDetail.setOffscreenPageLimit(TOTAL_COUNT);
+        vpGrainDetail.setPageMargin(getResources().getDimensionPixelSize(R.dimen.pager_margin));
+        vpGrainDetail.setOnPageChangeListener(new MyOnPageChangeListener());
+        layoutGrainDetailViewpager.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 // dispatch the events to the ViewPager, to solve the problem that we can swipe only the middle view.
-                return photoViewPager.dispatchTouchEvent(event);
+                return vpGrainDetail.dispatchTouchEvent(event);
             }
         });
-    }
-
-    /**
-     * this is a example fragment, just a imageview, u can replace it with your needs
-     *
-     * @author Trinea 2013-04-03
-     */
-    class MyPagerAdapter extends PagerAdapter {
-
-        @Override
-        public int getCount() {
-            return TOTAL_COUNT;
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return (view == object);
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            ImageView imageView = new ImageView(GrainDetailActivity.this);
-            imageView.setImageResource(R.drawable.pic_guide_1 + position);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            container.addView(imageView, position);
-            return imageView;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((ImageView) object);
-        }
     }
 
     public class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {

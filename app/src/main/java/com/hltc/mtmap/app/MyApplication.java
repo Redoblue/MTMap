@@ -4,6 +4,7 @@ import android.app.Application;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -60,10 +61,17 @@ public class MyApplication extends Application {
         super.onCreate();
         mContext = getApplicationContext();
 
+        initIdentify();
+        initImageLoader();
+        initPushAgent();
+    }
+
+    private void initIdentify() {
         //用户身份状态检测
         if (AppUtils.isNetworkConnected(mContext)) {
             if (!StringUtils.isEmpty(AppConfig.getAppConfig().getConfToken())) {
-                httpLoginByToken();
+//                httpLoginByToken2();
+                new LoginAsyncTask().execute();
             } else {
                 signInStatus = "10";
             }
@@ -74,9 +82,6 @@ public class MyApplication extends Application {
                 signInStatus = "00";
             }
         }
-
-        initImageLoader();
-        initPushAgent();
     }
 
     private void initImageLoader() {
@@ -226,5 +231,14 @@ public class MyApplication extends Application {
                         signInStatus = "10";
                     }
                 });
+    }
+
+    class LoginAsyncTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            httpLoginByToken();
+            return null;
+        }
     }
 }

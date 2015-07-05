@@ -11,7 +11,7 @@ import com.amp.apis.libc.ClusterItem;
  */
 public class GrainItem implements ClusterItem, Parcelable {
 
-    public static final Parcelable.Creator<GrainItem> CREATOR = new Parcelable.Creator<GrainItem>() {
+    public static final Creator<GrainItem> CREATOR = new Creator<GrainItem>() {
         public GrainItem createFromParcel(Parcel source) {
             return new GrainItem(source);
         }
@@ -22,6 +22,8 @@ public class GrainItem implements ClusterItem, Parcelable {
     };
     private long grainId;
     private String text;
+    private String nickName;
+    private String remark;
     private String image;
     private long userId;
     private String portrait;
@@ -35,6 +37,8 @@ public class GrainItem implements ClusterItem, Parcelable {
     protected GrainItem(Parcel in) {
         this.grainId = in.readLong();
         this.text = in.readString();
+        this.nickName = in.readString();
+        this.remark = in.readString();
         this.image = in.readString();
         this.userId = in.readLong();
         this.portrait = in.readString();
@@ -53,30 +57,6 @@ public class GrainItem implements ClusterItem, Parcelable {
         return portrait;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public int getCover() {
-        return cover;
-    }
-
-    public void setCover(int cover) {
-        this.cover = cover;
-    }
-
-    public String getPortrait() {
-        return portrait;
-    }
-
-    public void setPortrait(String portrait) {
-        this.portrait = portrait;
-    }
-
     public long getGrainId() {
         return grainId;
     }
@@ -91,6 +71,22 @@ public class GrainItem implements ClusterItem, Parcelable {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
     public String getImage() {
@@ -109,12 +105,36 @@ public class GrainItem implements ClusterItem, Parcelable {
         this.userId = userId;
     }
 
+    public String getPortrait() {
+        return portrait;
+    }
+
+    public void setPortrait(String portrait) {
+        this.portrait = portrait;
+    }
+
     public SiteItem getSite() {
         return site;
     }
 
     public void setSite(SiteItem site) {
         this.site = site;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getCover() {
+        return cover;
+    }
+
+    public void setCover(int cover) {
+        this.cover = cover;
     }
 
     @Override
@@ -126,10 +146,12 @@ public class GrainItem implements ClusterItem, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.grainId);
         dest.writeString(this.text);
+        dest.writeString(this.nickName);
+        dest.writeString(this.remark);
         dest.writeString(this.image);
         dest.writeLong(this.userId);
         dest.writeString(this.portrait);
-        dest.writeParcelable(this.site, flags);
+        dest.writeParcelable(this.site, 0);
         dest.writeInt(this.status);
         dest.writeInt(this.cover);
     }

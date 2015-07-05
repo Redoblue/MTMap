@@ -12,14 +12,14 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.amap.api.maps.MapFragment;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.publish.PublishActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.fragment.AmapFragment;
+import com.hltc.mtmap.app.StrictModeWrapper;
 import com.hltc.mtmap.fragment.GrainFragment;
+import com.hltc.mtmap.fragment.MapFragment;
 import com.hltc.mtmap.fragment.MessageFragment;
 import com.hltc.mtmap.fragment.ProfileFragment;
 import com.hltc.mtmap.fragment.PublishFragment;
@@ -87,6 +87,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+
+        //start strict mode
+//        StrictModeWrapper.init(this);
 
         isVisitor = MyApplication.signInStatus.equals("10");
 
@@ -184,7 +187,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private Fragment getFragmentByIndex(int index) {
         switch (index) {
             case TAB_MAP:
-                return new AmapFragment();
+                return new MapFragment();
             case TAB_GRAIN:
                 return new GrainFragment();
             case TAB_PUBLISH:
