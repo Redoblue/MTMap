@@ -12,6 +12,8 @@ public interface ClusterItem {
      *
      * @return
      */
+    long getItemId();
+
     LatLng getPosition();
 
     String getPicUrl();

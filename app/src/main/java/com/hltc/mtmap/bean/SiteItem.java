@@ -28,6 +28,18 @@ public class SiteItem implements Parcelable {
     public SiteItem() {
     }
 
+    public SiteItem(String siteId, double lon, double lat, String name, String address,
+                    String phone, String mtype, String gtype) {
+        this.siteId = siteId;
+        this.lon = lon;
+        this.lat = lat;
+        this.name = name;
+        this.address = address;
+        this.phone = phone;
+        this.mtype = mtype;
+        this.gtype = gtype;
+    }
+
     protected SiteItem(Parcel in) {
         this.siteId = in.readString();
         this.lon = in.readDouble();

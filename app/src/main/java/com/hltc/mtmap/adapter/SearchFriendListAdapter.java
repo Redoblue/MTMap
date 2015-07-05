@@ -10,9 +10,9 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.hltc.mtmap.MTUser;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.profile.FriendRequestActivity;
-import com.hltc.mtmap.orm.model.MTUser;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;

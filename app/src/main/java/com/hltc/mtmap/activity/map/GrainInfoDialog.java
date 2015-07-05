@@ -58,7 +58,7 @@ public class GrainInfoDialog extends Activity {
         civGrainInfoPortrait.setImageDrawable(Drawable.createFromPath(mGrainItem.getPortrait()));
         tvGrainInfoNickname.setText(StringUtils.isEmpty(
                 mGrainItem.getRemark()) ? mGrainItem.getNickName() : mGrainItem.getRemark());
-        tvGrainInfoAddress.setText(mGrainItem.getSite().getAddress());
+        tvGrainInfoAddress.setText(mGrainItem.getSite().getName());
         tvGrainInfoText.setText(mGrainItem.getText());
     }
 

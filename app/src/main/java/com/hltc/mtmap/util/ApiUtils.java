@@ -30,7 +30,7 @@ public class ApiUtils {
     public static final String URL_CRE_ACCOUNT = "user/register/new_user.json";
     public static final String URL_SIG_IN = "user/login/login.json";
     public static final String URL_PUB_GRAIN = "grain/publish.json";
-    public static final String URL_UPD_NICKNAME = "user/settings/update_nickname.json";
+    public static final String URL_UPDATE_NICKNAME = "my/settings/update_nickname.json";
     public static final String URL_REC_GRAIN_0 = "user/getRecommendGrain.json";
     // 找回密码
     public static final String URL_REQ_VCODE_1 = "user/login/forget/verify_code.json";
@@ -139,7 +139,7 @@ public class ApiUtils {
     }
 
     public static String getUpdateNicknameUrl() {
-        return URL_ROOT + URL_UPD_NICKNAME;
+        return URL_ROOT + URL_UPDATE_NICKNAME;
     }
 
     public static String getRecommendGrainUrl(boolean isUser) {

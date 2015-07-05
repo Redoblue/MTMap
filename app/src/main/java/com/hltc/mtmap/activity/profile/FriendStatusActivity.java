@@ -16,12 +16,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hltc.mtmap.MFriendStatus;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.orm.model.MTFriendStatus;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.ToastUtils;
@@ -55,7 +55,7 @@ public class FriendStatusActivity extends Activity {
     public static final String STATUS_UNACCEPTED = "unaccepted";
     public static final String STATUS_ADDABLE = "addable";
     public static final String STATUS_ACCEPTED = "accepted";
-    public static List<MTFriendStatus> adapterList;
+    public static List<MFriendStatus> adapterList;
     @InjectView(R.id.btn_bar_left)
     Button btnBarLeft;
     @InjectView(R.id.tv_bar_title)
@@ -95,7 +95,7 @@ public class FriendStatusActivity extends Activity {
             }
         });
 
-        adapterList = DaoManager.getManager().daoSession.getMTFriendStatusDao().loadAll();
+        adapterList = DaoManager.getManager().daoSession.getMFriendStatusDao().loadAll();
         adapter = new FriendStatusListAdapter(this, adapterList);
         lvNewFriend.setAdapter(adapter);
     }
@@ -155,7 +155,7 @@ public class FriendStatusActivity extends Activity {
     }
 
     private void httpAddFriend(final int index) {
-        final MTFriendStatus fs = adapterList.get(index);
+        final MFriendStatus fs = adapterList.get(index);
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
@@ -218,22 +218,22 @@ public class FriendStatusActivity extends Activity {
         AppManager.getAppManager().finishActivity(this);
     }
 
-    private void updateStatusInDb(MTFriendStatus fs, String status) {
-        MTFriendStatus m = new MTFriendStatus();
+    private void updateStatusInDb(MFriendStatus fs, String status) {
+        MFriendStatus m = new MFriendStatus();
         m.setUserId(fs.getUserId());
         m.setNickName(fs.getNickName());
         m.setText(fs.getText());
         m.setUserPortrait(fs.getUserPortrait());
         m.setStatus(status);
-        DaoManager.getManager().daoSession.getMTFriendStatusDao().update(m);
+        DaoManager.getManager().daoSession.getMFriendStatusDao().update(m);
     }
 
     public class FriendStatusListAdapter extends BaseAdapter {
 
-        private List<MTFriendStatus> list = null;
+        private List<MFriendStatus> list = null;
         private Context mContext;
 
-        public FriendStatusListAdapter(Context mContext, List<MTFriendStatus> list) {
+        public FriendStatusListAdapter(Context mContext, List<MFriendStatus> list) {
             this.mContext = mContext;
             this.list = list;
         }
@@ -244,7 +244,7 @@ public class FriendStatusActivity extends Activity {
         }
 
         @Override
-        public MTFriendStatus getItem(int position) {
+        public MFriendStatus getItem(int position) {
             return list.get(position);
         }
 

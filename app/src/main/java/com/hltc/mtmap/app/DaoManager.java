@@ -1,8 +1,8 @@
 package com.hltc.mtmap.app;
 
+import com.hltc.mtmap.MTUser;
 import com.hltc.mtmap.orm.DaoMaster;
 import com.hltc.mtmap.orm.DaoSession;
-import com.hltc.mtmap.orm.model.MTUser;
 
 import java.util.List;
 
@@ -33,12 +33,6 @@ public class DaoManager {
         QueryBuilder qb = daoSession.getMTUserDao().queryBuilder();
         return qb.listLazy();
     }
-
-//    public List<MTGrain> getAllVisibleGrains() {
-//        QueryBuilder qb = getDaoSession().getMTGrainDao().queryBuilder();
-//        qb.where(MTGrainDao.Properties.IsIngored.eq("false"));
-//        return qb.list();
-//    }
 
 
 }

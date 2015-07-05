@@ -18,12 +18,12 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hltc.mtmap.MTUser;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.SearchFriendListAdapter;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.bean.PhoneContact;
-import com.hltc.mtmap.orm.model.MTUser;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;

@@ -13,6 +13,11 @@ public class RegionItem implements ClusterItem {
     }
 
     @Override
+    public long getItemId() {
+        return 0;
+    }
+
+    @Override
     public LatLng getPosition() {
         return mLatLng;
     }

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.hltc.mtmap.MFriend;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.FriendListAdapter;
 import com.hltc.mtmap.app.AppManager;
@@ -19,7 +20,6 @@ import com.hltc.mtmap.bean.PhoneContact;
 import com.hltc.mtmap.gmodel.Friend;
 import com.hltc.mtmap.gmodel.FriendStatus;
 import com.hltc.mtmap.helper.PinyinComparator;
-import com.hltc.mtmap.orm.model.MTUser;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.CharacterParser;
 import com.hltc.mtmap.widget.CharacterBar;
@@ -52,7 +52,7 @@ public class FriendListActivity extends Activity {
 
     private FriendListAdapter adapter;
     private CharacterParser characterParser;
-    private List<MTUser> adapterList;
+    private List<MFriend> adapterList;
     private PinyinComparator pinyinComparator;
 
     @Override
@@ -107,11 +107,11 @@ public class FriendListActivity extends Activity {
 
 //        adapterList = filledData(getResources().getStringArray(R.array.date));
 //        Collections.sort(adapterList, pinyinComparator);
-        adapterList = DaoManager.getManager().getAllUsers();
+        adapterList = DaoManager.getManager().daoSession.getMFriendDao().loadAll();
 //        Collections.sort(adapterList, pinyinComparator);
         adapter = new FriendListAdapter(this, adapterList);
         sortListView.setAdapter(adapter);
-        adapter.updateListView(adapterList);
+//        adapter.updateListView(adapterList);
     }
 
     @OnClick({R.id.btn_bar_left,

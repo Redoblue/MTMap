@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.alibaba.sdk.android.oss.callback.GetFileCallback;
 import com.alibaba.sdk.android.oss.model.OSSException;
@@ -24,6 +23,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.maps.AMap;
+import com.amap.api.maps.AMapException;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
@@ -33,6 +33,7 @@ import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.offlinemap.OfflineMapCity;
 import com.amap.api.maps.offlinemap.OfflineMapManager;
 import com.amp.apis.libc.Cluster;
 import com.amp.apis.libc.ClusterClickListener;
@@ -40,19 +41,26 @@ import com.amp.apis.libc.ClusterItem;
 import com.amp.apis.libc.ClusterOverlay;
 import com.amp.apis.libc.ClusterRender;
 import com.capricorn.ArcMenu;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.hltc.mtmap.MGrain;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.map.GrainInfoDialog;
 import com.hltc.mtmap.activity.publish.CreateGrainActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.bean.GrainItem;
 import com.hltc.mtmap.bean.MapInfo;
-import com.hltc.mtmap.bean.SiteItem;
+import com.hltc.mtmap.gmodel.ClusterGrain;
+import com.hltc.mtmap.orm.MGrainDao;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
+import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.FileUtils;
+import com.hltc.mtmap.util.StringUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -68,10 +76,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.greenrobot.dao.query.QueryBuilder;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MapFragment extends Fragment implements AMapLocationListener,
@@ -80,6 +90,10 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         AMap.OnMapTouchListener,
         LocationSource,
         OfflineMapManager.OfflineMapDownloadListener {
+
+    public static final int TYPE_ALL = 2;
+    public static final int TYPE_CHIHE = 0;
+    public static final int TYPE_WANLE = 1;
 
     private static final int[] ITEM_DRAWABLES = {
             R.drawable.arc_all,
@@ -106,7 +120,6 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     private LatLng myLocation;
     private LatLng lastLocation;
     private LocationManagerProxy locationManagerProxy;
-//    private List<GrainItem> grains = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -160,7 +173,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
 //            addPinToMap();
             //下载离线地图
-           /* new Thread(new Runnable() {
+            /*new Thread(new Runnable() {
                 @Override
                 public void run() {
                     updateOfflineMap();
@@ -175,35 +188,29 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             item.setImageResource(ITEM_DRAWABLES[i]);
             item.setTag(i);
 
-//            final int position = i;
             mArcMenu.addItem(item, new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    //当前点击了类
-//                    currentCategory = position;
-//                    //TODO
-//                    ToastUtils.showShort(getActivity(), "Positon: " + position);
                     ImageView view = (ImageView) v;
                     int which = (int) view.getTag();
-                    Toast.makeText(getActivity(), "which:" + which, Toast.LENGTH_SHORT).show();
                     switch (which) {
                         case 0:
-                            if (currentCategory != 0) {
-                                httpQueryGrain(0);
+                            if (currentCategory != TYPE_ALL) {
+                                loadGrainFromDb(TYPE_ALL);
                             }
-                            currentCategory = 0;
+                            currentCategory = TYPE_ALL;
                             break;
                         case 2:
-                            if (currentCategory != 1) {
-                                httpQueryGrain(1);
+                            if (currentCategory != TYPE_CHIHE) {
+                                loadGrainFromDb(TYPE_CHIHE);
                             }
-                            currentCategory = 1;
+                            currentCategory = TYPE_CHIHE;
                             break;
                         case 4:
-                            if (currentCategory != 2) {
-                                httpQueryGrain(2);
+                            if (currentCategory != TYPE_WANLE) {
+                                loadGrainFromDb(TYPE_WANLE);
                             }
-                            currentCategory = 2;
+                            currentCategory = TYPE_WANLE;
                             break;
                         default:
                             break;
@@ -237,11 +244,12 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         Log.d("MT", "MapFragment onMapLoaded");
 
         //加载完地图进入上次最后地点
-        /*if (!StringUtils.isEmpty(mMapInfo.getLatitude())) {
+        if (!StringUtils.isEmpty(mMapInfo.getLatitude())) {
             LatLng latLng = new LatLng(StringUtils.toDouble(
                     mMapInfo.getLatitude()), StringUtils.toDouble(mMapInfo.getLongitude()));
-            mAmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, defaultZoom));
-        }*/
+            mAmap.moveCamera(CameraUpdateFactory.newCameraPosition(
+                    new CameraPosition(latLng, defaultZoom, 35f, 0f)));
+        }
 
         overlay = new
                 ClusterOverlay(mAmap, AMapUtils.dp2px(getActivity(), clusterRadius), getActivity());
@@ -283,7 +291,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
     }
 
-    /*private void updateOfflineMap() {
+    private void updateOfflineMap() {
         offlineMapManager = new OfflineMapManager(getActivity(), this);
         List<OfflineMapCity> offlineMapCities = offlineMapManager.getDownloadingCityList();
         try {
@@ -303,7 +311,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         } catch (AMapException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
     @Override
     public void activate(OnLocationChangedListener onLocationChangedListener) {
@@ -348,7 +356,12 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             mMapInfo.setDistrict(aMapLocation.getDistrict());
             mMapInfo.setCity(aMapLocation.getCity());
 
-            new AddClusterAsyncTask().execute(currentCategory);
+            // if network is available, we load data from internet, otherwise, we load data from db
+            if (AppUtils.isNetworkConnected(getActivity())) {
+                new AddClusterAsyncTask().execute(0);
+            } else {
+                loadGrainFromDb(TYPE_ALL);
+            }
         }
     }
 
@@ -423,64 +436,23 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                         Log.d("MapFragment", result);
                         try {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                                JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
-                                for (int i = 0; i < data.length(); i++) {
-                                    final GrainItem gi = new GrainItem();
-                                    JSONObject grain = data.getJSONObject(i);
-                                    gi.setGrainId(grain.getLong("grainId"));
-                                    gi.setText(grain.getString("text"));
-                                    gi.setUserId(grain.getLong("userId"));
-                                    gi.setNickName(grain.getString("nickName"));
-                                    try {
-                                        gi.setRemark(grain.getString("remark"));
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                    gi.setPortrait(grain.getString("userPortrait"));
+                                JSONArray array = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
+                                Gson gson = new Gson();
+                                final List<ClusterGrain> cgs =
+                                        gson.fromJson(array.toString(), new TypeToken<List<ClusterGrain>>() {
+                                        }.getType());
 
-                                    SiteItem s = new SiteItem();
-                                    JSONObject site = grain.getJSONObject("site");
-                                    s.setSiteId(site.getString("siteId"));
-                                    s.setLon(site.getDouble("lon"));
-                                    s.setLat(site.getDouble("lat"));
-                                    s.setName(site.getString("name"));
-                                    s.setAddress(site.getString("address"));
-                                    s.setPhone(site.getString("phone"));
+                                if (cgs != null && cgs.size() > 0) {
+                                    //保存到数据库
+                                    new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            saveGrainToDb(cgs);
+                                        }
+                                    }).start();
 
-                                    gi.setSite(s);
-//                                    grains.add(gi);
-                                    // 执行LoadClusterAsyncTask后，gi中的portrait会发生变化，所以最好在这里保存到数据库
-                                    final String to = FileUtils.getAppCache(getActivity(), "portrait")
-                                            + FileUtils.getFileName(gi.getPortrait());
-                                    final String key = OssManager.getFileKeyByRemoteUrl(gi.getPortrait());
-                                    File file = new File(to);
-                                    if (!file.exists()) {
-//                                        OssManager.getOssManager().downloadImage(to, key);
-                                        Log.d("MapFragment", "to: " + to);
-                                        Log.d("MapFragment", "key: " + key);
-
-                                        OSSFile ossFile = new OSSFile(OssManager.getOssManager().ossBucket, key);
-                                        ossFile.downloadToInBackground(to, new GetFileCallback() {
-                                            @Override
-                                            public void onSuccess(String s, String s1) {
-                                                gi.setPortrait(to);
-                                                overlay.addClusterItem(gi);
-                                            }
-
-                                            @Override
-                                            public void onProgress(String s, int i, int i1) {
-
-                                            }
-
-                                            @Override
-                                            public void onFailure(String s, OSSException e) {
-
-                                            }
-                                        });
-                                    } else {
-                                        gi.setPortrait(to);
-                                        overlay.addClusterItem(gi);
-                                    }
+                                    //添加到地图
+                                    addGrainToOverlay(cgs);
                                 }
                             } else {
                                 JSONObject girl = new JSONObject(result);
@@ -501,6 +473,99 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
                     }
                 });
+    }
+
+    private void addGrainToOverlay(final List<ClusterGrain> objects) {
+        for (final ClusterGrain cg : objects) {
+            final String to = FileUtils.getAppCache(getActivity(), "portrait")
+                    + FileUtils.getFileName(cg.userPortrait);
+            final String key = OssManager.getFileKeyByRemoteUrl(cg.userPortrait);
+            File file = new File(to);
+            if (!file.exists()) {
+                OSSFile ossFile = new OSSFile(OssManager.getOssManager().ossBucket, key);
+                ossFile.downloadToInBackground(to, new GetFileCallback() {
+                    @Override
+                    public void onSuccess(String s, String s1) {
+                        cg.userPortrait = to;
+                        overlay.addClusterItem(cg);
+                    }
+
+                    @Override
+                    public void onProgress(String s, int i, int i1) {
+
+                    }
+
+                    @Override
+                    public void onFailure(String s, OSSException e) {
+
+                    }
+                });
+            } else {
+                cg.userPortrait = to;
+                overlay.addClusterItem(cg);
+            }
+        }
+    }
+
+    private void saveGrainToDb(List<ClusterGrain> objects) {
+        for (ClusterGrain cg : objects) {
+            MGrain mGrain = new MGrain();
+            mGrain.setGrainId(cg.grainId);
+            mGrain.setUserId(cg.userId);
+            mGrain.setCateId(cg.cateId);
+            mGrain.setNickName(cg.nickName);
+            mGrain.setRemark(cg.remark);
+            mGrain.setText(cg.text);
+            mGrain.setUserPortrait(cg.userPortrait);
+            mGrain.setSiteId(cg.site.siteId);
+            mGrain.setSource(cg.site.source);
+            mGrain.setAddress(cg.site.address);
+            mGrain.setName(cg.site.name);
+            mGrain.setPhone(cg.site.phone);
+            mGrain.setGtype(cg.site.gtype);
+            mGrain.setMtype(cg.site.mtype);
+            mGrain.setLat(cg.site.lat);
+            mGrain.setLon(cg.site.lon);
+
+            DaoManager.getManager().daoSession.getMGrainDao().insertOrReplace(mGrain);
+        }
+    }
+
+    private void loadGrainFromDb(int type) {
+        overlay.clearClusters();
+        List<MGrain> grains;
+        if (type == TYPE_ALL) {
+            grains = DaoManager.getManager().daoSession.getMGrainDao().loadAll();
+        } else {
+            QueryBuilder qb = DaoManager.getManager().daoSession.getMGrainDao().queryBuilder();
+            qb.where(MGrainDao.Properties.CateId.eq(CreateGrainActivity.mCateId[type]));
+            grains = qb.list();
+        }
+
+        List<ClusterGrain> cgs = new ArrayList<>();
+        for (MGrain mg : grains) {
+            ClusterGrain cg = new ClusterGrain();
+            cg.grainId = mg.getGrainId();
+            cg.userId = mg.getUserId();
+            cg.cateId = mg.getCateId();
+            cg.nickName = mg.getNickName();
+            cg.remark = mg.getRemark();
+            cg.text = mg.getText();
+            cg.userPortrait = mg.getUserPortrait();
+            cg.site = new ClusterGrain.ClusterSite();
+            cg.site.siteId = mg.getSiteId();
+            cg.site.source = mg.getSource();
+            cg.site.address = mg.getAddress();
+            cg.site.name = mg.getName();
+            cg.site.phone = mg.getPhone();
+            cg.site.gtype = mg.getGtype();
+            cg.site.mtype = mg.getMtype();
+            cg.site.lat = mg.getLat();
+            cg.site.lon = mg.getLon();
+            cgs.add(cg);
+        }
+
+        addGrainToOverlay(cgs);
     }
 
     /**
@@ -547,9 +612,8 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
         @Override
         protected Void doInBackground(Integer... params) {
-            httpQueryGrain(params[0]);
+            httpQueryGrain(params[params[0]]);
             return null;
         }
     }
-
 }

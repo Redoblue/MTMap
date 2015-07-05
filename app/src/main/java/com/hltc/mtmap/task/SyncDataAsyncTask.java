@@ -5,15 +5,15 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.hltc.mtmap.MFriend;
+import com.hltc.mtmap.MFriendStatus;
 import com.hltc.mtmap.activity.profile.FriendStatusActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.PhoneContact;
 import com.hltc.mtmap.gmodel.ContactItem;
-import com.hltc.mtmap.orm.dao.MTFriendStatusDao;
-import com.hltc.mtmap.orm.model.MTFriendStatus;
-import com.hltc.mtmap.orm.model.MTUser;
+import com.hltc.mtmap.orm.MFriendStatusDao;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -96,13 +96,18 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                                 Gson gson = new Gson();
                                 JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
-                                List<MTUser> users = gson.fromJson(data.toString(), new TypeToken<List<MTUser>>() {
+                                List<MFriend> users = gson.fromJson(data.toString(), new TypeToken<List<MFriend>>() {
                                 }.getType());
 
                                 if (users != null && users.size() > 0) {
-                                    DaoManager.getManager().daoSession.getMTUserDao().deleteAll();
-                                    for (MTUser user : users) {
-                                        DaoManager.getManager().daoSession.getMTUserDao().insert(user);
+                                    try {
+                                        DaoManager.getManager().daoSession.getMFriendDao().deleteAll();
+                                        for (MFriend user : users) {
+                                            user.setIsFolder(false);
+                                            DaoManager.getManager().daoSession.getMFriendDao().insert(user);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
                                 }
                                 Log.d("SyncDataAsyncTask", "user list synced");
@@ -156,15 +161,15 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                                 Gson gson = new Gson();
                                 JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
-                                List<MTFriendStatus> friendStatuses =
-                                        gson.fromJson(data.toString(), new TypeToken<List<MTFriendStatus>>() {
+                                List<MFriendStatus> friendStatuses =
+                                        gson.fromJson(data.toString(), new TypeToken<List<MFriendStatus>>() {
                                         }.getType());
 
                                 //保存到数据库
                                 if (friendStatuses != null && friendStatuses.size() > 0) {
-                                    DaoManager.getManager().daoSession.getMTFriendStatusDao().deleteAll();
-                                    for (MTFriendStatus f : friendStatuses) {
-                                        DaoManager.getManager().daoSession.getMTFriendStatusDao().insert(f);
+                                    DaoManager.getManager().daoSession.getMFriendStatusDao().deleteAll();
+                                    for (MFriendStatus f : friendStatuses) {
+                                        DaoManager.getManager().daoSession.getMFriendStatusDao().insert(f);
                                     }
                                 }
                                 Log.d("SyncDataAsyncTask", "friend status data synced");
@@ -228,21 +233,21 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                                 }.getType());
 
                                 if (cis != null && cis.size() > 0) {
-                                    QueryBuilder qb = DaoManager.getManager().daoSession.getMTFriendStatusDao().queryBuilder();
+                                    QueryBuilder qb = DaoManager.getManager().daoSession.getMFriendStatusDao().queryBuilder();
                                     for (ContactItem ci : cis) {
-                                        qb.where(MTFriendStatusDao.Properties.UserId.eq(ci.getUserId()));
-                                        List<MTFriendStatus> tmpfs = qb.list();
+                                        qb.where(MFriendStatusDao.Properties.UserId.eq(ci.getUserId()));
+                                        List<MFriendStatus> tmpfs = qb.list();
                                         if (tmpfs != null && tmpfs.size() < 1) {
                                             for (PhoneContact c : contacts) {
                                                 if (ci.getPhone().equals(c.getNumber())) {
-                                                    MTFriendStatus fs = new MTFriendStatus();
+                                                    MFriendStatus fs = new MFriendStatus();
                                                     fs.setUserPortrait(ci.getPortrait());
                                                     fs.setUserId(ci.getUserId());
                                                     fs.setNickName(ci.getNickName());
                                                     fs.setText(c.getDisplayName());
                                                     fs.setStatus(FriendStatusActivity.STATUS_ADDABLE);
 
-                                                    DaoManager.getManager().daoSession.getMTFriendStatusDao().insert(fs);
+                                                    DaoManager.getManager().daoSession.getMFriendStatusDao().insert(fs);
                                                 }
                                             }
                                         }

@@ -61,17 +61,20 @@ public class MyApplication extends Application {
         super.onCreate();
         mContext = getApplicationContext();
 
-        initIdentify();
+//        initIdentify();
         initImageLoader();
         initPushAgent();
     }
 
-    private void initIdentify() {
+    /*private void initIdentify() {
         //用户身份状态检测
         if (AppUtils.isNetworkConnected(mContext)) {
             if (!StringUtils.isEmpty(AppConfig.getAppConfig().getConfToken())) {
-//                httpLoginByToken2();
-                new LoginAsyncTask().execute();
+                try {
+                    new LoginAsyncTask().execute();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
                 signInStatus = "10";
             }
@@ -82,7 +85,7 @@ public class MyApplication extends Application {
                 signInStatus = "00";
             }
         }
-    }
+    }*/
 
     private void initImageLoader() {
         //使用默认的ImageLoader配置参数
@@ -168,7 +171,7 @@ public class MyApplication extends Application {
         mPushAgent.setNotificationClickHandler(notificationClickHandler);
     }
 
-    private void httpLoginByToken() {
+    /*private void httpLoginByToken() {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
@@ -231,14 +234,14 @@ public class MyApplication extends Application {
                         signInStatus = "10";
                     }
                 });
-    }
+    }*/
 
-    class LoginAsyncTask extends AsyncTask<Void, Void, Void> {
+   /* class LoginAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
             httpLoginByToken();
             return null;
         }
-    }
+    }*/
 }

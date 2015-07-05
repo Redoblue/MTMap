@@ -133,9 +133,7 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
                 btnProcessSignin.setEnabled(false);
 //                btnProcessSignin.setClickable(true);
                 etSigninPasswd.setEnabled(false);
-                mGenerator.start(btnProcessSignin);
                 httpSignIn();
-                mGenerator.stop();
                 break;
         }
     }
@@ -166,6 +164,7 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
         }
 
         HttpUtils http = new HttpUtils();
+        http.configTimeout(5000);
         http.send(HttpRequest.HttpMethod.POST,
                 ApiUtils.getSigninUrl(),
                 params,
@@ -215,6 +214,7 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
                     @Override
                     public void onFailure(HttpException e, String s) {
                         mGenerator.stop();
+                        Toast.makeText(SignInActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

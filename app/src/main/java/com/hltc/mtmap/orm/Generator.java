@@ -39,31 +39,59 @@ public class Generator {
         mtUser.addStringProperty("remark");
         mtUser.addStringProperty("firstCharacter");
 
-        Entity mtFriendStatus = schema.addEntity("MTFriendStatus");
-        mtFriendStatus.addLongProperty("userId").primaryKey().notNull();
-        mtFriendStatus.addStringProperty("userPortrait");
-        mtFriendStatus.addStringProperty("nickName");
-        mtFriendStatus.addStringProperty("text");
-        mtFriendStatus.addStringProperty("status");
+        //lonely
+        Entity mGrain = schema.addEntity("MGrain");
+        mGrain.addLongProperty("grainId").notNull().primaryKey();
+        mGrain.addLongProperty("userId");
+        mGrain.addStringProperty("nickName");
+        mGrain.addStringProperty("remark");
+        mGrain.addStringProperty("cateId");
+        mGrain.addStringProperty("text");
+        mGrain.addStringProperty("userPortrait");
+        mGrain.addStringProperty("siteId");
+        mGrain.addStringProperty("address");
+        mGrain.addStringProperty("name");
+        mGrain.addStringProperty("phone");
+        mGrain.addStringProperty("source");
+        mGrain.addStringProperty("gtype");
+        mGrain.addStringProperty("mtype");
+        mGrain.addDoubleProperty("lat");
+        mGrain.addDoubleProperty("lon");
+
+        //alone
+        Entity mFriendStatus = schema.addEntity("MFriendStatus");
+        mFriendStatus.addLongProperty("userId").primaryKey().notNull();
+        mFriendStatus.addStringProperty("userPortrait");
+        mFriendStatus.addStringProperty("nickName");
+        mFriendStatus.addStringProperty("text");
+        mFriendStatus.addStringProperty("status");
+
+        //alone
+        Entity mFriend = schema.addEntity("MFriend");
+        mFriend.addLongProperty("userId").notNull().primaryKey();
+        mFriend.addStringProperty("nickName");
+        mFriend.addStringProperty("firstCharacter");
+        mFriend.addStringProperty("portrait");
+        mFriend.addStringProperty("remark");
+        mFriend.addBooleanProperty("isFolder");
 
         Entity mtGrain = schema.addEntity("MTGrain");
-        mtGrain.addIdProperty().primaryKey().notNull();
-        mtGrain.addStringProperty("description").notNull();
-        mtGrain.addStringProperty("date").notNull();
-        mtGrain.addBooleanProperty("isPublic").notNull();
-        mtGrain.addBooleanProperty("isIngored").notNull();
-        mtGrain.addDoubleProperty("latitude").notNull();
-        mtGrain.addDoubleProperty("longitude").notNull();
-        Property graSiteId = mtGrain.addLongProperty("siteId").notNull().getProperty();
+        mtGrain.addLongProperty("grainId").primaryKey().notNull();
+        mtGrain.addStringProperty("text");
+        mtGrain.addStringProperty("cateId");
+        mtGrain.addStringProperty("createTime");
+        mtGrain.addBooleanProperty("isPublic");
+        Property graSiteId = mtGrain.addStringProperty("siteId").notNull().getProperty();
         Property graCatId = mtGrain.addLongProperty("categoryId").notNull().getProperty();
         Property graUsrId = mtGrain.addLongProperty("userId").notNull().getProperty();
 
         Entity mtSite = schema.addEntity("MTSite");
-        mtSite.addIdProperty().primaryKey().notNull();
-        mtSite.addStringProperty("name").notNull();
-        mtSite.addStringProperty("address").notNull();
-        mtSite.addFloatProperty("latitude").notNull();
-        mtSite.addFloatProperty("longitude").notNull();
+        mtSite.addStringProperty("siteId").primaryKey().notNull();
+        mtSite.addStringProperty("name");
+        mtSite.addStringProperty("address");
+        mtSite.addDoubleProperty("lat");
+        mtSite.addDoubleProperty("lon");
+        mtSite.addStringProperty("phone");
 
         Entity mtPhoto = schema.addEntity("MTPhoto");
         mtPhoto.addIdProperty().primaryKey().notNull();

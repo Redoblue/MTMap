@@ -1,6 +1,7 @@
 package com.hltc.mtmap.helper;
 
-import com.hltc.mtmap.orm.model.MTUser;
+
+import com.hltc.mtmap.MTUser;
 
 import java.util.Comparator;
 

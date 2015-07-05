@@ -11,7 +11,7 @@ import com.amp.apis.libc.ClusterItem;
  */
 public class GrainItem implements ClusterItem, Parcelable {
 
-    public static final Creator<GrainItem> CREATOR = new Creator<GrainItem>() {
+    public static final Parcelable.Creator<GrainItem> CREATOR = new Parcelable.Creator<GrainItem>() {
         public GrainItem createFromParcel(Parcel source) {
             return new GrainItem(source);
         }
@@ -27,11 +27,27 @@ public class GrainItem implements ClusterItem, Parcelable {
     private String image;
     private long userId;
     private String portrait;
+    private String cateId;
     private SiteItem site;
     private int status;
     private int cover;
 
     public GrainItem() {
+    }
+
+    public GrainItem(long grainId, String text, String nickName, String remark, String image,
+                     long userId, String portrait, String cateId, SiteItem site, int status, int cover) {
+        this.grainId = grainId;
+        this.text = text;
+        this.nickName = nickName;
+        this.remark = remark;
+        this.image = image;
+        this.userId = userId;
+        this.portrait = portrait;
+        this.cateId = cateId;
+        this.site = site;
+        this.status = status;
+        this.cover = cover;
     }
 
     protected GrainItem(Parcel in) {
@@ -42,9 +58,15 @@ public class GrainItem implements ClusterItem, Parcelable {
         this.image = in.readString();
         this.userId = in.readLong();
         this.portrait = in.readString();
+        this.cateId = in.readString();
         this.site = in.readParcelable(SiteItem.class.getClassLoader());
         this.status = in.readInt();
         this.cover = in.readInt();
+    }
+
+    @Override
+    public long getItemId() {
+        return grainId;
     }
 
     @Override
@@ -55,6 +77,26 @@ public class GrainItem implements ClusterItem, Parcelable {
     @Override
     public String getPicUrl() {
         return portrait;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.grainId);
+        dest.writeString(this.text);
+        dest.writeString(this.nickName);
+        dest.writeString(this.remark);
+        dest.writeString(this.image);
+        dest.writeLong(this.userId);
+        dest.writeString(this.portrait);
+        dest.writeString(this.cateId);
+        dest.writeParcelable(this.site, 0);
+        dest.writeInt(this.status);
+        dest.writeInt(this.cover);
     }
 
     public long getGrainId() {
@@ -113,6 +155,14 @@ public class GrainItem implements ClusterItem, Parcelable {
         this.portrait = portrait;
     }
 
+    public String getCateId() {
+        return cateId;
+    }
+
+    public void setCateId(String cateId) {
+        this.cateId = cateId;
+    }
+
     public SiteItem getSite() {
         return site;
     }
@@ -135,24 +185,5 @@ public class GrainItem implements ClusterItem, Parcelable {
 
     public void setCover(int cover) {
         this.cover = cover;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.grainId);
-        dest.writeString(this.text);
-        dest.writeString(this.nickName);
-        dest.writeString(this.remark);
-        dest.writeString(this.image);
-        dest.writeLong(this.userId);
-        dest.writeString(this.portrait);
-        dest.writeParcelable(this.site, 0);
-        dest.writeInt(this.status);
-        dest.writeInt(this.cover);
     }
 }
