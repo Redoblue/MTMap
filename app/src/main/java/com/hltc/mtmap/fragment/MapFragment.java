@@ -16,6 +16,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.sdk.android.oss.callback.GetFileCallback;
+import com.alibaba.sdk.android.oss.model.OSSException;
+import com.alibaba.sdk.android.oss.storage.OSSFile;
 import com.amap.api.location.AMapLocation;
 import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
@@ -143,7 +146,6 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             mAmap = mMapView.getMap();
 
             mAmap.setLocationSource(this);
-            mAmap.getUiSettings().setMyLocationButtonEnabled(true);
             mAmap.setMyLocationEnabled(true);
             mAmap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
 
@@ -453,10 +455,32 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                                     final String key = OssManager.getFileKeyByRemoteUrl(gi.getPortrait());
                                     File file = new File(to);
                                     if (!file.exists()) {
-                                        OssManager.getOssManager().downloadImage(to, key);
+//                                        OssManager.getOssManager().downloadImage(to, key);
+                                        Log.d("MapFragment", "to: " + to);
+                                        Log.d("MapFragment", "key: " + key);
+
+                                        OSSFile ossFile = new OSSFile(OssManager.getOssManager().ossBucket, key);
+                                        ossFile.downloadToInBackground(to, new GetFileCallback() {
+                                            @Override
+                                            public void onSuccess(String s, String s1) {
+                                                gi.setPortrait(to);
+                                                overlay.addClusterItem(gi);
+                                            }
+
+                                            @Override
+                                            public void onProgress(String s, int i, int i1) {
+
+                                            }
+
+                                            @Override
+                                            public void onFailure(String s, OSSException e) {
+
+                                            }
+                                        });
+                                    } else {
+                                        gi.setPortrait(to);
+                                        overlay.addClusterItem(gi);
                                     }
-                                    gi.setPortrait(to);
-                                    overlay.addClusterItem(gi);
                                 }
                             } else {
                                 JSONObject girl = new JSONObject(result);
