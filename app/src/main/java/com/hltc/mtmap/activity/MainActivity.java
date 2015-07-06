@@ -17,7 +17,6 @@ import com.hltc.mtmap.activity.publish.PublishActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.app.StrictModeWrapper;
 import com.hltc.mtmap.fragment.GrainFragment;
 import com.hltc.mtmap.fragment.MapFragment;
 import com.hltc.mtmap.fragment.MessageFragment;
@@ -134,9 +133,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             @Override
             public void run() {
                 try {
-                    mPushAgent.getTagManager().add("mtmap");
+//                    mPushAgent.getTagManager().add("mtmap");
                     mPushAgent.addAlias(String.valueOf(
-                            AppConfig.getAppConfig().getConfUsrUserId()), "MT");
+                            AppConfig.getAppConfig().getConfUsrUserId()), "TYPE_UID");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

@@ -15,6 +15,7 @@ import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.task.SyncDataAsyncTask;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -119,6 +120,8 @@ public class FriendRequestActivity extends Activity implements EditText.OnEditor
                                 Toast.makeText(MyApplication.getContext(), "发送请求成功", Toast.LENGTH_SHORT).show();
                                 FriendStatusActivity.adapterList.get(position).setStatus(FriendStatusActivity.STATUS_WAITING);
                                 AppManager.getAppManager().finishActivity(FriendRequestActivity.class);
+                                SyncDataAsyncTask.httpSyncFriendStatusData();
+                                SyncDataAsyncTask.httpSyncContactStatusData();
                             } else {
                                 String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
                                 if (errorMsg != null) {

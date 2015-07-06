@@ -22,6 +22,7 @@ import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.task.SyncDataAsyncTask;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.ToastUtils;
@@ -135,6 +136,7 @@ public class FriendStatusActivity extends Activity {
                                 updateStatusInDb(adapterList.get(index), STATUS_ACCEPTED);
                                 adapterList.get(index).setStatus(STATUS_ACCEPTED);
                                 adapter.notifyDataSetChanged();
+                                SyncDataAsyncTask.httpSyncFriendData();
                             } else {
                                 String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
                                 if (errorMsg != null) {
@@ -208,8 +210,12 @@ public class FriendStatusActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        if (adapter != null)
+        try {
+            adapterList = DaoManager.getManager().daoSession.getMFriendStatusDao().loadAll();
             adapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -218,6 +224,7 @@ public class FriendStatusActivity extends Activity {
         AppManager.getAppManager().finishActivity(this);
     }
 
+    //修改数据库中的信息
     private void updateStatusInDb(MFriendStatus fs, String status) {
         MFriendStatus m = new MFriendStatus();
         m.setUserId(fs.getUserId());

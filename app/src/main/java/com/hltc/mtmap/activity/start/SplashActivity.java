@@ -66,8 +66,6 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
         //用户身份状态检测
         if (AppUtils.isNetworkConnected(this)) {
             if (!StringUtils.isEmpty(AppConfig.getAppConfig().getConfToken())) {
-
-//                    new LoginAsyncTask().execute();
                 httpLoginByToken();
             } else {
                 MyApplication.signInStatus = "10";

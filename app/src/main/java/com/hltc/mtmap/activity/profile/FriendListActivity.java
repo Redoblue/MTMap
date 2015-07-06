@@ -148,4 +148,15 @@ public class FriendListActivity extends Activity {
         }
         return list;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        try {
+            adapterList = DaoManager.getManager().daoSession.getMFriendDao().loadAll();
+            adapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -22,8 +22,8 @@ import java.io.UnsupportedEncodingException;
 
 public class ApiUtils {
 
-    public static final String URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
-//    public static final String URL_ROOT = "http://192.168.0.109/maitian/v1/";
+    //    public static final String URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
+    public static final String URL_ROOT = "http://192.168.0.109/maitian/v1/";
 
     public static final String URL_REQ_VCODE_0 = "user/register/verify_code.json";
     public static final String URL_VAL_VCODE_0 = "user/register/verify.json";

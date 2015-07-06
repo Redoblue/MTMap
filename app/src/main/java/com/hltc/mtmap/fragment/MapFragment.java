@@ -496,32 +496,36 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     private void addGrainToOverlay(final List<ClusterGrain> objects) {
         overlay.clearClusters();
         for (final ClusterGrain cg : objects) {
-            final String to = FileUtils.getAppCache(getActivity(), "portrait")
-                    + FileUtils.getFileName(cg.userPortrait);
-            final String key = OssManager.getFileKeyByRemoteUrl(cg.userPortrait);
-            File file = new File(to);
-            if (!file.exists()) {
-                OSSFile ossFile = new OSSFile(OssManager.getOssManager().ossBucket, key);
-                ossFile.downloadToInBackground(to, new GetFileCallback() {
-                    @Override
-                    public void onSuccess(String s, String s1) {
-                        cg.userPortrait = to;
-                        overlay.addClusterItem(cg);
-                    }
+            try {
+                final String to = FileUtils.getAppCache(getActivity(), "portrait")
+                        + FileUtils.getFileName(cg.userPortrait);
+                final String key = OssManager.getFileKeyByRemoteUrl(cg.userPortrait);
+                File file = new File(to);
+                if (!file.exists()) {
+                    OSSFile ossFile = new OSSFile(OssManager.getOssManager().ossBucket, key);
+                    ossFile.downloadToInBackground(to, new GetFileCallback() {
+                        @Override
+                        public void onSuccess(String s, String s1) {
+                            cg.userPortrait = to;
+                            overlay.addClusterItem(cg);
+                        }
 
-                    @Override
-                    public void onProgress(String s, int i, int i1) {
+                        @Override
+                        public void onProgress(String s, int i, int i1) {
 
-                    }
+                        }
 
-                    @Override
-                    public void onFailure(String s, OSSException e) {
+                        @Override
+                        public void onFailure(String s, OSSException e) {
 
-                    }
-                });
-            } else {
-                cg.userPortrait = to;
-                overlay.addClusterItem(cg);
+                        }
+                    });
+                } else {
+                    cg.userPortrait = to;
+                    overlay.addClusterItem(cg);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }

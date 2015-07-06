@@ -4,7 +4,6 @@ import android.app.Application;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -12,16 +11,6 @@ import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.bean.LocalUserInfo;
-import com.hltc.mtmap.util.ApiUtils;
-import com.hltc.mtmap.util.AppUtils;
-import com.hltc.mtmap.util.StringUtils;
-import com.lidroid.xutils.HttpUtils;
-import com.lidroid.xutils.exception.HttpException;
-import com.lidroid.xutils.http.RequestParams;
-import com.lidroid.xutils.http.ResponseInfo;
-import com.lidroid.xutils.http.callback.RequestCallBack;
-import com.lidroid.xutils.http.client.HttpRequest;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -31,16 +20,9 @@ import com.umeng.message.UmengMessageHandler;
 import com.umeng.message.UmengNotificationClickHandler;
 import com.umeng.message.entity.UMessage;
 
-import org.apache.http.entity.StringEntity;
-import org.apache.http.protocol.HTTP;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.UnsupportedEncodingException;
-
 public class MyApplication extends Application {
 
-    public static String signInStatus = ""; // "00", "01", "10", "11" 第一位: 1 在线 0 离线  第二位： 1 登录 0 未登录
+    public static String signInStatus = "00"; // "00", "01", "10", "11" 第一位: 1 在线 0 离线  第二位： 1 登录 0 未登录
     //显示图片的配置
     public static DisplayImageOptions displayImageOptions = new DisplayImageOptions.Builder()
             .cacheInMemory(true)
@@ -149,6 +131,7 @@ public class MyApplication extends Application {
                         Notification mNotification = builder.build();
                         //由于Android v4包的bug，在2.3及以下系统，Builder创建出来的Notification，并没有设置RemoteView，故需要添加此代码
                         mNotification.contentView = myNotificationView;
+                        Log.d("MyApplication", "msg:" + msg);
                         return mNotification;
                     default:
                         //默认为0，若填写的builder_id并不存在，也使用默认。
@@ -165,6 +148,7 @@ public class MyApplication extends Application {
         UmengNotificationClickHandler notificationClickHandler = new UmengNotificationClickHandler() {
             @Override
             public void dealWithCustomAction(Context context, UMessage msg) {
+                Log.d("MyApplication", "msg:" + msg);
                 Toast.makeText(context, msg.custom, Toast.LENGTH_LONG).show();
             }
         };

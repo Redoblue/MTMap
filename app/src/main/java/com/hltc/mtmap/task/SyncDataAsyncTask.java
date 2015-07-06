@@ -13,7 +13,6 @@ import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.PhoneContact;
 import com.hltc.mtmap.gmodel.ContactItem;
-import com.hltc.mtmap.orm.MFriendStatusDao;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -34,8 +33,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import de.greenrobot.dao.query.QueryBuilder;
-
 /**
  * Created by redoblue on 15-7-2.
  */
@@ -45,27 +42,10 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
         super();
     }
 
-    @Override
-    protected void onPreExecute() {
-    }
-
-    @Override
-    protected void onPostExecute(Boolean aBoolean) {
-    }
-
-    @Override
-    protected Boolean doInBackground(Void... params) {
-        httpSyncFriendData();
-        httpSyncContactStatusData();
-        httpSyncFriendStatusData();
-        httpSyncGrainNumber();
-        return true;
-    }
-
     /**
      * 好友数据更新
      */
-    private void httpSyncFriendData() {
+    public static void httpSyncFriendData() {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
@@ -132,7 +112,7 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 });
     }
 
-    private void httpSyncFriendStatusData() {
+    public static void httpSyncFriendStatusData() {
 
         //处理好友请求
         RequestParams params = new RequestParams();
@@ -198,7 +178,7 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 });
     }
 
-    private void httpSyncContactStatusData() {
+    public static void httpSyncContactStatusData() {
         // 通讯录中可以添加的好友
         final List<PhoneContact> contacts = AppUtils.getContacts(MyApplication.getContext());
         RequestParams params = new RequestParams();
@@ -237,11 +217,9 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                                 }.getType());
 
                                 if (cis != null && cis.size() > 0) {
-                                    QueryBuilder qb = DaoManager.getManager().daoSession.getMFriendStatusDao().queryBuilder();
                                     for (ContactItem ci : cis) {
-                                        qb.where(MFriendStatusDao.Properties.UserId.eq(ci.getUserId()));
-                                        List<MFriendStatus> tmpfs = qb.list();
-                                        if (tmpfs == null || tmpfs.size() < 1) {
+                                        MFriendStatus temp = DaoManager.getManager().daoSession.getMFriendStatusDao().load(ci.getUserId());
+                                        if (temp == null) {
                                             for (PhoneContact c : contacts) {
                                                 if (ci.getPhone().equals(c.getNumber())) {
                                                     MFriendStatus fs = new MFriendStatus();
@@ -252,6 +230,7 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                                                     fs.setStatus(FriendStatusActivity.STATUS_ADDABLE);
 
                                                     DaoManager.getManager().daoSession.getMFriendStatusDao().insertOrReplace(fs);
+                                                    break;
                                                 }
                                             }
                                         }
@@ -275,6 +254,23 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                     public void onFailure(HttpException e, String s) {
                     }
                 });
+    }
+
+    @Override
+    protected void onPreExecute() {
+    }
+
+    @Override
+    protected void onPostExecute(Boolean aBoolean) {
+    }
+
+    @Override
+    protected Boolean doInBackground(Void... params) {
+        httpSyncFriendData();
+        httpSyncFriendStatusData();
+        httpSyncContactStatusData();
+        httpSyncGrainNumber();
+        return true;
     }
 
     private void httpSyncGrainNumber() {
