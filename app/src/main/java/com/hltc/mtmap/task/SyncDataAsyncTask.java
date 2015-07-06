@@ -56,8 +56,8 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
         httpSyncFriendData();
-        httpSyncFriendStatusData();
         httpSyncContactStatusData();
+        httpSyncFriendStatusData();
         httpSyncGrainNumber();
         return true;
     }
@@ -99,12 +99,12 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                                 List<MFriend> users = gson.fromJson(data.toString(), new TypeToken<List<MFriend>>() {
                                 }.getType());
 
-                                if (users != null && users.size() > 0) {
+                                if (users != null) {
                                     try {
                                         DaoManager.getManager().daoSession.getMFriendDao().deleteAll();
                                         for (MFriend user : users) {
                                             user.setIsFolder(false);
-                                            DaoManager.getManager().daoSession.getMFriendDao().insert(user);
+                                            DaoManager.getManager().daoSession.getMFriendDao().insertOrReplace(user);
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -167,9 +167,13 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
                                 //保存到数据库
                                 if (friendStatuses != null && friendStatuses.size() > 0) {
-                                    DaoManager.getManager().daoSession.getMFriendStatusDao().deleteAll();
-                                    for (MFriendStatus f : friendStatuses) {
-                                        DaoManager.getManager().daoSession.getMFriendStatusDao().insert(f);
+                                    try {
+                                        DaoManager.getManager().daoSession.getMFriendStatusDao().deleteAll();
+                                        for (MFriendStatus f : friendStatuses) {
+                                            DaoManager.getManager().daoSession.getMFriendStatusDao().insertOrReplace(f);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
                                 }
                                 Log.d("SyncDataAsyncTask", "friend status data synced");
@@ -237,7 +241,7 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                                     for (ContactItem ci : cis) {
                                         qb.where(MFriendStatusDao.Properties.UserId.eq(ci.getUserId()));
                                         List<MFriendStatus> tmpfs = qb.list();
-                                        if (tmpfs != null && tmpfs.size() < 1) {
+                                        if (tmpfs == null || tmpfs.size() < 1) {
                                             for (PhoneContact c : contacts) {
                                                 if (ci.getPhone().equals(c.getNumber())) {
                                                     MFriendStatus fs = new MFriendStatus();
@@ -247,7 +251,7 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                                                     fs.setText(c.getDisplayName());
                                                     fs.setStatus(FriendStatusActivity.STATUS_ADDABLE);
 
-                                                    DaoManager.getManager().daoSession.getMFriendStatusDao().insert(fs);
+                                                    DaoManager.getManager().daoSession.getMFriendStatusDao().insertOrReplace(fs);
                                                 }
                                             }
                                         }

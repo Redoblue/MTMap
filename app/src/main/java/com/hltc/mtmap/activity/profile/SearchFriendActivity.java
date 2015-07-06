@@ -54,11 +54,11 @@ import butterknife.OnClick;
  */
 public class SearchFriendActivity extends Activity implements EditText.OnEditorActionListener {
 
-    @InjectView(R.id.et_search_friend)
+    @InjectView(R.id.et_search)
     EditText etSearchFriend;
-    @InjectView(R.id.btn_search_friend_cancel)
+    @InjectView(R.id.btn_search_cancel)
     Button btnSearchFriendCancel;
-    @InjectView(R.id.lv_search_friend)
+    @InjectView(R.id.lv_search_list)
     ListView lvSearchFriend;
 
     private List<PhoneContact> contacts;
@@ -71,7 +71,7 @@ public class SearchFriendActivity extends Activity implements EditText.OnEditorA
         super.onCreate(savedInstanceState);
         AppManager.getAppManager().addActivity(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_search_friend);
+        setContentView(R.layout.activity_search_list);
         ButterKnife.inject(this);
 
         initData();
@@ -127,7 +127,7 @@ public class SearchFriendActivity extends Activity implements EditText.OnEditorA
         });
     }
 
-    @OnClick(R.id.btn_search_friend_cancel)
+    @OnClick(R.id.btn_search_cancel)
     public void onClick() {
         AppManager.getAppManager().finishActivity(this);
     }

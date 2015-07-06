@@ -57,7 +57,7 @@ public class CompleteAddressActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         AppManager.getAppManager().addActivity(this);
-        setContentView(R.layout.activity_complete_text);
+        setContentView(R.layout.activity_list_search);
         ButterKnife.inject(this);
 
         initData();

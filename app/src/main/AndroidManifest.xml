@@ -149,6 +149,9 @@
             android:name=".activity.map.GrainInfoDialog"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Dialog.NoActionBar" />
+        <activity
+            android:name=".activity.map.SearchPositionActivity"
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name="com.umeng.message.NotificationProxyBroadcastReceiver"

@@ -1,5 +1,6 @@
 package com.hltc.mtmap.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
@@ -12,8 +13,10 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.sdk.android.oss.callback.GetFileCallback;
 import com.alibaba.sdk.android.oss.model.OSSException;
@@ -47,12 +50,12 @@ import com.hltc.mtmap.MGrain;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.map.GrainInfoDialog;
+import com.hltc.mtmap.activity.map.SearchPositionActivity;
 import com.hltc.mtmap.activity.publish.CreateGrainActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.OssManager;
-import com.hltc.mtmap.bean.GrainItem;
 import com.hltc.mtmap.bean.MapInfo;
 import com.hltc.mtmap.gmodel.ClusterGrain;
 import com.hltc.mtmap.orm.MGrainDao;
@@ -91,6 +94,8 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         LocationSource,
         OfflineMapManager.OfflineMapDownloadListener {
 
+    public static final int SEARCH_POSITION_REQUEST_CODE = 0;
+
     public static final int TYPE_ALL = 2;
     public static final int TYPE_CHIHE = 0;
     public static final int TYPE_WANLE = 1;
@@ -108,12 +113,15 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     MapView mMapView;
     @InjectView(R.id.arc_menu)
     ArcMenu mArcMenu;
+    @InjectView(R.id.et_map_search)
+    EditText etMapSearch;
     private AMap mAmap;
     private OfflineMapManager offlineMapManager;
     private ClusterOverlay overlay;
+    private List<ClusterGrain> mGrains;
     //Test by Tab ABC
-    private int clusterRadius = 80;
-    private int currentCategory = 0;
+    private int clusterRadius = 60;
+    private int currentCategory = TYPE_ALL;
     private long refreshDistance = 200;
     private float lastZoom = defaultZoom;
     private float currentZoom;
@@ -143,6 +151,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             ButterKnife.inject(this, view);
             mMapView.onCreate(savedInstanceState);
             initData();
+            initView();
             initAmap();
             initArcMenu();
             Log.d("MT", "MapFragment Finished");
@@ -152,6 +161,16 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
     private void initData() {
         mMapInfo = AppConfig.getAppConfig().getMapInfo();
+    }
+
+    private void initView() {
+        etMapSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SearchPositionActivity.class);
+                startActivityForResult(intent, SEARCH_POSITION_REQUEST_CODE);
+            }
+        });
     }
 
     private void initAmap() {
@@ -196,23 +215,21 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                     switch (which) {
                         case 0:
                             if (currentCategory != TYPE_ALL) {
-                                loadGrainFromDb(TYPE_ALL);
+                                currentCategory = TYPE_ALL;
+                                addGrainToOverlay(getGrainFromMem(TYPE_ALL));
                             }
-                            currentCategory = TYPE_ALL;
                             break;
                         case 2:
                             if (currentCategory != TYPE_CHIHE) {
-                                loadGrainFromDb(TYPE_CHIHE);
+                                currentCategory = TYPE_CHIHE;
+                                addGrainToOverlay(getGrainFromMem(TYPE_CHIHE));
                             }
-                            currentCategory = TYPE_CHIHE;
                             break;
                         case 4:
                             if (currentCategory != TYPE_WANLE) {
-                                loadGrainFromDb(TYPE_WANLE);
+                                currentCategory = TYPE_WANLE;
+                                addGrainToOverlay(getGrainFromMem(TYPE_WANLE));
                             }
-                            currentCategory = TYPE_WANLE;
-                            break;
-                        default:
                             break;
                     }
                 }
@@ -278,7 +295,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             public void onClick(Marker marker, List<ClusterItem> clusterItems) {
                 if (clusterItems.size() == 1) {
                     Intent intent = new Intent(getActivity(), GrainInfoDialog.class);
-                    intent.putExtra("grain", (GrainItem) clusterItems.get(0));
+                    intent.putExtra("grain", (ClusterGrain) clusterItems.get(0));
                     startActivity(intent);
                 }
                 //TODO for many grain
@@ -335,7 +352,6 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
     @Override
     public void onLocationChanged(AMapLocation aMapLocation) {
-        Log.d("MT", "onLocationChanged");
         if (aMapLocation != null && aMapLocation.getAMapException().getErrorCode() == 0) {
             myLocation = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
             lastLocation = mAmap.getCameraPosition().target;
@@ -360,7 +376,8 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             if (AppUtils.isNetworkConnected(getActivity())) {
                 new AddClusterAsyncTask().execute(0);
             } else {
-                loadGrainFromDb(TYPE_ALL);
+                mGrains = getGrainsFromDb(TYPE_ALL);
+                addGrainToOverlay(mGrains);
             }
         }
     }
@@ -411,9 +428,9 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         try {
             json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
-            if (currentCategory != 0) {
-                json.put(ApiUtils.KEY_GRAIN_MCATEID, CreateGrainActivity.mCateId[cateId]);
-            }
+//            if (currentCategory != 0) {
+//                json.put(ApiUtils.KEY_GRAIN_MCATEID, CreateGrainActivity.mCateId[cateId]);
+//            }
             json.put(ApiUtils.KEY_GRAIN_CITYCODE, mMapInfo.getCityCode());
             json.put(ApiUtils.KEY_GRAIN_LON, mMapInfo.getLongitude());
             json.put(ApiUtils.KEY_GRAIN_LAT, mMapInfo.getLatitude());
@@ -438,21 +455,21 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                                 JSONArray array = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
                                 Gson gson = new Gson();
-                                final List<ClusterGrain> cgs =
+                                mGrains =
                                         gson.fromJson(array.toString(), new TypeToken<List<ClusterGrain>>() {
                                         }.getType());
 
-                                if (cgs != null && cgs.size() > 0) {
+                                if (mGrains != null && mGrains.size() > 0) {
                                     //保存到数据库
                                     new Thread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            saveGrainToDb(cgs);
+                                            saveGrainToDb(mGrains);
                                         }
                                     }).start();
 
                                     //添加到地图
-                                    addGrainToOverlay(cgs);
+                                    addGrainToOverlay(mGrains);
                                 }
                             } else {
                                 JSONObject girl = new JSONObject(result);
@@ -475,7 +492,9 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                 });
     }
 
+    // 首次加载到地图，保证所有图片下载好
     private void addGrainToOverlay(final List<ClusterGrain> objects) {
+        overlay.clearClusters();
         for (final ClusterGrain cg : objects) {
             final String to = FileUtils.getAppCache(getActivity(), "portrait")
                     + FileUtils.getFileName(cg.userPortrait);
@@ -531,8 +550,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         }
     }
 
-    private void loadGrainFromDb(int type) {
-        overlay.clearClusters();
+    private List<ClusterGrain> getGrainsFromDb(int type) {
         List<MGrain> grains;
         if (type == TYPE_ALL) {
             grains = DaoManager.getManager().daoSession.getMGrainDao().loadAll();
@@ -564,8 +582,22 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             cg.site.lon = mg.getLon();
             cgs.add(cg);
         }
+        return cgs;
+    }
 
-        addGrainToOverlay(cgs);
+    // 通过首次加载后，可以直接从内存加载
+    private List<ClusterGrain> getGrainFromMem(int type) {
+        List<ClusterGrain> list = new ArrayList<>();
+        if (type == TYPE_ALL) {
+            list.addAll(mGrains);
+        } else {
+            for (ClusterGrain c : mGrains) {
+                if (c.cateId.equals(CreateGrainActivity.mCateId[type])) {
+                    list.add(c);
+                }
+            }
+        }
+        return list;
     }
 
     /**
@@ -606,6 +638,18 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            switch (requestCode) {
+                case SEARCH_POSITION_REQUEST_CODE:
+                    Toast.makeText(getActivity(), data.getStringExtra("position"), Toast.LENGTH_SHORT).show();
+                    break;
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     class AddClusterAsyncTask extends AsyncTask<Integer, Void, Void> {

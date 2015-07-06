@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.bean.GrainItem;
+import com.hltc.mtmap.gmodel.ClusterGrain;
 import com.hltc.mtmap.util.StringUtils;
 
 import butterknife.ButterKnife;
@@ -38,7 +38,7 @@ public class GrainInfoDialog extends Activity {
     @InjectView(R.id.tv_grain_info_detail)
     TextView tvGrainInfoDetail;
 
-    private GrainItem mGrainItem;
+    private ClusterGrain mGrainItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +55,11 @@ public class GrainInfoDialog extends Activity {
     }
 
     private void initView() {
-        civGrainInfoPortrait.setImageDrawable(Drawable.createFromPath(mGrainItem.getPortrait()));
+        civGrainInfoPortrait.setImageDrawable(Drawable.createFromPath(mGrainItem.userPortrait));
         tvGrainInfoNickname.setText(StringUtils.isEmpty(
-                mGrainItem.getRemark()) ? mGrainItem.getNickName() : mGrainItem.getRemark());
-        tvGrainInfoAddress.setText(mGrainItem.getSite().getName());
-        tvGrainInfoText.setText(mGrainItem.getText());
+                mGrainItem.remark) ? mGrainItem.nickName : mGrainItem.remark);
+        tvGrainInfoAddress.setText(mGrainItem.site.name);
+        tvGrainInfoText.setText(mGrainItem.text);
     }
 
     @OnClick({
