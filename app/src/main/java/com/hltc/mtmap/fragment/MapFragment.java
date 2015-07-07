@@ -57,6 +57,7 @@ import com.hltc.mtmap.MGrain;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.map.GrainInfoDialog;
+import com.hltc.mtmap.activity.map.ManyGrainInfoDialog;
 import com.hltc.mtmap.activity.map.SearchPositionActivity;
 import com.hltc.mtmap.activity.publish.CreateGrainActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
@@ -104,13 +105,16 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         PoiSearch.OnPoiSearchListener {
 
     public static final int SEARCH_POSITION_REQUEST_CODE = 0;
+
     public static final int TYPE_ALL = 2;
     public static final int TYPE_CHIHE = 0;
     public static final int TYPE_WANLE = 1;
-    private static final float DEFAULT_ZOOM = 17f;
-    private static final float DEFAULT_TILT = 30f;
-    private static final float DEFAULT_BEARING = 0f;
-    private static final long DEFAULT_DURATION = 1000;
+
+    public static final float DEFAULT_ZOOM = 17f;
+    public static final float DEFAULT_TILT = 30f;
+    public static final float DEFAULT_BEARING = 0f;
+    public static final long DEFAULT_DURATION = 1000;
+
     private static final int[] ITEM_DRAWABLES = {
             R.drawable.btn_map_rad_all,
             R.drawable.transparent,
@@ -331,9 +335,15 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                     Intent intent = new Intent(getActivity(), GrainInfoDialog.class);
                     intent.putExtra("grain", (ClusterGrain) clusterItems.get(0));
                     startActivity(intent);
+                } else if (clusterItems.size() >= 2) {
+                    ArrayList<ClusterGrain> cgs = new ArrayList<>();
+                    for (ClusterItem ci : clusterItems) {
+                        cgs.add((ClusterGrain) ci);
+                    }
+                    Intent intent = new Intent(getActivity(), ManyGrainInfoDialog.class);
+                    intent.putParcelableArrayListExtra("grains", cgs);
+                    startActivity(intent);
                 }
-                //TODO for many grain
-
             }
         });
 

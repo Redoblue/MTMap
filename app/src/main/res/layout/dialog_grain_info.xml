@@ -5,7 +5,7 @@
     android:background="@null">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="240dp"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_gravity="center_horizontal"
@@ -52,15 +52,15 @@
 
                 <ImageView
                     android:id="@+id/iv_grain_info_exit"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_marginTop="10dp"
                     android:src="@drawable/btn_grain_info_exit" />
 
                 <ImageView
                     android:id="@+id/iv_grain_info_ignore"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_marginTop="10dp"
                     android:src="@drawable/btn_grain_info_ignore" />
             </LinearLayout>

@@ -355,7 +355,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
             LatLng latLng = new LatLng(StringUtils.toDouble(
                     MapFragment.mMapInfo.getLatitude()),
                     StringUtils.toDouble(MapFragment.mMapInfo.getLongitude()));
-            mAmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapFragment.defaultZoom));
+            mAmap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, MapFragment.DEFAULT_ZOOM));
         }
     }
 

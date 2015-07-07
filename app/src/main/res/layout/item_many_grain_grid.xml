@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="65dp"
+    android:layout_height="80dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/iv_item_many_grain_info_grid_portrait"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/tv_item_many_grain_info_grid_name"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_horizontal"
+        android:singleLine="true"
+        android:text="林佑威"
+        android:textColor="#000000"
+        android:textSize="15sp" />
+
+</LinearLayout>

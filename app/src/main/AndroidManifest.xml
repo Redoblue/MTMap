@@ -155,6 +155,10 @@
         <activity
             android:name=".activity.profile.MyGrainActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.map.ManyGrainInfoDialog"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar" />
 
         <receiver
             android:name="com.umeng.message.NotificationProxyBroadcastReceiver"
