@@ -43,31 +43,9 @@ public class MyApplication extends Application {
         super.onCreate();
         mContext = getApplicationContext();
 
-//        initIdentify();
         initImageLoader();
         initPushAgent();
     }
-
-    /*private void initIdentify() {
-        //用户身份状态检测
-        if (AppUtils.isNetworkConnected(mContext)) {
-            if (!StringUtils.isEmpty(AppConfig.getAppConfig().getConfToken())) {
-                try {
-                    new LoginAsyncTask().execute();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                signInStatus = "10";
-            }
-        } else {
-            if (!StringUtils.isEmpty(AppConfig.getAppConfig().getConfToken())) {
-                signInStatus = "01";
-            } else {
-                signInStatus = "00";
-            }
-        }
-    }*/
 
     private void initImageLoader() {
         //使用默认的ImageLoader配置参数
@@ -155,77 +133,4 @@ public class MyApplication extends Application {
         mPushAgent.setNotificationClickHandler(notificationClickHandler);
     }
 
-    /*private void httpLoginByToken() {
-        RequestParams params = new RequestParams();
-        params.addHeader("Content-Type", "application/json");
-        JSONObject json = new JSONObject();
-        try {
-            json.put(ApiUtils.KEY_SOURCE, "Android");
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
-            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        HttpUtils http = new HttpUtils();
-        http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.getLoginByTokenUrl(),
-                params,
-                new RequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        String result = responseInfo.result;
-                        if (StringUtils.isEmpty(result))
-                            return;
-                        try {
-                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                                JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
-                                LocalUserInfo userInfo = new LocalUserInfo();
-                                userInfo.setUserId(data.getLong(ApiUtils.KEY_USER_ID));
-                                userInfo.setUserName(data.getString(ApiUtils.KEY_USR_NAME));
-                                userInfo.setIsLogin(StringUtils.toBool(data.getString(ApiUtils.KEY_USR_IS_LOG_IN)));
-                                userInfo.setNickName(data.getString(ApiUtils.KEY_USR_NICKNAME));
-                                userInfo.setPhone(data.getString(ApiUtils.KEY_USR_PHONE));
-                                userInfo.setCreateTime(data.getString(ApiUtils.KEY_USR_CREATE_TIME));
-                                userInfo.setPortrait(data.getString(ApiUtils.KEY_PORTRAIT));
-                                userInfo.setPortraitSmall(data.getString(ApiUtils.KEY_USR_PORTRAIT_SMALL));
-                                userInfo.setCoverImg(data.getString(ApiUtils.KEY_USR_COVER_IMG));
-                                AppConfig.getAppConfig().setUserInfo(userInfo);
-
-                                Log.d("MyApplication", userInfo.toString());
-
-                                signInStatus = "11";
-                            } else {
-                                JSONObject girl = new JSONObject(result);
-                                String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
-                                if (errorMsg != null) {
-                                    // 发送验证码失败
-                                    // TODO 没有验证错误码
-                                    signInStatus = "10";
-                                }
-                            }
-                        } catch (JSONException e) {
-                            signInStatus = "10";
-                            e.printStackTrace();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        signInStatus = "10";
-                    }
-                });
-    }*/
-
-   /* class LoginAsyncTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            httpLoginByToken();
-            return null;
-        }
-    }*/
 }

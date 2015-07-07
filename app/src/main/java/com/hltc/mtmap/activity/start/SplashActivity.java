@@ -48,8 +48,6 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
     @InjectView(R.id.activity_start_view)
     LinearLayout background;
 
-    private String status = MyApplication.signInStatus;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,12 +96,21 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
 
     @Override
     public void onAnimationEnd(Animation animation) {
+        getMeIn();
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+    }
+
+    private void getMeIn() {
         // 查询是否第一次使用本软件
         if (AppUtils.isFirstTimeToUse(this)) {
             LogUtils.d("第一次使用分支");
             Intent intent = new Intent(this, GuideActivity.class);
             startActivity(intent);
         } else {    //判断登录状态，是则进入主界面，否则进入登录界面
+            String status = MyApplication.signInStatus;
             Log.d("MT", "splash: " + MyApplication.signInStatus);
             if (status.equals("11") || status.equals("01")) {
                 Intent intent = new Intent(this, MainActivity.class);
@@ -115,10 +122,6 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
             }
         }
         AppManager.getAppManager().finishActivity(this);
-    }
-
-    @Override
-    public void onAnimationRepeat(Animation animation) {
     }
 
     private void loadBackground() {
@@ -232,6 +235,4 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
                     }
                 });
     }
-
-
 }

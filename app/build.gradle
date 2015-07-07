@@ -44,6 +44,7 @@ dependencies {
     compile project(':library-ArcMenu')
     compile project(':library-ClusterMarker')
     compile project(':library-PullZoomView')
+    compile project(':library-PullToRefresh')
 }
 
 task nativeLibsToJar(type: Zip, description: 'create a jar archive of the native libs') {

@@ -146,7 +146,7 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                                         }.getType());
 
                                 //保存到数据库
-                                if (friendStatuses != null && friendStatuses.size() > 0) {
+                                if (friendStatuses != null) {
                                     try {
                                         DaoManager.getManager().daoSession.getMFriendStatusDao().deleteAll();
                                         for (MFriendStatus f : friendStatuses) {

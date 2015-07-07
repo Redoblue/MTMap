@@ -20,6 +20,7 @@ import com.hltc.mtmap.bean.PhoneContact;
 import com.hltc.mtmap.gmodel.Friend;
 import com.hltc.mtmap.gmodel.FriendStatus;
 import com.hltc.mtmap.helper.PinyinComparator;
+import com.hltc.mtmap.task.SyncDataAsyncTask;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.CharacterParser;
 import com.hltc.mtmap.widget.CharacterBar;
@@ -107,7 +108,7 @@ public class FriendListActivity extends Activity {
 
 //        adapterList = filledData(getResources().getStringArray(R.array.date));
 //        Collections.sort(adapterList, pinyinComparator);
-        adapterList = DaoManager.getManager().daoSession.getMFriendDao().loadAll();
+        adapterList = DaoManager.getManager().getAllFriend();
 //        Collections.sort(adapterList, pinyinComparator);
         adapter = new FriendListAdapter(this, adapterList);
         sortListView.setAdapter(adapter);
@@ -153,7 +154,8 @@ public class FriendListActivity extends Activity {
     public void onResume() {
         super.onResume();
         try {
-            adapterList = DaoManager.getManager().daoSession.getMFriendDao().loadAll();
+            SyncDataAsyncTask.httpSyncFriendData();
+            adapterList = DaoManager.getManager().getAllFriend();
             adapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();

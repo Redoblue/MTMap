@@ -12,17 +12,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:text="唐高祖之子滕王李元婴任洪州都督时,宴群僚于阁上,王勃省父过此,即席而作。"
+        android:text="王勃 已经成为你的朋友。"
         android:textSize="15sp" />
-
-    <include
-        layout="@layout/layout_message_footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp" />
 
     <TextView style="@style/separator" />
 </LinearLayout>

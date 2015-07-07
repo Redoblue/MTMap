@@ -152,6 +152,9 @@
         <activity
             android:name=".activity.map.SearchPositionActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.profile.MyGrainActivity"
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name="com.umeng.message.NotificationProxyBroadcastReceiver"

@@ -96,7 +96,7 @@ public class FriendStatusActivity extends Activity {
             }
         });
 
-        adapterList = DaoManager.getManager().daoSession.getMFriendStatusDao().loadAll();
+        adapterList = DaoManager.getManager().getAllFriendStarus();
         adapter = new FriendStatusListAdapter(this, adapterList);
         lvNewFriend.setAdapter(adapter);
     }
@@ -308,6 +308,10 @@ public class FriendStatusActivity extends Activity {
                             httpAgreeRequest(position);
                             break;
                     }
+                    SyncDataAsyncTask.httpSyncFriendStatusData();
+                    SyncDataAsyncTask.httpSyncContactStatusData();
+                    adapterList = DaoManager.getManager().getAllFriendStarus();
+                    adapter.notifyDataSetChanged();
                 }
             });
 

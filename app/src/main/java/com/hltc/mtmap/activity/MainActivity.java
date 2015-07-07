@@ -22,6 +22,7 @@ import com.hltc.mtmap.fragment.MapFragment;
 import com.hltc.mtmap.fragment.MessageFragment;
 import com.hltc.mtmap.fragment.ProfileFragment;
 import com.hltc.mtmap.fragment.PublishFragment;
+import com.hltc.mtmap.service.MyPushIntentService;
 import com.hltc.mtmap.task.SyncDataAsyncTask;
 import com.hltc.mtmap.util.AppUtils;
 import com.umeng.message.PushAgent;
@@ -135,12 +136,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 try {
 //                    mPushAgent.getTagManager().add("mtmap");
                     mPushAgent.addAlias(String.valueOf(
-                            AppConfig.getAppConfig().getConfUsrUserId()), "TYPE_UID");
+                            AppConfig.getAppConfig().getConfUsrUserId()), "TYPE_MTMAP");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }).start();
+        mPushAgent.setPushIntentServiceClass(MyPushIntentService.class);
     }
 
     @Override

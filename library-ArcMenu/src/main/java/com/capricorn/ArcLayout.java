@@ -24,42 +24,33 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.RotateAnimation;
-import android.view.animation.Animation.AnimationListener;
 
 /**
  * A Layout that arranges its children around its center. The arc can be set by
  * calling {@link #setArc(float, float) setArc()}. You can override the method
  * {@link #onMeasure(int, int) onMeasure()}, otherwise it is always
  * WRAP_CONTENT.
- * 
+ *
  * @author Capricorn
- * 
  */
 public class ArcLayout extends ViewGroup {
+    public static final float DEFAULT_FROM_DEGREES = 270.0f;
+    public static final float DEFAULT_TO_DEGREES = 360.0f;
+    private static final int MIN_RADIUS = 100;
     /**
      * children will be set the same size.
      */
     private int mChildSize;
-
     private int mChildPadding = 5;
-
     private int mLayoutPadding = 10;
-
-    public static final float DEFAULT_FROM_DEGREES = 270.0f;
-
-    public static final float DEFAULT_TO_DEGREES = 360.0f;
-
     private float mFromDegrees = DEFAULT_FROM_DEGREES;
-
     private float mToDegrees = DEFAULT_TO_DEGREES;
-
-    private static final int MIN_RADIUS = 100;
-
     /* the distance between the layout's center and any child's center */
     private int mRadius;
 
@@ -83,7 +74,7 @@ public class ArcLayout extends ViewGroup {
     }
 
     private static int computeRadius(final float arcDegrees, final int childCount, final int childSize,
-            final int childPadding, final int minRadius) {
+                                     final int childPadding, final int minRadius) {
         if (childCount < 2) {
             return minRadius;
         }
@@ -98,13 +89,73 @@ public class ArcLayout extends ViewGroup {
     }
 
     private static Rect computeChildFrame(final int centerX, final int centerY, final int radius, final float degrees,
-            final int size) {
+                                          final int size) {
 
         final double childCenterX = centerX + radius * Math.cos(Math.toRadians(degrees));
         final double childCenterY = centerY + radius * Math.sin(Math.toRadians(degrees));
 
         return new Rect((int) (childCenterX - size / 2), (int) (childCenterY - size / 2),
                 (int) (childCenterX + size / 2), (int) (childCenterY + size / 2));
+    }
+
+    /**
+     * refers to {@link LayoutAnimationController#getDelayForView(View view)}
+     */
+    private static long computeStartOffset(final int childCount, final boolean expanded, final int index,
+                                           final float delayPercent, final long duration, Interpolator interpolator) {
+        final float delay = delayPercent * duration;
+        final long viewDelay = (long) (getTransformedIndex(expanded, childCount, index) * delay);
+        final float totalDelay = delay * childCount;
+
+        float normalizedDelay = viewDelay / totalDelay;
+        normalizedDelay = interpolator.getInterpolation(normalizedDelay);
+
+        return (long) (normalizedDelay * totalDelay);
+    }
+
+    private static int getTransformedIndex(final boolean expanded, final int count, final int index) {
+        if (expanded) {
+            return count - 1 - index;
+        }
+
+        return index;
+    }
+
+    private static Animation createExpandAnimation(float fromXDelta, float toXDelta, float fromYDelta, float toYDelta,
+                                                   long startOffset, long duration, Interpolator interpolator) {
+        Animation animation = new RotateAndTranslateAnimation(0, toXDelta, 0, toYDelta, 0, 720);
+        animation.setStartOffset(startOffset);
+        animation.setDuration(duration);
+        animation.setInterpolator(interpolator);
+        animation.setFillAfter(true);
+
+        return animation;
+    }
+
+    private static Animation createShrinkAnimation(float fromXDelta, float toXDelta, float fromYDelta, float toYDelta,
+                                                   long startOffset, long duration, Interpolator interpolator) {
+        AnimationSet animationSet = new AnimationSet(false);
+        animationSet.setFillAfter(true);
+
+        final long preDuration = duration / 2;
+        Animation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        rotateAnimation.setStartOffset(startOffset);
+        rotateAnimation.setDuration(preDuration);
+        rotateAnimation.setInterpolator(new LinearInterpolator());
+        rotateAnimation.setFillAfter(true);
+
+        animationSet.addAnimation(rotateAnimation);
+
+        Animation translateAnimation = new RotateAndTranslateAnimation(0, toXDelta, 0, toYDelta, 360, 720);
+        translateAnimation.setStartOffset(startOffset + preDuration);
+        translateAnimation.setDuration(duration - preDuration);
+        translateAnimation.setInterpolator(interpolator);
+        translateAnimation.setFillAfter(true);
+
+        animationSet.addAnimation(translateAnimation);
+
+        return animationSet;
     }
 
     @Override
@@ -137,66 +188,6 @@ public class ArcLayout extends ViewGroup {
             degrees += perDegrees;
             getChildAt(i).layout(frame.left, frame.top, frame.right, frame.bottom);
         }
-    }
-
-    /**
-     * refers to {@link LayoutAnimationController#getDelayForView(View view)}
-     */
-    private static long computeStartOffset(final int childCount, final boolean expanded, final int index,
-            final float delayPercent, final long duration, Interpolator interpolator) {
-        final float delay = delayPercent * duration;
-        final long viewDelay = (long) (getTransformedIndex(expanded, childCount, index) * delay);
-        final float totalDelay = delay * childCount;
-
-        float normalizedDelay = viewDelay / totalDelay;
-        normalizedDelay = interpolator.getInterpolation(normalizedDelay);
-
-        return (long) (normalizedDelay * totalDelay);
-    }
-
-    private static int getTransformedIndex(final boolean expanded, final int count, final int index) {
-        if (expanded) {
-            return count - 1 - index;
-        }
-
-        return index;
-    }
-
-    private static Animation createExpandAnimation(float fromXDelta, float toXDelta, float fromYDelta, float toYDelta,
-            long startOffset, long duration, Interpolator interpolator) {
-        Animation animation = new RotateAndTranslateAnimation(0, toXDelta, 0, toYDelta, 0, 720);
-        animation.setStartOffset(startOffset);
-        animation.setDuration(duration);
-        animation.setInterpolator(interpolator);
-        animation.setFillAfter(true);
-
-        return animation;
-    }
-
-    private static Animation createShrinkAnimation(float fromXDelta, float toXDelta, float fromYDelta, float toYDelta,
-            long startOffset, long duration, Interpolator interpolator) {
-        AnimationSet animationSet = new AnimationSet(false);
-        animationSet.setFillAfter(true);
-
-        final long preDuration = duration / 2;
-        Animation rotateAnimation = new RotateAnimation(0, 360, Animation.RELATIVE_TO_SELF, 0.5f,
-                Animation.RELATIVE_TO_SELF, 0.5f);
-        rotateAnimation.setStartOffset(startOffset);
-        rotateAnimation.setDuration(preDuration);
-        rotateAnimation.setInterpolator(new LinearInterpolator());
-        rotateAnimation.setFillAfter(true);
-
-        animationSet.addAnimation(rotateAnimation);
-
-        Animation translateAnimation = new RotateAndTranslateAnimation(0, toXDelta, 0, toYDelta, 360, 720);
-        translateAnimation.setStartOffset(startOffset + preDuration);
-        translateAnimation.setDuration(duration - preDuration);
-        translateAnimation.setInterpolator(interpolator);
-        translateAnimation.setFillAfter(true);
-
-        animationSet.addAnimation(translateAnimation);
-
-        return animationSet;
     }
 
     private void bindChildAnimation(final View child, final int index, final long duration) {
@@ -263,6 +254,10 @@ public class ArcLayout extends ViewGroup {
         requestLayout();
     }
 
+    public int getChildSize() {
+        return mChildSize;
+    }
+
     public void setChildSize(int size) {
         if (mChildSize == size || size < 0) {
             return;
@@ -273,13 +268,9 @@ public class ArcLayout extends ViewGroup {
         requestLayout();
     }
 
-    public int getChildSize() {
-        return mChildSize;
-    }
-
     /**
      * switch between expansion and shrinkage
-     * 
+     *
      * @param showAnimation
      */
     public void switchState(final boolean showAnimation) {
@@ -295,7 +286,7 @@ public class ArcLayout extends ViewGroup {
         if (!showAnimation) {
             requestLayout();
         }
-        
+
         invalidate();
     }
 

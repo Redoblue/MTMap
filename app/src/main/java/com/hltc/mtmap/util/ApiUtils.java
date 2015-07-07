@@ -21,10 +21,8 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 public class ApiUtils {
-
-    //    public static final String URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
-    public static final String URL_ROOT = "http://192.168.0.109/maitian/v1/";
-
+    public static final String URL_ROOT_0 = "http://www.maitianditu.com/maitian/v1/";
+    public static final String URL_ROOT_1 = "http://192.168.0.109/maitian/v1/";
     public static final String URL_REQ_VCODE_0 = "user/register/verify_code.json";
     public static final String URL_VAL_VCODE_0 = "user/register/verify.json";
     public static final String URL_CRE_ACCOUNT = "user/register/new_user.json";
@@ -59,7 +57,6 @@ public class ApiUtils {
     //个人
     public static final String URL_UPDATE_PORTRAIT = "my/portrait.json";
     public static final String URL_SEARCH_FRIEND_BY_KEYWORD = "my/friends/search.json";
-
     public static final String KEY_SOURCE = "source";
     public static final String KEY_PHONE = "phone_number";
     public static final String KEY_VCODE = "verify_code";
@@ -71,7 +68,6 @@ public class ApiUtils {
     public static final String KEY_TOKEN = "token";
     public static final String KEY_PASSWD = "pwd";
     public static final String KEY_UNIQUE_INFO = "unique_info";
-
     //注册
     public static final String KEY_USER_ID = "userId";
     public static final String KEY_USR_NAME = "userName";
@@ -82,17 +78,14 @@ public class ApiUtils {
     public static final String KEY_USR_PORTRAIT_SMALL = "portraitSmall";
     public static final String KEY_USR_CREATE_TIME = "createTime";
     public static final String KEY_USR_COVER_IMG = "coverImg";
-
     //反馈
     public static final String KEY_CONTENT = "content";
     public static final String KEY_EMAIL = "email";
-
     //获取FederationToken
     public static final String KEY_TMP_AK = "tmpAkId";
     public static final String KEY_TMP_SK = "tmpAkSecret";
     public static final String KEY_SEC_TOKEN = "securityToken";
     public static final String KEY_EXP_TIME = "expireTime";
-
     //query grain
     public static final String KEY_GRAIN_MCATEID = "mcateId";
     public static final String KEY_GRAIN_CITYCODE = "cityCode";
@@ -109,6 +102,7 @@ public class ApiUtils {
     public static final String KEY_FIRST_CHARACTER = "firstCharacter";
     public static final String KEY_FROM_ID = "fromId";
     public static final String KEY_KEYWORD = "keyword";
+    public static String URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
 
     public static String getRequestVCodeUrl(int source) {
         return source == 0 ?

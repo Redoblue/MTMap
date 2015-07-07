@@ -1,12 +1,12 @@
 package com.hltc.mtmap.app;
 
-import com.hltc.mtmap.MTUser;
+import com.hltc.mtmap.MFriend;
+import com.hltc.mtmap.MFriendStatus;
 import com.hltc.mtmap.orm.DaoMaster;
 import com.hltc.mtmap.orm.DaoSession;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import de.greenrobot.dao.query.QueryBuilder;
 
 public class DaoManager {
 
@@ -29,10 +29,26 @@ public class DaoManager {
     /**
      * *********************** 数据操作 *************************
      */
-    public List<MTUser> getAllUsers() {
-        QueryBuilder qb = daoSession.getMTUserDao().queryBuilder();
-        return qb.listLazy();
+    public List<MFriend> getAllFriend() {
+        List<MFriend> list = new ArrayList<>();
+        try {
+            list = DaoManager.getManager().daoSession.getMFriendDao().loadAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
-
+    /**
+     * get friendstatus list
+     */
+    public List<MFriendStatus> getAllFriendStarus() {
+        List<MFriendStatus> list = new ArrayList<>();
+        try {
+            list = DaoManager.getManager().daoSession.getMFriendStatusDao().loadAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

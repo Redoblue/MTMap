@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="40dp"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_item_map_arc_pic"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:src="@drawable/btn_map_rad_all" />
+
+    <TextView
+        android:id="@+id/tv_item_map_arc_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="附近所有"
+        android:textSize="10sp" />
+</LinearLayout>

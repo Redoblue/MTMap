@@ -25,20 +25,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationSet;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 /**
  * A custom view that looks like the menu in <a href="https://path.com">Path
  * 2.0</a> (for iOS).
- * 
+ *
  * @author Capricorn
- * 
  */
 public class ArcMenu extends RelativeLayout {
     private ArcLayout mArcLayout;
@@ -54,6 +53,30 @@ public class ArcMenu extends RelativeLayout {
         super(context, attrs);
         init(context);
         applyAttrs(attrs);
+    }
+
+    private static Animation createItemDisapperAnimation(final long duration, final boolean isClicked) {
+        AnimationSet animationSet = new AnimationSet(true);
+        animationSet.addAnimation(new ScaleAnimation(1.0f, isClicked ? 2.0f : 0.0f, 1.0f, isClicked ? 2.0f : 0.0f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f));
+        animationSet.addAnimation(new AlphaAnimation(1.0f, 0.0f));
+
+        animationSet.setDuration(duration);
+        animationSet.setInterpolator(new DecelerateInterpolator());
+        animationSet.setFillAfter(true);
+
+        return animationSet;
+    }
+
+    private static Animation createHintSwitchAnimation(final boolean expanded) {
+        Animation animation = new RotateAnimation(expanded ? 45 : 0, expanded ? 0 : 45, Animation.RELATIVE_TO_SELF,
+                0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+        animation.setStartOffset(0);
+        animation.setDuration(100);
+        animation.setInterpolator(new DecelerateInterpolator());
+        animation.setFillAfter(true);
+
+        return animation;
     }
 
     private void init(Context context) {
@@ -164,29 +187,5 @@ public class ArcMenu extends RelativeLayout {
         }
 
         mArcLayout.switchState(false);
-    }
-
-    private static Animation createItemDisapperAnimation(final long duration, final boolean isClicked) {
-        AnimationSet animationSet = new AnimationSet(true);
-        animationSet.addAnimation(new ScaleAnimation(1.0f, isClicked ? 2.0f : 0.0f, 1.0f, isClicked ? 2.0f : 0.0f,
-                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f));
-        animationSet.addAnimation(new AlphaAnimation(1.0f, 0.0f));
-
-        animationSet.setDuration(duration);
-        animationSet.setInterpolator(new DecelerateInterpolator());
-        animationSet.setFillAfter(true);
-
-        return animationSet;
-    }
-
-    private static Animation createHintSwitchAnimation(final boolean expanded) {
-        Animation animation = new RotateAnimation(expanded ? 45 : 0, expanded ? 0 : 45, Animation.RELATIVE_TO_SELF,
-                0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-        animation.setStartOffset(0);
-        animation.setDuration(100);
-        animation.setInterpolator(new DecelerateInterpolator());
-        animation.setFillAfter(true);
-
-        return animation;
     }
 }

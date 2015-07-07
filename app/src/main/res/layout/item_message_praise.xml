@@ -9,20 +9,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <include
+        layout="@layout/layout_message_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:text="唐高祖之子滕王李元婴任洪州都督时,宴群僚于阁上,王勃省父过此,即席而作。"
-        android:textSize="15sp" />
+        android:text="王勃所遇到的第二次打击，\n是在虢州参军任上杀死自己所匿藏的官奴而犯罪。" />
 
-    <include
-        layout="@layout/layout_message_footer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:layout_marginTop="10dp" />
-
-    <TextView style="@style/separator" />
+    <TextView
+        style="@style/separator"
+        android:layout_marginTop="9dp" />
 </LinearLayout>

@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
@@ -15,6 +16,7 @@ import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 
 import butterknife.ButterKnife;
@@ -34,6 +36,8 @@ public class StartActivity extends Activity {
     Button signUpBtn;
     @InjectView(R.id.btn_start_skip)
     Button skipBtn;
+    @InjectView(R.id.btn_start_switch_server)
+    ToggleButton btnStartSwitchServer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +47,7 @@ public class StartActivity extends Activity {
         ButterKnife.inject(this);
         AppManager.getAppManager().addActivity(this);
 
-//        initBackground();
+        ApiUtils.URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
     }
 
     private void initBackground() {
@@ -87,6 +91,16 @@ public class StartActivity extends Activity {
                 startActivity(intent2);
                 finish();
                 break;
+        }
+    }
+
+    // will be removed after development
+    @OnClick(R.id.btn_start_switch_server)
+    public void switchServer() {
+        if (btnStartSwitchServer.isChecked()) {
+            ApiUtils.URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
+        } else {
+            ApiUtils.URL_ROOT = "http://192.168.0.109/maitian/v1/";
         }
     }
 

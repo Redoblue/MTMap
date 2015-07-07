@@ -27,6 +27,15 @@
         android:orientation="vertical"
         android:padding="15dp">
 
+        <ToggleButton
+            android:id="@+id/btn_start_switch_server"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:checked="true"
+            android:textOff="本地"
+            android:textOn="远程"
+            android:textSize="20sp" />
+
         <Button
             android:id="@+id/btn_start_signin"
             style="@style/GreenButton"

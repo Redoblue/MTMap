@@ -1,4 +1,4 @@
-package com.hltc.mtmap.fragment;
+package com.hltc.mtmap.activity.profile;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,16 +7,13 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,7 +26,6 @@ import com.amap.api.location.AMapLocationListener;
 import com.amap.api.location.LocationManagerProxy;
 import com.amap.api.location.LocationProviderProxy;
 import com.amap.api.maps.AMap;
-import com.amap.api.maps.AMapException;
 import com.amap.api.maps.CameraUpdateFactory;
 import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
@@ -39,7 +35,6 @@ import com.amap.api.maps.model.CameraPosition;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
-import com.amap.api.maps.offlinemap.OfflineMapCity;
 import com.amap.api.maps.offlinemap.OfflineMapManager;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiItemDetail;
@@ -55,12 +50,11 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.MGrain;
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.map.GrainInfoDialog;
 import com.hltc.mtmap.activity.map.SearchPositionActivity;
 import com.hltc.mtmap.activity.publish.CreateGrainActivity;
-import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.bean.MapInfo;
@@ -95,7 +89,10 @@ import butterknife.OnClick;
 import de.greenrobot.dao.query.QueryBuilder;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MapFragment extends Fragment implements AMapLocationListener,
+/**
+ * Created by redoblue on 15-7-7.
+ */
+public class MyGrainActivity extends Activity implements AMapLocationListener,
         AMap.OnCameraChangeListener,
         AMap.OnMapLoadedListener,
         AMap.OnMapTouchListener,
@@ -111,25 +108,15 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     private static final float DEFAULT_TILT = 30f;
     private static final float DEFAULT_BEARING = 0f;
     private static final long DEFAULT_DURATION = 1000;
-    private static final int[] ITEM_DRAWABLES = {
-            R.drawable.btn_map_rad_all,
-            R.drawable.transparent,
-            R.drawable.btn_map_rad_wanle,
-            R.drawable.transparent,
-            R.drawable.btn_map_rad_chihe
-    };
-    private static final String[] ITEM_TEXTS = {
-            "附近所有", "", "附近玩乐", "", "附近吃喝"
-    };
     public static MapInfo mMapInfo;
     @InjectView(R.id.map)
     MapView mMapView;
     @InjectView(R.id.arc_menu)
-    ArcMenu mArcMenu;
-    @InjectView(R.id.et_map_search)
-    EditText etMapSearch;
+    ArcMenu arcMenu;
     @InjectView(R.id.btn_map_locate)
     ImageButton btnMapLocate;
+    @InjectView(R.id.et_map_search)
+    EditText etMapSearch;
     @InjectView(R.id.layout_map_search)
     RelativeLayout layoutMapSearch;
     private AMap mAmap;
@@ -137,44 +124,23 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     private PoiSearch.Query mQuery;
     private ClusterOverlay overlay;
     private List<ClusterGrain> mGrains;
-    //Test by Tab ABC
     private int clusterRadius = 60;
-    private int currentCategory = TYPE_ALL;
-    private long refreshDistance = 200;
-    private float lastZoom = DEFAULT_ZOOM;
     private float currentZoom;
     private LatLng myLocation;
     private LatLng lastLocation;
     private LocationManagerProxy locationManagerProxy;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Log.d("MT", "MapFragment");
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AppManager.getAppManager().addActivity(this);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.fragment_map);
+        ButterKnife.inject(this);
 
-        if (MainActivity.isVisitor) {
-            View view = inflater.inflate(R.layout.window_remind_login, container, false);
-            ImageView iv = (ImageView) view.findViewById(R.id.btn_remind_login);
-            iv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), StartActivity.class);
-                    startActivity(intent);
-                    getActivity().finish();
-                }
-            });
-            return view;
-        } else {
-            View view = inflater.inflate(R.layout.fragment_map, container, false);
-            ButterKnife.inject(this, view);
-            mMapView.onCreate(savedInstanceState);
-            initData();
-            initView();
-            initAmap();
-            initArcMenu();
-            Log.d("MT", "MapFragment Finished");
-            return view;
-        }
+        initData();
+        initView();
+        initAmap();
     }
 
     private void initData() {
@@ -194,20 +160,10 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                 }
             }
         });
+
+        arcMenu.setVisibility(View.GONE);
     }
 
-    @OnClick({R.id.layout_map_search, R.id.et_map_search})
-    public void startSearchActivity() {
-        Intent intent = new Intent(getActivity(), SearchPositionActivity.class);
-        startActivityForResult(intent, SEARCH_POSITION_REQUEST_CODE);
-    }
-
-
-    private void goSomewhereWithAnimation(LatLng latLng) {
-        mAmap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                new CameraPosition(latLng, mAmap.getCameraPosition().zoom,
-                        DEFAULT_TILT, mAmap.getCameraPosition().bearing)), DEFAULT_DURATION, null);
-    }
 
     private void initAmap() {
         if (mAmap == null) {
@@ -219,7 +175,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
             mAmap.getUiSettings().setTiltGesturesEnabled(false);
 
-            locationManagerProxy = LocationManagerProxy.getInstance(getActivity());
+            locationManagerProxy = LocationManagerProxy.getInstance(this);
             locationManagerProxy.requestLocationData(LocationProviderProxy.AMapNetwork, -1, 15, this);
 
             mAmap.setOnMapLoadedListener(this);
@@ -230,157 +186,25 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         }
     }
 
-    private void initArcMenu() {
-        for (int i = 0; i < ITEM_DRAWABLES.length; i++) {
-            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View item = inflater.inflate(R.layout.layout_map_arc, null);
-            ImageView iv = (ImageView) item.findViewById(R.id.iv_item_map_arc_pic);
-            TextView tv = (TextView) item.findViewById(R.id.tv_item_map_arc_text);
-            iv.setImageDrawable(getActivity().getResources().getDrawable(ITEM_DRAWABLES[i]));
-            tv.setText(ITEM_TEXTS[i]);
-            item.setTag(i);
-
-            mArcMenu.addItem(item, new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    LinearLayout view = (LinearLayout) v;
-                    int which = (int) view.getTag();
-                    switch (which) {
-                        case 0:
-                            if (currentCategory != TYPE_ALL) {
-                                currentCategory = TYPE_ALL;
-                                addGrainToOverlay(getGrainFromMem(TYPE_ALL));
-                            }
-                            break;
-                        case 2:
-                            if (currentCategory != TYPE_CHIHE) {
-                                currentCategory = TYPE_CHIHE;
-                                addGrainToOverlay(getGrainFromMem(TYPE_CHIHE));
-                            }
-                            break;
-                        case 4:
-                            if (currentCategory != TYPE_WANLE) {
-                                currentCategory = TYPE_WANLE;
-                                addGrainToOverlay(getGrainFromMem(TYPE_WANLE));
-                            }
-                            break;
-                    }
-                }
-            });
-        }
+    @OnClick({R.id.layout_map_search, R.id.et_map_search})
+    public void startSearchActivity() {
+        Intent intent = new Intent(this, SearchPositionActivity.class);
+        startActivityForResult(intent, SEARCH_POSITION_REQUEST_CODE);
     }
 
-    @Override
-    public void onTouch(MotionEvent motionEvent) {
-        if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-            currentZoom = mAmap.getCameraPosition().zoom;
-            LatLng currentLocation = mAmap.getCameraPosition().target;
-            double distance = com.amap.api.maps.AMapUtils.calculateLineDistance(currentLocation, lastLocation);
-            Log.d("MapFragment", "distance:" + distance);
-            Log.d("MapFragment", "currentZoom:" + currentZoom);
-            if (distance > refreshDistance || currentZoom != lastZoom) {//距离大于刷新距离
-                Log.d("MapFragment", "you can refresh now");
-            }
-            lastLocation = currentLocation;
-            lastZoom = currentZoom;
-
-            Log.d("MapFragment", "mAmap.getCameraPosition().zoom:" + mAmap.getCameraPosition().zoom);
-            Log.d("MapFragment", "mAmap.getCameraPosition().tilt:" + mAmap.getCameraPosition().tilt);
-        }
+    private void goSomewhereWithAnimation(LatLng latLng) {
+        mAmap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                new CameraPosition(latLng, mAmap.getCameraPosition().zoom,
+                        DEFAULT_TILT, mAmap.getCameraPosition().bearing)), DEFAULT_DURATION, null);
     }
 
-    @Override
-    public void onMapLoaded() {
-        Log.d("MT", "MapFragment onMapLoaded");
-
-        //加载完地图进入上次最后地点
-        if (!StringUtils.isEmpty(mMapInfo.getLatitude())) {
-            LatLng latLng = new LatLng(StringUtils.toDouble(
-                    mMapInfo.getLatitude()), StringUtils.toDouble(mMapInfo.getLongitude()));
-            mAmap.moveCamera(CameraUpdateFactory.newCameraPosition(
-                    new CameraPosition(latLng, DEFAULT_ZOOM, DEFAULT_TILT, DEFAULT_BEARING)));
-            myLocation = latLng;//更新个人位置
-        }
-
-        overlay = new
-                ClusterOverlay(mAmap, AMapUtils.dp2px(getActivity(), clusterRadius), getActivity());
-        overlay.setClusterRenderer(new ClusterRender() {
-            @Override
-            public BitmapDescriptor getBitmapDescriptor(Cluster cluster) {
-                LayoutInflater inflater = (LayoutInflater)
-                        getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View view = inflater.inflate(R.layout.view_map_cluster, null);
-                int num = cluster.getClusterCount();
-                if (num == 1) {
-                    CircleImageView civ = (CircleImageView) view.findViewById(R.id.iv_cluster);
-                    ClusterItem item = cluster.getClusterItems().get(0);
-//                    ImageLoader.getInstance().displayImage(item.getPicUrl(), civ, MyApplication.displayImageOptions);
-                    civ.setImageDrawable(Drawable.createFromPath(item.getPicUrl()));
-                } else {
-                    TextView tv = (TextView) view.findViewById(R.id.tv_cluster);
-                    tv.setText(String.valueOf(num));
-                    tv.setBackgroundResource(R.drawable.cluster_num_bg);
-                }
-                return BitmapDescriptorFactory.fromView(view);
-            }
-        });
-        overlay.setOnClusterClickListener(new ClusterClickListener() {
-            @Override
-            public void onClick(Marker marker, List<ClusterItem> clusterItems) {
-                if (clusterItems.size() == 1) {
-                    Intent intent = new Intent(getActivity(), GrainInfoDialog.class);
-                    intent.putExtra("grain", (ClusterGrain) clusterItems.get(0));
-                    startActivity(intent);
-                }
-                //TODO for many grain
-
-            }
-        });
-
-        //添加我的位置maker
-        addPinToMap();
-    }
-
-    private void updateOfflineMap() {
-        offlineMapManager = new OfflineMapManager(getActivity(), this);
-        List<OfflineMapCity> offlineMapCities = offlineMapManager.getDownloadingCityList();
-        try {
-            if (offlineMapCities.size() > 0) {
-                for (OfflineMapCity omc : offlineMapCities) {
-                    if (omc.getCode().equals(mMapInfo.getCityCode())) {
-                        if (offlineMapManager.updateOfflineCityByCode(mMapInfo.getCityCode())) {
-                            offlineMapManager.downloadByCityCode(mMapInfo.getCityCode());
-                        }
-                        break;
-                    }
-                    offlineMapManager.downloadByCityCode(mMapInfo.getCityCode());
-                }
-            } else {
-                offlineMapManager.downloadByCityCode(mMapInfo.getCityCode());
-            }
-        } catch (AMapException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void activate(OnLocationChangedListener onLocationChangedListener) {
-
-    }
-
-    @Override
-    public void deactivate() {
-
-    }
-
-    @Override
-    public void onCameraChange(CameraPosition cameraPosition) {
-        Log.d("MT", "onCameraChange");
-    }
-
-    @Override
-    public void onCameraChangeFinish(CameraPosition cameraPosition) {
-        Log.d("MT", "onCameraChangeFinish");
+    private void addPinToMap() {
+        MarkerOptions markerOptions = new MarkerOptions();
+        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location));
+//        markerOptions.draggable(true);
+        Marker marker = mAmap.addMarker(markerOptions);
+//        marker.setPositionByPixels(400, 300);
+        marker.setPosition(myLocation);
     }
 
     @Override
@@ -406,7 +230,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             mMapInfo.setCity(aMapLocation.getCity());
 
             // if network is available, we load data from internet, otherwise, we load data from db
-            if (AppUtils.isNetworkConnected(getActivity())) {
+            if (AppUtils.isNetworkConnected(this)) {
                 new AddClusterAsyncTask().execute(0);
             } else {
                 mGrains = getGrainsFromDb(TYPE_ALL);
@@ -417,7 +241,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("MapFragment", "onLocationChanged");
+
     }
 
     @Override
@@ -436,34 +260,136 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     }
 
     @Override
+    public void activate(OnLocationChangedListener onLocationChangedListener) {
+
+    }
+
+    @Override
+    public void deactivate() {
+
+    }
+
+    @Override
     public void onDownload(int i, int i1, String s) {
 
     }
 
-    private void addPinToMap() {
-        MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location));
-//        markerOptions.draggable(true);
-        Marker marker = mAmap.addMarker(markerOptions);
-//        marker.setPositionByPixels(400, 300);
-        marker.setPosition(myLocation);
+    @Override
+    public void onCameraChange(CameraPosition cameraPosition) {
+
+    }
+
+    @Override
+    public void onCameraChangeFinish(CameraPosition cameraPosition) {
+
+    }
+
+    @Override
+    public void onMapLoaded() {
+//加载完地图进入上次最后地点
+        if (!StringUtils.isEmpty(mMapInfo.getLatitude())) {
+            LatLng latLng = new LatLng(StringUtils.toDouble(
+                    mMapInfo.getLatitude()), StringUtils.toDouble(mMapInfo.getLongitude()));
+            mAmap.moveCamera(CameraUpdateFactory.newCameraPosition(
+                    new CameraPosition(latLng, DEFAULT_ZOOM, DEFAULT_TILT, DEFAULT_BEARING)));
+            myLocation = latLng;//更新个人位置
+        }
+
+        overlay = new
+                ClusterOverlay(mAmap, AMapUtils.dp2px(this, clusterRadius), this);
+        overlay.setClusterRenderer(new ClusterRender() {
+            @Override
+            public BitmapDescriptor getBitmapDescriptor(Cluster cluster) {
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View view = inflater.inflate(R.layout.view_map_cluster, null);
+                int num = cluster.getClusterCount();
+                if (num == 1) {
+                    CircleImageView civ = (CircleImageView) view.findViewById(R.id.iv_cluster);
+                    ClusterItem item = cluster.getClusterItems().get(0);
+//                    ImageLoader.getInstance().displayImage(item.getPicUrl(), civ, MyApplication.displayImageOptions);
+                    civ.setImageDrawable(Drawable.createFromPath(item.getPicUrl()));
+                } else {
+                    TextView tv = (TextView) view.findViewById(R.id.tv_cluster);
+                    tv.setText(String.valueOf(num));
+                    tv.setBackgroundResource(R.drawable.cluster_num_bg);
+                }
+                return BitmapDescriptorFactory.fromView(view);
+            }
+        });
+        overlay.setOnClusterClickListener(new ClusterClickListener() {
+            @Override
+            public void onClick(Marker marker, List<ClusterItem> clusterItems) {
+                if (clusterItems.size() == 1) {
+                    Intent intent = new Intent(MyGrainActivity.this, GrainInfoDialog.class);
+                    intent.putExtra("grain", (ClusterGrain) clusterItems.get(0));
+                    startActivity(intent);
+                }
+                //TODO for many grain
+
+            }
+        });
+
+        //添加我的位置maker
+        addPinToMap();
+    }
+
+    @Override
+    public void onTouch(MotionEvent motionEvent) {
+
+    }
+
+    @Override
+    public void onPoiSearched(PoiResult poiResult, int i) {
+        if (i == 0) {
+            // 搜索POI的结果
+            if (poiResult != null && poiResult.getQuery() != null) {
+                // 是否是同一条
+                if (poiResult.getQuery().equals(mQuery)) {
+                    // 取得第一页的poiitem数据，页数从数字0开始
+                    List<PoiItem> poiItems = poiResult.getPois();
+                    // 当搜索不到poiitem数据时，会返回含有搜索关键字的城市信息
+
+                    if (poiItems != null && poiItems.size() > 0) {
+                        PoiItem item = null;
+                        for (PoiItem pi : poiItems) {
+                            if (pi != null) {
+                                item = pi;
+                                break;
+                            }
+                        }
+                        if (item == null) {
+                            Toast.makeText(this, "无搜索结果", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        LatLng latLng = AMapUtils.convertToLatlng(item.getLatLonPoint());
+                        goSomewhereWithAnimation(latLng);//去那个地方
+                    } else {
+//                        Toast.makeText(getActivity(), "R.string.no_result:" + R.string.no_result, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            } else {
+//                Toast.makeText(getActivity(), "R.string.no_result:" + R.string.no_result, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+//            Toast.makeText(getActivity(), "R.string.error_network:" + R.string.error_network, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onPoiItemDetailSearched(PoiItemDetail poiItemDetail, int i) {
+
     }
 
     private void httpQueryGrain(int cateId) {
-        /*VisibleRegion visibleRegion = mAmap.getProjection().getVisibleRegion(); // 获取可视区域、
-            LatLngBounds latLngBounds = visibleRegion.latLngBounds;// 获取可视区域的Bounds
-            float radius = com.amap.api.maps.AMapUtils.calculateLineDistance(
-                    latLngBounds.northeast, latLngBounds.southwest) / 2;*/
-
         RequestParams params1 = new RequestParams();
         params1.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
         try {
             json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
-//            if (currentCategory != 0) {
-//                json.put(ApiUtils.KEY_GRAIN_MCATEID, CreateGrainActivity.mCateId[cateId]);
-//            }
+            if (cateId != 0) {
+                json.put(ApiUtils.KEY_GRAIN_MCATEID, CreateGrainActivity.mCateId[cateId]);
+            }
             json.put(ApiUtils.KEY_GRAIN_CITYCODE, mMapInfo.getCityCode());
             json.put(ApiUtils.KEY_GRAIN_LON, mMapInfo.getLongitude());
             json.put(ApiUtils.KEY_GRAIN_LAT, mMapInfo.getLatitude());
@@ -530,7 +456,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         overlay.clearClusters();
         for (final ClusterGrain cg : objects) {
             try {
-                final String to = FileUtils.getAppCache(getActivity(), "portrait")
+                final String to = FileUtils.getAppCache(this, "portrait")
                         + FileUtils.getFileName(cg.userPortrait);
                 final String key = OssManager.getFileKeyByRemoteUrl(cg.userPortrait);
                 File file = new File(to);
@@ -650,104 +576,37 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         mQuery.setLimitDiscount(false);
         mQuery.setLimitGroupbuy(false);
 
-        PoiSearch poiSearch = new PoiSearch(getActivity(), mQuery);
+        PoiSearch poiSearch = new PoiSearch(this, mQuery);
         poiSearch.setOnPoiSearchListener(this);
         poiSearch.searchPOIAsyn();
     }
 
     @Override
-    public void onPoiSearched(PoiResult poiResult, int i) {
-        if (i == 0) {
-            // 搜索POI的结果
-            if (poiResult != null && poiResult.getQuery() != null) {
-                // 是否是同一条
-                if (poiResult.getQuery().equals(mQuery)) {
-                    // 取得第一页的poiitem数据，页数从数字0开始
-                    List<PoiItem> poiItems = poiResult.getPois();
-                    // 当搜索不到poiitem数据时，会返回含有搜索关键字的城市信息
-
-                    if (poiItems != null && poiItems.size() > 0) {
-                        PoiItem item = null;
-                        for (PoiItem pi : poiItems) {
-                            if (pi != null) {
-                                item = pi;
-                                break;
-                            }
-                        }
-                        if (item == null) {
-                            Toast.makeText(getActivity(), "无搜索结果", Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        LatLng latLng = AMapUtils.convertToLatlng(item.getLatLonPoint());
-                        goSomewhereWithAnimation(latLng);//去那个地方
-                    } else {
-//                        Toast.makeText(getActivity(), "R.string.no_result:" + R.string.no_result, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            } else {
-//                Toast.makeText(getActivity(), "R.string.no_result:" + R.string.no_result, Toast.LENGTH_SHORT).show();
-            }
-        } else {
-//            Toast.makeText(getActivity(), "R.string.error_network:" + R.string.error_network, Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onPoiItemDetailSearched(PoiItemDetail poiItemDetail, int i) {
-
-    }
-
-    /**
-     * ************************** Lifecycle ***************************
-     */
-
-    @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
-        Log.d("MapFragment", "onResume");
         if (mMapView != null)
             mMapView.onResume();
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        Log.d("MapFragment", "onPause");
-        if (mMapView != null)
-            mMapView.onPause();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (mMapView != null)
-            mMapView.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onDestroy() {
+    protected void onDestroy() {
         super.onDestroy();
         if (mMapView != null)
             mMapView.onDestroy();
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
+    protected void onPause() {
+        super.onPause();
+        if (mMapView != null)
+            mMapView.onPause();
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
-            switch (requestCode) {
-                case SEARCH_POSITION_REQUEST_CODE:
-                    String keyword = data.getStringExtra("keyword");
-                    searchPoiByKeyword(keyword);
-                    break;
-            }
-        }
-        super.onActivityResult(requestCode, resultCode, data);
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mMapView != null)
+            mMapView.onSaveInstanceState(outState);
     }
 
     class AddClusterAsyncTask extends AsyncTask<Integer, Void, Void> {
