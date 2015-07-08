@@ -318,8 +318,8 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                 if (num == 1) {
                     CircleImageView civ = (CircleImageView) view.findViewById(R.id.iv_cluster);
                     ClusterItem item = cluster.getClusterItems().get(0);
-//                    ImageLoader.getInstance().displayImage(item.getPicUrl(), civ, MyApplication.displayImageOptions);
-                    civ.setImageDrawable(Drawable.createFromPath(item.getPicUrl()));
+                    if (!StringUtils.isEmpty(item.getPicUrl()))
+                        civ.setImageDrawable(Drawable.createFromPath(item.getPicUrl()));
                 } else {
                     TextView tv = (TextView) view.findViewById(R.id.tv_cluster);
                     tv.setText(String.valueOf(num));
@@ -401,8 +401,6 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             currentZoom = mAmap.getCameraPosition().zoom;
 
             // setup camera
-//            mAmap.moveCamera(CameraUpdateFactory.newLatLngZoom(myLocation, defaultZoom));
-//            mAmap.moveCamera(CameraUpdateFactory.changeTilt(35f));
             mAmap.moveCamera(CameraUpdateFactory.newCameraPosition(
                     new CameraPosition(myLocation, DEFAULT_ZOOM, DEFAULT_TILT, DEFAULT_BEARING)));
 
@@ -498,9 +496,8 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                                 JSONArray array = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
                                 Gson gson = new Gson();
-                                mGrains =
-                                        gson.fromJson(array.toString(), new TypeToken<List<ClusterGrain>>() {
-                                        }.getType());
+                                mGrains = gson.fromJson(array.toString(), new TypeToken<List<ClusterGrain>>() {
+                                }.getType());
 
                                 if (mGrains != null && mGrains.size() > 0) {
                                     //保存到数据库
@@ -568,7 +565,8 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                     overlay.addClusterItem(cg);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                cg.userPortrait = "";
+                overlay.addClusterItem(cg);
             }
         }
     }

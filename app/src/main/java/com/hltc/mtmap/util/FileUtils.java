@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.util.Log;
 
 import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.MyApplication;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -296,6 +297,20 @@ public class FileUtils {
 
     public static void deleteDir() {
         File dir = new File(AppConfig.DEFAULT_APP_ROOT_PATH + "photo/");
+        if (dir == null || !dir.exists() || !dir.isDirectory())
+            return;
+
+        for (File file : dir.listFiles()) {
+            if (file.isFile())
+                file.delete(); // 删除所有文件
+            else if (file.isDirectory())
+                deleteDir(); // 递规的方式删除文件夹
+        }
+        dir.delete();// 删除目录本身
+    }
+
+    public static void clearCache() {
+        File dir = new File(MyApplication.getContext().getCacheDir().getAbsolutePath());
         if (dir == null || !dir.exists() || !dir.isDirectory())
             return;
 

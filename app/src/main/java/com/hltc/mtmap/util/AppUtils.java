@@ -59,6 +59,11 @@ public class AppUtils {
     public static void logout() {
         LocalUserInfo info = new LocalUserInfo();
         AppConfig.getAppConfig().setUserInfo(info);
+        if (AppUtils.isNetworkConnected(MyApplication.getContext())) {
+            MyApplication.signInStatus = "10";
+        } else {
+            MyApplication.signInStatus = "00";
+        }
     }
 
     /**

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -22,9 +23,9 @@ import com.hltc.mtmap.fragment.MapFragment;
 import com.hltc.mtmap.fragment.MessageFragment;
 import com.hltc.mtmap.fragment.ProfileFragment;
 import com.hltc.mtmap.fragment.PublishFragment;
+import com.hltc.mtmap.helper.DoubleClickExitHelper;
 import com.hltc.mtmap.service.MyPushIntentService;
 import com.hltc.mtmap.task.SyncDataAsyncTask;
-import com.hltc.mtmap.util.AppUtils;
 import com.umeng.message.PushAgent;
 
 import java.util.ArrayList;
@@ -75,6 +76,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             R.id.tab_item_private
     };
     private FragmentManager fgManager;
+    private DoubleClickExitHelper mDoubleClickExit;
     private int currentTabIndex = 0;
     private List<Fragment> fragmentList;
     private List<TextView> tabItemList;
@@ -84,6 +86,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppManager.getAppManager().addActivity(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
@@ -95,8 +98,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         initView();
         initPushAgent();
-        // 检查是否需要下载欢迎图片
-        checkWelcomeImage();
 
         // 更新数据
         if (MyApplication.signInStatus.equals("11")) {
@@ -105,6 +106,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void initView() {
+        mDoubleClickExit = new DoubleClickExitHelper(this);
         fgManager = getSupportFragmentManager();
 
         fragmentList = new ArrayList<>(TAB_ITEM_NUM);
@@ -220,11 +222,16 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         }
     }
 
-    private void checkWelcomeImage() {
-        if (!AppUtils.isNetworkConnected(this)) {
-            return;
+    /**
+     * 监听返回--是否退出程序
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            // 是否退出应用
+            return mDoubleClickExit.onKeyDown(keyCode, event);
         }
-        //通过结构查询是否有更新的图片，并得到列表，然后使用HttpUtils进行下载
+        return super.onKeyDown(keyCode, event);
     }
 
     /**

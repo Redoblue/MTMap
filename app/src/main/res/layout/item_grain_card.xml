@@ -7,15 +7,17 @@
     android:background="@color/white">
 
     <ImageView
-        android:id="@+id/iv_item_grain_card_cover"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <ImageView
         android:id="@+id/iv_item_grain_card_image"
-        android:layout_width="match_parent"
+        android:layout_width="320dp"
         android:layout_height="320dp"
         android:background="@color/white" />
+
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        style="@android:style/Widget.Holo.ProgressBar"
+        android:layout_width="320dp"
+        android:layout_height="320dp"
+        android:visibility="invisible" />
 
     <LinearLayout
         android:layout_width="match_parent"

@@ -22,7 +22,7 @@
         android:layout_height="100dp"
         android:layout_centerInParent="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/profile_header_pic"
+        android:src="@drawable/pic_default_portrait"
         app:border_color="@color/white"
         app:border_width="4dp" />
 

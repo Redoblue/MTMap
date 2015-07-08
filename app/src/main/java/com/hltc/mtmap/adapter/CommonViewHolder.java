@@ -7,13 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.hltc.mtmap.app.OssManager;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * 一个通用的ViewHolder，用于BaseAdapter的子类中的View的保存
@@ -90,16 +88,15 @@ public class CommonViewHolder {
         return this;
     }
 
-    public CommonViewHolder setImage(int viewId, String url) {
+    public CommonViewHolder loadImage(int viewId, String url) {
         ImageView imageView = getView(viewId);
-        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         ImageLoader.getInstance().displayImage(url, imageView);
         return this;
     }
 
-    public CommonViewHolder setImage(int viewId, int resourceId) {
+    public CommonViewHolder setImage(int viewId, String path) {
         ImageView imageView = getView(viewId);
-        imageView.setImageResource(resourceId);
+        imageView.setImageDrawable(Drawable.createFromPath(path));
         return this;
     }
 
@@ -112,6 +109,27 @@ public class CommonViewHolder {
     public CommonViewHolder setToggleButton(int viewId, boolean isSelected) {
         ToggleButton toggleButton = getView(viewId);
         toggleButton.setChecked(isSelected);
+        return this;
+    }
+
+    //swipe
+    public CommonViewHolder setSwipeImage(int viewId, String url) {
+        try {
+            ImageLoader.getInstance().displayImage(OssManager.getRemoteSwipeUrl(url), (ImageView) getView(viewId)
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return this;
+    }
+
+    public CommonViewHolder setPortraitImage(int viewId, String url) {
+        try {
+            ImageLoader.getInstance().displayImage(OssManager.getRemotePortraitUrl(url), (ImageView) getView(viewId)
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return this;
     }
 }

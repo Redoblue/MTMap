@@ -41,6 +41,8 @@ public class AppConfig {
     public static final String CONF_USR_PORTRAIT_SMALL = "user_portraitSmall";
     public static final String CONF_USR_PHONE = "user_phone";
     public static final String CONF_USR_COVER_IMG = "user_coverImg";
+    //vistor
+    public static final String CONF_VISITOR_ID = "vid";
     //map
     public static final String CONF_MAP_LAST_KNOW_LAT = "last_know_lat";
     public static final String CONF_MAP_LAST_KNOW_LNG = "last_know_lng";

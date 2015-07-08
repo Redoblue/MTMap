@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.bean.GrainDetailPhotoAdapter;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

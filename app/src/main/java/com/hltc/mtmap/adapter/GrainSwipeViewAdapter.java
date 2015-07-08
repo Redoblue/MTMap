@@ -1,3 +1,4 @@
+/*
 package com.hltc.mtmap.adapter;
 
 import android.content.Context;
@@ -17,9 +18,11 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+*/
 /**
  * Created by redoblue on 15-6-30.
- */
+ *//*
+
 public class GrainSwipeViewAdapter extends ArrayAdapter<GrainItem> {
 
     private List<GrainItem> mList;
@@ -83,9 +86,11 @@ public class GrainSwipeViewAdapter extends ArrayAdapter<GrainItem> {
                 break;
         }
 
-        /*ImageLoader.getInstance().displayImage(getItem(position).getImage(), holder.image);
+        */
+/*ImageLoader.getInstance().displayImage(getItem(position).getImage(), holder.image);
         ImageLoader.getInstance().displayImage(getItem(position).getPortrait(), holder.portrait);
-        holder.comment.setText(getItem(position).getText());*/
+        holder.comment.setText(getItem(position).getText());*//*
+
 
         return convertView;
     }
@@ -97,3 +102,4 @@ public class GrainSwipeViewAdapter extends ArrayAdapter<GrainItem> {
         ImageView cover;
     }
 }
+*/

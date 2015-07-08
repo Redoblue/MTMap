@@ -2,11 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/bar_settings"
-        layout="@layout/bar_green" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/green_main">
+
+        <Button
+            android:id="@+id/btn_bar_left"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:background="@drawable/ic_action_back"
+            android:gravity="center_vertical" />
+
+        <TextView
+            android:id="@+id/tv_bar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="设 置"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/btn_settings_set_nickname"

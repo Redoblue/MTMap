@@ -39,7 +39,7 @@
             android:value="oss-cn-hangzhou.aliyuncs.com" />
         <meta-data
             android:name="ImgHost"
-            android:value="img-cn-hangzhou.aliyuncs.com" />
+            android:value="img.maitianditu.com" />
         <meta-data
             android:name="CdnHost"
             android:value="www.maitianditu.com.w.kunlunAr.com" />
@@ -59,9 +59,8 @@
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait">
-
-        </activity>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.start.SplashActivity"
             android:screenOrientation="portrait">
@@ -108,7 +107,8 @@
             android:windowSoftInputMode="stateVisible" />
         <activity
             android:name=".activity.profile.SettingsActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat" />
         <activity
             android:name=".activity.profile.setting.UpdateNicknameActivity"
             android:screenOrientation="portrait" />
@@ -159,6 +159,12 @@
             android:name=".activity.map.ManyGrainInfoDialog"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Holo.Dialog.NoActionBar" />
+        <activity
+            android:name=".activity.profile.setting.CheckUpdateActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
+        <service android:name=".service.DownloadService" />
 
         <receiver
             android:name="com.umeng.message.NotificationProxyBroadcastReceiver"

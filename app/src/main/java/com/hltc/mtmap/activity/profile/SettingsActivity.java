@@ -1,8 +1,13 @@
 package com.hltc.mtmap.activity.profile;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -12,15 +17,17 @@ import android.widget.Toast;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.SingleEditActivity;
+import com.hltc.mtmap.activity.profile.setting.CheckUpdateActivity;
 import com.hltc.mtmap.activity.profile.setting.FeedbackActivity;
 import com.hltc.mtmap.activity.profile.setting.UpdateNicknameActivity;
 import com.hltc.mtmap.activity.start.SignUpActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.util.AMapUtils;
+import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
+import com.hltc.mtmap.util.FileUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -52,8 +59,6 @@ public class SettingsActivity extends Activity {
     Button btnBarLeft;
     @InjectView(R.id.tv_bar_title)
     TextView tvBarTitle;
-    @InjectView(R.id.btn_bar_right)
-    Button btnBarRight;
     @InjectView(R.id.btn_settings_set_nickname)
     Button btnSettingsSetNickname;
     @InjectView(R.id.btn_settings_change_passwd)
@@ -78,15 +83,6 @@ public class SettingsActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_settings);
         ButterKnife.inject(this);
-
-        initView();
-    }
-
-    private void initView() {
-        tvBarTitle.setText("设置");
-        btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
-        btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
-        btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
     }
 
     @OnClick({R.id.btn_bar_left,
@@ -96,7 +92,8 @@ public class SettingsActivity extends Activity {
             R.id.btn_settings_check_update,
             R.id.btn_settings_five_star,
             R.id.btn_settings_recommend,
-            R.id.btn_settings_about})
+            R.id.btn_settings_about,
+            R.id.btn_settings_logout})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_bar_left:
@@ -117,24 +114,52 @@ public class SettingsActivity extends Activity {
                 startActivity(i3);
                 break;
             case R.id.btn_settings_check_update:
+                PackageManager manager = getPackageManager();
+                try {
+                    PackageInfo info = manager.getPackageInfo(getPackageName(), 0);
+//                    String appVersion = info.versionName; // 版本名
+                    int currentVersion = info.versionCode; // 版本号
+                    int newVersion = httpGetNewVersion();
+                    if (currentVersion < newVersion) {
+                        showUpdateDialog();
+                    }
+                } catch (PackageManager.NameNotFoundException e) {
+                    e.printStackTrace();
+                }
+                //上面是获取manifest中的版本数据，我是使用versionCode
+                //在从服务器获取到最新版本的versionCode,比较
+                showUpdateDialog();
                 break;
             case R.id.btn_settings_five_star:
+                Uri uri = Uri.parse("market://details?id=" + getPackageName());
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
                 break;
             case R.id.btn_settings_recommend:
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.setType("text/*");
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "大家快来用麦田地图吧！");
+                startActivity(sendIntent);
                 break;
             case R.id.btn_settings_about:
+                break;
+            case R.id.btn_settings_logout:
+                AppUtils.logout();
+                clearData();
+                Toast.makeText(this, "退出成功", Toast.LENGTH_SHORT).show();
+                Intent intent2 = new Intent(this, StartActivity.class);
+                startActivity(intent2);
+                AppManager.getAppManager().finishActivity(MainActivity.class);
+                AppManager.getAppManager().finishActivity(this);
                 break;
         }
     }
 
-    @OnClick(R.id.btn_settings_logout)
-    public void onClick() {
-        AppUtils.logout();
-        Toast.makeText(this, "退出成功", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, StartActivity.class);
-        startActivity(intent);
-        AppManager.getAppManager().finishActivity(MainActivity.class);
-        AppManager.getAppManager().finishActivity(this);
+    private void clearData() {
+        //TODO 清除一些数据
+        FileUtils.clearCache();
     }
 
     @Override
@@ -146,6 +171,29 @@ public class SettingsActivity extends Activity {
                     httpUpdateNickname(newString);
             }
         }
+    }
+
+    private void showUpdateDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder
+                .setTitle("检测到新版本")
+                .setMessage("是否下载更新?")
+                .setPositiveButton("下载", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent it = new Intent(SettingsActivity.this, CheckUpdateActivity.class);
+                        startActivity(it);
+                        MyApplication.isDownloadingNewVersion = true;
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).show();
     }
 
     private void httpUpdateNickname(final String nickname) {
@@ -202,5 +250,9 @@ public class SettingsActivity extends Activity {
                     }
                 });
 
+    }
+
+    private int httpGetNewVersion() {
+        return 2;
     }
 }

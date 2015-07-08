@@ -14,10 +14,20 @@ import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
+import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
+import com.hltc.mtmap.util.StringUtils;
+import com.hltc.mtmap.util.ToastUtils;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.http.client.HttpRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -83,13 +93,14 @@ public class StartActivity extends Activity {
                 startActivity(intent1);
                 break;
             case R.id.btn_start_skip:
-                if (MyApplication.signInStatus.equals("00")) {
+                if (!AppUtils.isNetworkConnected(this)) {
                     Toast.makeText(this, "请检查您的网络", Toast.LENGTH_SHORT).show();
-                    return;
+                } else {
+                    httpGetVisitorId();
+                    Intent intent2 = new Intent(this, MainActivity.class);
+                    startActivity(intent2);
+                    finish();
                 }
-                Intent intent2 = new Intent(this, MainActivity.class);
-                startActivity(intent2);
-                finish();
                 break;
         }
     }
@@ -102,6 +113,48 @@ public class StartActivity extends Activity {
         } else {
             ApiUtils.URL_ROOT = "http://192.168.0.109/maitian/v1/";
         }
+    }
+
+    private void httpGetVisitorId() {
+//        RequestParams params = new RequestParams();
+//        params.addQueryStringParameter(ApiUtils.KEY_SOURCE, "Android");
+//        params.addQueryStringParameter(ApiUtils.KEY_PHONE, mPhone);
+//        params.addQueryStringParameter(ApiUtils.KEY_VCODE, mVCode);
+
+        HttpUtils http = new HttpUtils();
+        http.send(HttpRequest.HttpMethod.GET,
+                ApiUtils.URL_ROOT + ApiUtils.URL_GET_VISITOR_ID,
+                null, new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+                        if (StringUtils.isEmpty(result))
+                            return;
+                        try {
+                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                                ToastUtils.showShort(StartActivity.this, "验证成功");
+                                JSONObject son = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
+                                long vid = son.getLong("vid");
+                                AppConfig.getAppConfig().set(AppConfig.CONFIG_APP, "vid", String.valueOf(vid));     //将临时Token保存
+                            } else {
+                                JSONObject girl = new JSONObject(result);
+                                String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
+                                if (errorMsg != null) {
+                                    // 发送验证码失败
+                                    // TODO 没有验证错误码
+                                    ToastUtils.showShort(StartActivity.this, errorMsg);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+
+                    }
+                });
     }
 
     @Override

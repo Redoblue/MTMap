@@ -1,6 +1,7 @@
 package com.hltc.mtmap.activity.map;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -76,7 +77,10 @@ public class GrainInfoDialog extends Activity {
                 //TODO ignore this grain
                 break;
             case R.id.tv_grain_info_detail:
-                //TODO check detailed information
+                Intent intent = new Intent(this, GrainDetailActivity.class);
+                intent.putExtra("grain", mGrainItem);
+                startActivity(intent);
+                finish();
                 break;
         }
     }

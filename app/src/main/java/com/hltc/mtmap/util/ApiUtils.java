@@ -37,6 +37,8 @@ public class ApiUtils {
     // 游客模块
     public static final String URL_REC_GRAIN_1 = "visitor/getRecommendGrain.json";
     public static final String URL_VISITOR_RECOMMAND = "visitor/getRecommendGrain.json";
+    public static final String URL_GET_VISITOR_ID = "visitor/getVid.json";
+    public static final String URL_VISITOR_READ_GRAIN = "visitor/read_grain.json";
     // 检索通讯录
     public static final String URL_CHE_CONTACT = "user/register/check_contact.json";
     // 反馈
@@ -47,6 +49,8 @@ public class ApiUtils {
     public static final String URL_GRAIN_QUERY = "grain/home_query.json";
     public static final String URL_GRAIN_RECOMMAND = "grain/getRecommendGrain.json";
     public static final String URL_GRAIN_NUMBER = "my/grain_statistic.json";
+    public static final String URL_FAVOR_GRAIN = "grain/favor.json";
+    public static final String URL_READ_GRAIN = "grain/read_grain.json";
     // 登录
     public static final String URL_LOGIN_BY_TOKEN = "user/login/login_by_token.json";
     // 朋友

@@ -24,6 +24,9 @@ import java.io.FileNotFoundException;
  */
 public class OssManager {
 
+    public static final String STYLE_PORTRAIT = "@!android-portrait";
+    public static final String STYLE_SWIPE = "@!android-swipe";
+
     private static final OssManager manager = new OssManager();
     public static String serverAddress;
     public static String ossHost;
@@ -58,6 +61,18 @@ public class OssManager {
 
     public static String getLocalFileUrl(String folder, String s) {
         return AppConfig.DEFAULT_APP_ROOT_PATH + folder + "/" + FileUtils.getFileName(s);
+    }
+
+    public static String getImgServiceUrl(String s) {
+        return "http://img.maitianditu.com/" + getFileKeyByRemoteUrl(s);
+    }
+
+    public static String getRemotePortraitUrl(String s) {
+        return getImgServiceUrl(s) + STYLE_PORTRAIT;
+    }
+
+    public static String getRemoteSwipeUrl(String s) {
+        return getImgServiceUrl(s) + STYLE_SWIPE;
     }
 
     private void initOssService() {
@@ -117,7 +132,7 @@ public class OssManager {
     }
 
     public void downloadImage(String to, String objectKey) {
-        OSSFile ossFile = ossService.getOssFile(ossBucket, objectKey);
+        OSSFile ossFile = ossService.getOssFile(imgChannel, objectKey);
         Log.d("OssManager", "to: " + to);
         try {
             ossFile.downloadTo(to);

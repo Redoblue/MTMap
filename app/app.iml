@@ -89,8 +89,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="gson-2.2.4" level="project" />
     <orderEntry type="library" exported="" name="DaoCore-1.3.0" level="project" />
-    <orderEntry type="library" exported="" name="kenburnsview-1.0.6" level="project" />
     <orderEntry type="library" exported="" name="android-test-4.1.1.4" level="project" />
+    <orderEntry type="library" exported="" name="kenburnsview-1.0.6" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-22.1.1" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-22.1.1" level="project" />
     <orderEntry type="library" exported="" name="Android_Cloud_V1.1.0" level="project" />
@@ -112,6 +112,7 @@
     <orderEntry type="library" exported="" name="greendao-generator-1.3.1" level="project" />
     <orderEntry type="library" exported="" name="com.umeng.message.lib" level="project" />
     <orderEntry type="library" exported="" name="circleimageview-1.2.2" level="project" />
+    <orderEntry type="library" exported="" name="android-async-http-1.4.5" level="project" />
     <orderEntry type="library" exported="" name="trinea-android-common-4.2.15" level="project" />
     <orderEntry type="module" module-name="library-ClusterMarker" exported="" />
     <orderEntry type="module" module-name="library-PullZoomView" exported="" />
