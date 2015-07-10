@@ -2,7 +2,6 @@ package com.hltc.mtmap.orm;
 
 import java.util.List;
 import java.util.ArrayList;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -46,7 +45,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MTPHOTO' (" + //
                 "'_id' INTEGER PRIMARY KEY NOT NULL ," + // 0: id
                 "'PREVIEW_URL' TEXT NOT NULL ," + // 1: previewURL
@@ -55,17 +54,13 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
                 "'GRAIN_ID' INTEGER NOT NULL );"); // 4: grainId
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'MTPHOTO'";
         db.execSQL(sql);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected void bindValues(SQLiteStatement stmt, MTPhoto entity) {
         stmt.clearBindings();
@@ -82,17 +77,13 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         entity.__setDaoSession(daoSession);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public MTPhoto readEntity(Cursor cursor, int offset) {
         MTPhoto entity = new MTPhoto( //
@@ -105,9 +96,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         return entity;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTPhoto entity, int offset) {
         entity.setId(cursor.getLong(offset + 0));
@@ -117,18 +106,14 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         entity.setGrainId(cursor.getLong(offset + 4));
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTPhoto entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long getKey(MTPhoto entity) {
         if (entity != null) {
@@ -141,14 +126,12 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
     /**
      * @inheritdoc
      */
-    @Override
+    @Override    
     protected boolean isEntityUpdateable() {
         return true;
     }
 
-    /**
-     * Internal query to resolve the "photo2User" to-many relationship of MTUser.
-     */
+    /** Internal query to resolve the "photo2User" to-many relationship of MTUser. */
     public List<MTPhoto> _queryMTUser_Photo2User(long userId) {
         synchronized (this) {
             if (mTUser_Photo2UserQuery == null) {
@@ -162,9 +145,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         return query.list();
     }
 
-    /**
-     * Internal query to resolve the "photos2Grain" to-many relationship of MTGrain.
-     */
+    /** Internal query to resolve the "photos2Grain" to-many relationship of MTGrain. */
     public List<MTPhoto> _queryMTGrain_Photos2Grain(long grainId) {
         synchronized (this) {
             if (mTGrain_Photos2GrainQuery == null) {
@@ -200,19 +181,19 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         int offset = getAllColumns().length;
 
         MTUser mTUser = loadCurrentOther(daoSession.getMTUserDao(), cursor, offset);
-        if (mTUser != null) {
+        if(mTUser != null) {
             entity.setMTUser(mTUser);
         }
         offset += daoSession.getMTUserDao().getAllColumns().length;
 
         MTGrain mTGrain = loadCurrentOther(daoSession.getMTGrainDao(), cursor, offset);
-        if (mTGrain != null) {
+        if(mTGrain != null) {
             entity.setMTGrain(mTGrain);
         }
 
         return entity;
     }
-
+    
     public MTPhoto loadDeep(Long key) {
         assertSinglePk();
         if (key == null) {
@@ -224,7 +205,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
         String sql = builder.toString();
 
-        String[] keyArray = new String[]{key.toString()};
+        String[] keyArray = new String[] { key.toString() };
         Cursor cursor = db.rawQuery(sql, keyArray);
 
         try {
@@ -240,9 +221,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         }
     }
 
-    /**
-     * Reads all available rows from the given cursor and returns a list of new ImageTO objects.
-     */
+    /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
     public List<MTPhoto> loadAllDeepFromCursor(Cursor cursor) {
         int count = cursor.getCount();
         List<MTPhoto> list = new ArrayList<MTPhoto>(count);
@@ -264,7 +243,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         }
         return list;
     }
-
+    
     protected List<MTPhoto> loadDeepAllAndCloseCursor(Cursor cursor) {
         try {
             return loadAllDeepFromCursor(cursor);
@@ -273,18 +252,16 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         }
     }
 
-    /**
-     * A raw-style query where you can pass any WHERE clause and arguments.
-     */
+    /** A raw-style query where you can pass any WHERE clause and arguments. */
     public List<MTPhoto> queryDeep(String where, String... selectionArg) {
         Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
         return loadDeepAllAndCloseCursor(cursor);
     }
-
-    /**
+    
+/**
      * Properties of entity MTPhoto.<br/>
      * Can be used for QueryBuilder and for referencing column names.
-     */
+    */
     public static class Properties {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
         public final static Property PreviewURL = new Property(1, String.class, "previewURL", false, "PREVIEW_URL");
@@ -292,5 +269,5 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         public final static Property UserId = new Property(3, long.class, "userId", false, "USER_ID");
         public final static Property GrainId = new Property(4, long.class, "grainId", false, "GRAIN_ID");
     }
-
+ 
 }

@@ -21,8 +21,8 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 public class ApiUtils {
-    public static final String URL_ROOT_0 = "http://www.maitianditu.com/maitian/v1/";
-    public static final String URL_ROOT_1 = "http://192.168.0.109/maitian/v1/";
+    public static final String URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
+    //    public static final String URL_ROOT = "http://192.168.0.109/maitian/v1/";
     public static final String URL_REQ_VCODE_0 = "user/register/verify_code.json";
     public static final String URL_VAL_VCODE_0 = "user/register/verify.json";
     public static final String URL_CRE_ACCOUNT = "user/register/new_user.json";
@@ -51,6 +51,10 @@ public class ApiUtils {
     public static final String URL_GRAIN_NUMBER = "my/grain_statistic.json";
     public static final String URL_FAVOR_GRAIN = "grain/favor.json";
     public static final String URL_READ_GRAIN = "grain/read_grain.json";
+    public static final String URL_GRAIN_DETAIL = "grain/detail.json";
+    public static final String URL_DELETE_GRAIN = "grain/delete.json";
+    public static final String URL_COMMENT_GRAIN = "grain/comment.json";
+    public static final String URL_PRAISE_GRAIN = "grain/praise.json";
     // 登录
     public static final String URL_LOGIN_BY_TOKEN = "user/login/login_by_token.json";
     // 朋友
@@ -61,6 +65,9 @@ public class ApiUtils {
     //个人
     public static final String URL_UPDATE_PORTRAIT = "my/portrait.json";
     public static final String URL_SEARCH_FRIEND_BY_KEYWORD = "my/friends/search.json";
+    public static final String URL_MY_GRAIN = "my/maitian.json";
+    public static final String URL_MY_FAVOURITE = "my/favourites.json";
+
     public static final String KEY_SOURCE = "source";
     public static final String KEY_PHONE = "phone_number";
     public static final String KEY_VCODE = "verify_code";
@@ -106,7 +113,6 @@ public class ApiUtils {
     public static final String KEY_FIRST_CHARACTER = "firstCharacter";
     public static final String KEY_FROM_ID = "fromId";
     public static final String KEY_KEYWORD = "keyword";
-    public static String URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
 
     public static String getRequestVCodeUrl(int source) {
         return source == 0 ?

@@ -15,13 +15,11 @@ import android.widget.Toast;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.bean.ParcelableGrain;
 import com.hltc.mtmap.helper.PhotoHelper;
 import com.hltc.mtmap.task.PublishAsyncTask;
 import com.hltc.mtmap.util.ApiUtils;
-import com.hltc.mtmap.util.StringUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -200,25 +198,13 @@ public class DonePublishDialog extends Activity {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result = responseInfo.result;
-                        if (StringUtils.isEmpty(result))
-                            return;
-                        try {
-                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                                // 上传图片
-                                if (PhotoHelper.larges.size() > 0) {
-                                    new PublishAsyncTask().execute();
-                                }
-                            } else {
-                                JSONObject girl = new JSONObject(result);
-                                String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
-                                if (errorMsg != null) {
-                                    // 发送验证码失败
-                                    // TODO 没有验证错误码
-                                    Toast.makeText(MyApplication.getContext(), errorMsg, Toast.LENGTH_SHORT).show();
-                                }
+                        if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                            // 上传图片
+                            if (PhotoHelper.larges.size() > 0) {
+                                new PublishAsyncTask().execute();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        } else {
+                            Log.d("DonePublishDialog", result);
                         }
                     }
 

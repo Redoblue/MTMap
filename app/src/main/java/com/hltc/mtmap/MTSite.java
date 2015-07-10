@@ -1,9 +1,7 @@
 package com.hltc.mtmap;
 
 import java.util.List;
-
 import com.hltc.mtmap.orm.DaoSession;
-
 import de.greenrobot.dao.DaoException;
 
 import com.hltc.mtmap.orm.MTGrainDao;
@@ -13,7 +11,6 @@ import com.hltc.mtmap.orm.MTSiteDao;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
-
 /**
  * Entity mapped to table MTSITE.
  */
@@ -29,14 +26,10 @@ public class MTSite {
     private Double lon;
     private String phone;
 
-    /**
-     * Used to resolve relations
-     */
+    /** Used to resolve relations */
     private transient DaoSession daoSession;
 
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     private transient MTSiteDao myDao;
 
     private List<MTGrain> grains2Site;
@@ -60,24 +53,18 @@ public class MTSite {
         this.phone = phone;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMTSiteDao() : null;
     }
 
-    /**
-     * Not-null value.
-     */
+    /** Not-null value. */
     public String getSiteId() {
         return siteId;
     }
 
-    /**
-     * Not-null value; ensure this value is available before it is saved to the database.
-     */
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setSiteId(String siteId) {
         this.siteId = siteId;
     }
@@ -122,9 +109,7 @@ public class MTSite {
         this.phone = phone;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity.
-     */
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
     public List<MTGrain> getGrains2Site() {
         if (grains2Site == null) {
             if (daoSession == null) {
@@ -141,40 +126,32 @@ public class MTSite {
         return grains2Site;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetGrains2Site() {
         grains2Site = null;
     }
 
-    /**
-     * Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context.
-     */
+    /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */
     public void delete() {
         if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
-        }
+        }    
         myDao.delete(this);
     }
 
-    /**
-     * Convenient call for {@link AbstractDao#update(Object)}. Entity must attached to an entity context.
-     */
+    /** Convenient call for {@link AbstractDao#update(Object)}. Entity must attached to an entity context. */
     public void update() {
         if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
-        }
+        }    
         myDao.update(this);
     }
 
-    /**
-     * Convenient call for {@link AbstractDao#refresh(Object)}. Entity must attached to an entity context.
-     */
+    /** Convenient call for {@link AbstractDao#refresh(Object)}. Entity must attached to an entity context. */
     public void refresh() {
         if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
-        }
+        }    
         myDao.refresh(this);
     }
 

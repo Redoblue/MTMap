@@ -35,7 +35,7 @@ public class MFriendStatusDao extends AbstractDao<MFriendStatus, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MFRIEND_STATUS' (" + //
                 "'USER_ID' INTEGER PRIMARY KEY NOT NULL ," + // 0: userId
                 "'USER_PORTRAIT' TEXT," + // 1: userPortrait
@@ -44,17 +44,13 @@ public class MFriendStatusDao extends AbstractDao<MFriendStatus, Long> {
                 "'STATUS' TEXT);"); // 4: status
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'MFRIEND_STATUS'";
         db.execSQL(sql);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected void bindValues(SQLiteStatement stmt, MFriendStatus entity) {
         stmt.clearBindings();
@@ -87,17 +83,13 @@ public class MFriendStatusDao extends AbstractDao<MFriendStatus, Long> {
         entity.__setDaoSession(daoSession);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public MFriendStatus readEntity(Cursor cursor, int offset) {
         MFriendStatus entity = new MFriendStatus( //
@@ -110,9 +102,7 @@ public class MFriendStatusDao extends AbstractDao<MFriendStatus, Long> {
         return entity;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MFriendStatus entity, int offset) {
         entity.setUserId(cursor.getLong(offset + 0));
@@ -122,18 +112,14 @@ public class MFriendStatusDao extends AbstractDao<MFriendStatus, Long> {
         entity.setStatus(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MFriendStatus entity, long rowId) {
         entity.setUserId(rowId);
         return rowId;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long getKey(MFriendStatus entity) {
         if (entity != null) {
@@ -143,18 +129,16 @@ public class MFriendStatusDao extends AbstractDao<MFriendStatus, Long> {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {
         return true;
     }
 
-    /**
+/**
      * Properties of entity MFriendStatus.<br/>
      * Can be used for QueryBuilder and for referencing column names.
-     */
+    */
     public static class Properties {
         public final static Property UserId = new Property(0, long.class, "userId", true, "USER_ID");
         public final static Property UserPortrait = new Property(1, String.class, "userPortrait", false, "USER_PORTRAIT");
@@ -162,5 +146,5 @@ public class MFriendStatusDao extends AbstractDao<MFriendStatus, Long> {
         public final static Property Text = new Property(3, String.class, "text", false, "TEXT");
         public final static Property Status = new Property(4, String.class, "status", false, "STATUS");
     }
-
+    
 }

@@ -14,6 +14,7 @@
     <color name="green_pressed">#ff17710b</color>
     <color name="green_main">#5db84d</color>
 
+    <color name="green_favor_bg">#cc5db84d</color>
     <color name="separator">#2659ba46</color>
 
 </resources>

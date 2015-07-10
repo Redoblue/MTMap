@@ -153,7 +153,7 @@
             android:name=".activity.map.SearchPositionActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.profile.MyGrainActivity"
+            android:name=".activity.profile.MyGrainActivity2"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.map.ManyGrainInfoDialog"
@@ -162,6 +162,12 @@
         <activity
             android:name=".activity.profile.setting.CheckUpdateActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.profile.MyFavouritesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.profile.setting.AboutActivity"
             android:screenOrientation="portrait" />
 
         <service android:name=".service.DownloadService" />

@@ -7,6 +7,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.MFriend;
 import com.hltc.mtmap.MFriendStatus;
+import com.hltc.mtmap.MTMyFavourite;
+import com.hltc.mtmap.MTMyGrain;
 import com.hltc.mtmap.activity.profile.FriendStatusActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.DaoManager;
@@ -256,24 +258,127 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 });
     }
 
-    @Override
-    protected void onPreExecute() {
+    public static void httpSyncMyGrainData() {
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_SOURCE, "Android");
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpUtils http1 = new HttpUtils();
+        http1.send(HttpRequest.HttpMethod.POST,
+                ApiUtils.URL_ROOT + ApiUtils.URL_MY_GRAIN,
+                params, new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+                        try {
+                            JSONObject farther = new JSONObject(result);
+                            if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
+                                Gson gson = new Gson();
+                                JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
+                                List<MTMyGrain> mgs = gson.fromJson(data.toString(), new TypeToken<List<MTMyGrain>>() {
+                                }.getType());
+
+                                //保存到数据库
+                                if (mgs != null) {
+                                    try {
+                                        DaoManager.getManager().daoSession.getMTMyGrainDao().deleteAll();
+                                        for (MTMyGrain f : mgs) {
+                                            DaoManager.getManager().daoSession.getMTMyGrainDao().insertOrReplace(f);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else {
+                                String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
+                                if (errorMsg != null) {
+                                    // 登录失败
+                                    // TODO 没有验证错误码
+//                                    ToastUtils.showShort(FriendListActivity.this, errorMsg);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                    }
+                });
     }
 
-    @Override
-    protected void onPostExecute(Boolean aBoolean) {
+    public static void httpSyncMyFavouriteData() {
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_SOURCE, "Android");
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpUtils http1 = new HttpUtils();
+        http1.send(HttpRequest.HttpMethod.POST,
+                ApiUtils.URL_ROOT + ApiUtils.URL_MY_FAVOURITE,
+                params, new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+                        try {
+                            JSONObject farther = new JSONObject(result);
+                            if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
+                                Gson gson = new Gson();
+                                JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
+                                List<MTMyFavourite> mgs = gson.fromJson(data.toString(), new TypeToken<List<MTMyFavourite>>() {
+                                }.getType());
+
+                                //保存到数据库
+                                if (mgs != null) {
+                                    try {
+                                        DaoManager.getManager().daoSession.getMTMyFavouriteDao().deleteAll();
+                                        for (MTMyFavourite f : mgs) {
+                                            DaoManager.getManager().daoSession.getMTMyFavouriteDao().insertOrReplace(f);
+                                        }
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else {
+                                String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
+                                if (errorMsg != null) {
+                                    // 登录失败
+                                    // TODO 没有验证错误码
+//                                    ToastUtils.showShort(FriendListActivity.this, errorMsg);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                    }
+                });
     }
 
-    @Override
-    protected Boolean doInBackground(Void... params) {
-        httpSyncFriendData();
-        httpSyncFriendStatusData();
-        httpSyncContactStatusData();
-        httpSyncGrainNumber();
-        return true;
-    }
-
-    private void httpSyncGrainNumber() {
+    public static void httpSyncGrainNumber() {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
@@ -330,5 +435,24 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
                     }
                 });
+    }
+
+    @Override
+    protected void onPreExecute() {
+    }
+
+    @Override
+    protected void onPostExecute(Boolean aBoolean) {
+    }
+
+    @Override
+    protected Boolean doInBackground(Void... params) {
+        httpSyncFriendData();
+        httpSyncFriendStatusData();
+        httpSyncContactStatusData();
+        httpSyncGrainNumber();
+        httpSyncMyGrainData();
+//        httpSyncMyFavouriteData();
+        return true;
     }
 }

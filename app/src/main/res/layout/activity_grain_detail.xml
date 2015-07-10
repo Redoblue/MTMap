@@ -12,8 +12,8 @@
 
         <Button
             android:id="@+id/btn_bar_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
@@ -61,7 +61,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -126,30 +127,28 @@
 
                 <TextView style="@style/separator" />
 
-                <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:id="@+id/layout_grain_detail_viewpager"
+                <HorizontalScrollView
+                    android:id="@+id/hsv_grain_detail_gallery"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:clipChildren="false"
-                    android:layerType="software"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp">
+                    android:layout_height="100dp"
+                    android:scrollbars="none">
 
-                    <android.support.v4.view.ViewPager
-                        android:id="@+id/vp_grain_detail"
+                    <LinearLayout
+                        android:id="@+id/layout_grain_detail_image"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:layout_gravity="center"
-                        android:clipChildren="false" />
-
-                </RelativeLayout>
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
 
                 <TextView style="@style/separator" />
 
                 <LinearLayout
+                    android:id="@+id/layout_grain_detail_actions"
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <TextView
@@ -163,7 +162,7 @@
                         android:textSize="14dp" />
 
                     <Button
-                        android:id="@+id/btn_grain_detail_operations"
+                        android:id="@+id/btn_grain_detail_actions"
                         android:layout_width="27dp"
                         android:layout_height="20dp"
                         android:background="@drawable/btn_grain_detail_operations" />

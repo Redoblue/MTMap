@@ -1,7 +1,6 @@
 package com.hltc.mtmap;
 
 import com.hltc.mtmap.orm.DaoSession;
-
 import de.greenrobot.dao.DaoException;
 
 import com.hltc.mtmap.orm.MTGrainDao;
@@ -12,7 +11,6 @@ import com.hltc.mtmap.orm.MTUserDao;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
-
 /**
  * Entity mapped to table MTPHOTO.
  */
@@ -23,21 +21,15 @@ public class MTPhoto {
      * Not-null value.
      */
     private String previewURL;
-    /**
-     * Not-null value.
-     */
+    /** Not-null value. */
     private String thumbnailURL;
     private long userId;
     private long grainId;
 
-    /**
-     * Used to resolve relations
-     */
+    /** Used to resolve relations */
     private transient DaoSession daoSession;
 
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     private transient MTPhotoDao myDao;
 
     private MTUser mTUser;
@@ -65,9 +57,7 @@ public class MTPhoto {
         this.grainId = grainId;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMTPhotoDao() : null;
@@ -81,30 +71,22 @@ public class MTPhoto {
         this.id = id;
     }
 
-    /**
-     * Not-null value.
-     */
+    /** Not-null value. */
     public String getPreviewURL() {
         return previewURL;
     }
 
-    /**
-     * Not-null value; ensure this value is available before it is saved to the database.
-     */
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setPreviewURL(String previewURL) {
         this.previewURL = previewURL;
     }
 
-    /**
-     * Not-null value.
-     */
+    /** Not-null value. */
     public String getThumbnailURL() {
         return thumbnailURL;
     }
 
-    /**
-     * Not-null value; ensure this value is available before it is saved to the database.
-     */
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setThumbnailURL(String thumbnailURL) {
         this.thumbnailURL = thumbnailURL;
     }
@@ -125,9 +107,7 @@ public class MTPhoto {
         this.grainId = grainId;
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     public MTUser getMTUser() {
         long __key = this.userId;
         if (mTUser__resolvedKey == null || !mTUser__resolvedKey.equals(__key)) {
@@ -155,9 +135,7 @@ public class MTPhoto {
         }
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     public MTGrain getMTGrain() {
         long __key = this.grainId;
         if (mTGrain__resolvedKey == null || !mTGrain__resolvedKey.equals(__key)) {
@@ -185,33 +163,27 @@ public class MTPhoto {
         }
     }
 
-    /**
-     * Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context.
-     */
+    /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */
     public void delete() {
         if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
-        }
+        }    
         myDao.delete(this);
     }
 
-    /**
-     * Convenient call for {@link AbstractDao#update(Object)}. Entity must attached to an entity context.
-     */
+    /** Convenient call for {@link AbstractDao#update(Object)}. Entity must attached to an entity context. */
     public void update() {
         if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
-        }
+        }    
         myDao.update(this);
     }
 
-    /**
-     * Convenient call for {@link AbstractDao#refresh(Object)}. Entity must attached to an entity context.
-     */
+    /** Convenient call for {@link AbstractDao#refresh(Object)}. Entity must attached to an entity context. */
     public void refresh() {
         if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
-        }
+        }    
         myDao.refresh(this);
     }
 

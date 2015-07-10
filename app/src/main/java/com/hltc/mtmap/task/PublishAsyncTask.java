@@ -23,6 +23,10 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean aBoolean) {
+        if (aBoolean) {
+            SyncDataAsyncTask.httpSyncGrainNumber();
+            SyncDataAsyncTask.httpSyncMyGrainData();
+        }
     }
 
     @Override

@@ -10,13 +10,13 @@
         android:src="@drawable/background" />
 
     <ImageView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/layout_start_choose"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:padding="70dp"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/pic_start_icon" />
 
     <LinearLayout
         android:id="@+id/layout_start_choose"
@@ -26,15 +26,6 @@
         android:layout_marginBottom="65dp"
         android:orientation="vertical"
         android:padding="15dp">
-
-        <ToggleButton
-            android:id="@+id/btn_start_switch_server"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:checked="true"
-            android:textOff="本地"
-            android:textOn="远程"
-            android:textSize="20sp" />
 
         <Button
             android:id="@+id/btn_start_signin"

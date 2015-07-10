@@ -26,6 +26,7 @@ public class OssManager {
 
     public static final String STYLE_PORTRAIT = "@!android-portrait";
     public static final String STYLE_SWIPE = "@!android-swipe";
+    public static final String STYLE_THUMBNAIL = "@!android-thumbnail";
 
     private static final OssManager manager = new OssManager();
     public static String serverAddress;
@@ -73,6 +74,10 @@ public class OssManager {
 
     public static String getRemoteSwipeUrl(String s) {
         return getImgServiceUrl(s) + STYLE_SWIPE;
+    }
+
+    public static String getGrainThumbnailUrl(String s) {
+        return getImgServiceUrl(s) + STYLE_THUMBNAIL;
     }
 
     private void initOssService() {

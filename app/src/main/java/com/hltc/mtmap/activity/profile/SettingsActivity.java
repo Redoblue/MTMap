@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.SingleEditActivity;
+import com.hltc.mtmap.activity.profile.setting.AboutActivity;
 import com.hltc.mtmap.activity.profile.setting.CheckUpdateActivity;
 import com.hltc.mtmap.activity.profile.setting.FeedbackActivity;
 import com.hltc.mtmap.activity.profile.setting.UpdateNicknameActivity;
@@ -144,6 +145,8 @@ public class SettingsActivity extends Activity {
                 startActivity(sendIntent);
                 break;
             case R.id.btn_settings_about:
+                Intent intent1 = new Intent(this, AboutActivity.class);
+                startActivity(intent1);
                 break;
             case R.id.btn_settings_logout:
                 AppUtils.logout();

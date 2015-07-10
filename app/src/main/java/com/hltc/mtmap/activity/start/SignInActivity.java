@@ -20,7 +20,6 @@ import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.LocalUserInfo;
 import com.hltc.mtmap.helper.ProgressGenerator;
-import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -51,10 +50,8 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
 
     @InjectView(R.id.btn_bar_left)
     Button btnBarLeft;
-    @InjectView(R.id.tv_bar_title)
-    TextView tvBarTitle;
     @InjectView(R.id.btn_bar_right)
-    Button btnBarRight;
+    TextView btnBarRight;
     @InjectView(R.id.et_signin_phone)
     EditText etSigninPhone;
     @InjectView(R.id.et_signin_passwd)
@@ -77,13 +74,6 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
     }
 
     private void initViews() {
-        tvBarTitle.setText("登录");
-        btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
-        btnBarRight.setText("忘记密码");
-        btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
-        btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
-        btnBarRight.setHeight(AMapUtils.dp2px(this, 25));
-
         etSigninPhone.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_phone), 20));
         etSigninPasswd.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_password), 20));
         etSigninPasswd.addTextChangedListener(new TextWatcher() {

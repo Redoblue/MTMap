@@ -32,8 +32,7 @@ public class GrainDetailPhotoAdapter extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, int position) {
         ImageView iv = new ImageView(mContext);
-//        iv.setImageDrawable(Drawable.createFromPath(mList.get(position)));
-        ImageLoader.getInstance().displayImage(mList.get(position), iv, MyApplication.displayImageOptions);
+        ImageLoader.getInstance().displayImage(mList.get(position % mList.size()), iv, MyApplication.displayImageOptions);
         iv.setScaleType(ImageView.ScaleType.CENTER_CROP);
         container.addView(iv, position);
         return iv;

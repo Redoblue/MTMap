@@ -1,31 +1,60 @@
 package com.hltc.mtmap.activity.map;
 
+import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.view.MotionEvent;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.SingleEditActivity;
+import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.app.OssManager;
+import com.hltc.mtmap.event.CommentEvent;
+import com.hltc.mtmap.gmodel.GrainDetail;
+import com.hltc.mtmap.helper.ApiHelper;
+import com.hltc.mtmap.util.AMapUtils;
+import com.hltc.mtmap.util.ApiUtils;
+import com.hltc.mtmap.util.DateUtils;
+import com.hltc.mtmap.util.StringUtils;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.http.client.HttpRequest;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-/**
- * ViewPager实现画廊效果
- *
- * @author Trinea 2013-04-03
- *         <p/>
- *         需要setOnTouchListener函数中将滑动滑动事件传递给viewPager，否则只有viewPager中间的view可以滑动，设置后整个viewPager都可以滑动。
- *         可能运行后出现viewpager的部分Fragment无法看见或是突然消失的问题，请确保RelativeLayout和ViewPager的android:
- *         clipChildren都设置为了false并且viewPager.setOffscreenPageLimit(TOTAL_COUNT);其中TOTAL_COUNT大于0.
- *         当然子Fragment本身不能是match_parent的。viewpager设置了paddingTop也会导致无法实现画廊而只是显示一屏。
- */
 public class GrainDetailActivity extends FragmentActivity {
 
     private static int TOTAL_COUNT = 5;
@@ -43,62 +72,267 @@ public class GrainDetailActivity extends FragmentActivity {
     TextView tvGrainDetailText;
     @InjectView(R.id.tv_grain_detail_address)
     TextView tvGrainDetailAddress;
-    @InjectView(R.id.vp_grain_detail)
-    ViewPager vpGrainDetail;
-    @InjectView(R.id.layout_grain_detail_viewpager)
-    RelativeLayout layoutGrainDetailViewpager;
     @InjectView(R.id.tv_grain_detail_time)
     TextView tvGrainDetailTime;
-    @InjectView(R.id.btn_grain_detail_operations)
-    Button btnGrainDetailOperations;
+    @InjectView(R.id.btn_grain_detail_actions)
+    Button btnGrainDetailActions;
     @InjectView(R.id.tv_grain_detail_praise)
     TextView tvGrainDetailPraise;
     @InjectView(R.id.layout_grain_detail_comment)
     LinearLayout layoutGrainDetailComment;
+    @InjectView(R.id.hsv_grain_detail_gallery)
+    HorizontalScrollView hsvGrainDetailGallery;
+    @InjectView(R.id.layout_grain_detail_image)
+    LinearLayout layoutGrainDetailImage;
 
     private RelativeLayout viewPagerContainer;
     private ViewPager photoViewPager;
+    private GrainDetail grainDetail;
+    private PopupWindow popWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppManager.getAppManager().addActivity(this);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_grain_detail);
         ButterKnife.inject(this);
+        EventBus.getDefault().register(this);
 
         initView();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @OnClick({
+            R.id.btn_grain_detail_actions,
+            R.id.btn_bar_back,
+            R.id.btn_bar_favor,
+            R.id.btn_bar_share
+    })
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_grain_detail_actions:
+                showPopActions();
+                break;
+            case R.id.btn_bar_back:
+                AppManager.getAppManager().finishActivity(this);
+                break;
+            case R.id.btn_bar_favor:
+                ApiHelper.httpActOnGrain(ApiHelper.ACTION_FAVOR, grainDetail.grainId);
+                break;
+            case R.id.btn_bar_share:
+                Toast.makeText(this, "分享", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
+    public void onEvent(CommentEvent ce) {
+        httpCommentGrain(ce.getComment());
+    }
+
+    public void httpCommentGrain(final String s) {
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
+            json.put("gid", grainDetail.grainId);
+            json.put("text", s);
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpUtils http = new HttpUtils();
+        http.send(HttpRequest.HttpMethod.POST, ApiUtils.URL_ROOT + ApiUtils.URL_COMMENT_GRAIN,
+                params, new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        if (responseInfo.result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                            Toast.makeText(GrainDetailActivity.this, "评论成功", Toast.LENGTH_SHORT).show();
+                            try {
+                                JSONObject json = new JSONObject(responseInfo.result).getJSONObject("data");
+                                GrainDetail.Comment comment = new GrainDetail.Comment();
+                                comment.cid = json.getLong("cid");
+                                comment.nickName = AppConfig.getAppConfig().getConfUsrNickName();
+                                comment.userId = AppConfig.getAppConfig().getConfUsrUserId();
+                                comment.portrait = AppConfig.getAppConfig().getConfUsrPortrait();
+                                comment.text = s;
+                                grainDetail.comment.add(comment);
+                                refreshComment();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        // 收藏失败
+                    }
+                });
+    }
+
     private void initView() {
-//        vpGrainDetail.setAdapter(new GrainDetailPhotoAdapter(this,...));
-        // to cache all pages, or we will see the right item delayed
-        vpGrainDetail.setOffscreenPageLimit(TOTAL_COUNT);
-        vpGrainDetail.setPageMargin(getResources().getDimensionPixelSize(R.dimen.pager_margin));
-        vpGrainDetail.setOnPageChangeListener(new MyOnPageChangeListener());
-        layoutGrainDetailViewpager.setOnTouchListener(new View.OnTouchListener() {
+        grainDetail = getIntent().getParcelableExtra("grain");
+
+        ImageLoader.getInstance().displayImage(
+                grainDetail.publisher.portrait, civGrainDetailPortrait, MyApplication.displayImageOptions);
+        tvGrainDetailNickname.setText(StringUtils.isEmpty(grainDetail.publisher.remark) ?
+                grainDetail.publisher.nickName : grainDetail.publisher.remark);
+        tvGrainDetailText.setText(grainDetail.text);
+        tvGrainDetailAddress.setText(grainDetail.site.address);
+        tvGrainDetailTime.setText(DateUtils.getFriendlyTime(grainDetail.createTime));
+
+        refreshPraise();
+        refreshComment();
+
+        if (grainDetail.images.size() > 0) {
+            for (String s : grainDetail.images) {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(0, 0, AMapUtils.dp2px(this, 10), 0);
+                ImageView iv = new ImageView(this);
+                iv.setLayoutParams(params);
+                ImageLoader.getInstance().displayImage(
+                        OssManager.getGrainThumbnailUrl(s), iv, MyApplication.displayImageOptions);
+                layoutGrainDetailImage.addView(iv);
+            }
+        } else {
+            hsvGrainDetailGallery.setVisibility(View.GONE);
+        }
+    }
+
+    private void refreshPraise() {
+        if (grainDetail.praise.size() > 1) {
+            StringBuilder sb = new StringBuilder();
+            List<GrainDetail.Praise> praises = grainDetail.praise;
+            for (GrainDetail.Praise p : praises) {
+                sb.append(StringUtils.isEmpty(p.remark) ? p.nickName : p.remark);
+                if (p.equals(praises.get(praises.size() - 1))) {
+                    break;
+                }
+                sb.append(", ");
+            }
+
+            if (praises.size() > 0) {
+                sb.append(" 赞了该推荐");
+                tvGrainDetailPraise.setText(sb.toString());
+            }
+        } else {
+            tvGrainDetailPraise.setVisibility(View.GONE);
+        }
+        tvGrainDetailPraise.invalidate();
+    }
+
+    private void refreshComment() {
+        layoutGrainDetailComment.removeAllViews();
+        if (grainDetail.comment.size() > 0) {
+            ViewHolder holder = new ViewHolder();
+            for (GrainDetail.Comment c : grainDetail.comment) {
+                View commentView = LayoutInflater.from(this).inflate(R.layout.item_grain_detail_comment, null);
+                holder.portrait = (CircleImageView) commentView.findViewById(R.id.civ_item_grain_detail_portrait);
+                holder.name = (TextView) commentView.findViewById(R.id.tv_item_grain_detail_nickname);
+                holder.time = (TextView) commentView.findViewById(R.id.tv_item_grain_detail_time);
+                holder.comment = (TextView) commentView.findViewById(R.id.tv_item_grain_detail_comment);
+                holder.name.setText(StringUtils.isEmpty(c.remark) ? c.nickName : c.remark);
+                holder.time.setText(DateUtils.getFriendlyTime(c.createTime));
+                holder.comment.setText(c.text);
+                layoutGrainDetailComment.addView(commentView);
+                layoutGrainDetailComment.invalidate();
+            }
+        }
+    }
+
+    private void showPopActions() {
+        View view = getLayoutInflater().inflate(R.layout.window_grain_detail_actions, null);
+        popWindow = new PopupWindow(view,
+                WindowManager.LayoutParams.WRAP_CONTENT, AMapUtils.dp2px(this, 30), false);
+        //设置可以获取焦点，否则弹出菜单中的EditText是无法获取输入的
+        popWindow.setFocusable(true);
+        //这句是为了防止弹出菜单获取焦点之后，点击activity的其他组件没有响应
+        popWindow.setBackgroundDrawable(new BitmapDrawable());
+
+        int[] location = new int[2];
+        btnGrainDetailActions.getLocationOnScreen(location);
+        popWindow.showAtLocation(btnGrainDetailActions,
+                Gravity.NO_GRAVITY, location[0] - AMapUtils.dp2px(this, 150), location[1] - AMapUtils.dp2px(this, 5));
+
+        TextView praise = (TextView) view.findViewById(R.id.tv_praise);
+        TextView comment = (TextView) view.findViewById(R.id.tv_comment);
+
+        praise.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // dispatch the events to the ViewPager, to solve the problem that we can swipe only the middle view.
-                return vpGrainDetail.dispatchTouchEvent(event);
+            public void onClick(View v) {
+                httpPraiseGrain();
+            }
+        });
+        comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(GrainDetailActivity.this, SingleEditActivity.class);
+                intent.putExtra("old", "");
+                startActivity(intent);
             }
         });
     }
 
-    public class MyOnPageChangeListener implements ViewPager.OnPageChangeListener {
-
-        @Override
-        public void onPageSelected(int position) {
+    private void httpPraiseGrain() {
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
+            json.put("gid", grainDetail.grainId);
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
 
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-            // to refresh frameLayout
-            if (viewPagerContainer != null) {
-                viewPagerContainer.invalidate();
-            }
-        }
+        HttpUtils http = new HttpUtils();
+        http.send(HttpRequest.HttpMethod.POST, ApiUtils.URL_ROOT + ApiUtils.URL_PRAISE_GRAIN,
+                params, new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        if (responseInfo.result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                            Toast.makeText(GrainDetailActivity.this, "点赞成功", Toast.LENGTH_SHORT).show();
 
-        @Override
-        public void onPageScrollStateChanged(int arg0) {
-        }
+                            for (GrainDetail.Praise p : grainDetail.praise) {
+                                if (p.userId != AppConfig.getAppConfig().getConfUsrUserId()) {
+                                    GrainDetail.Praise praise = new GrainDetail.Praise();
+                                    praise.userId = AppConfig.getAppConfig().getConfUsrUserId();
+                                    praise.nickName = AppConfig.getAppConfig().getConfUsrNickName();
+                                    grainDetail.praise.add(praise);
+                                    refreshPraise();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        // 收藏失败
+                    }
+                });
     }
+
+    class ViewHolder {
+        CircleImageView portrait;
+        TextView name;
+        TextView time;
+        TextView comment;
+    }
+
+
 }

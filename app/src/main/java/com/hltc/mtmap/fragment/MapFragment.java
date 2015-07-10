@@ -154,8 +154,6 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d("MT", "MapFragment");
-
         if (MainActivity.isVisitor) {
             View view = inflater.inflate(R.layout.window_remind_login, container, false);
             ImageView iv = (ImageView) view.findViewById(R.id.btn_remind_login);
@@ -534,6 +532,9 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
     // 首次加载到地图，保证所有图片下载好
     private void addGrainToOverlay(final List<ClusterGrain> objects) {
+        if (overlay == null) {
+            return;
+        }
         overlay.clearClusters();
         for (final ClusterGrain cg : objects) {
             try {

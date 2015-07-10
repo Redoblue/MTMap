@@ -35,7 +35,7 @@ public class MGrainDao extends AbstractDao<MGrain, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MGRAIN' (" + //
                 "'GRAIN_ID' INTEGER PRIMARY KEY NOT NULL ," + // 0: grainId
                 "'USER_ID' INTEGER," + // 1: userId
@@ -55,17 +55,13 @@ public class MGrainDao extends AbstractDao<MGrain, Long> {
                 "'LON' REAL);"); // 15: lon
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'MGRAIN'";
         db.execSQL(sql);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected void bindValues(SQLiteStatement stmt, MGrain entity) {
         stmt.clearBindings();
@@ -153,17 +149,13 @@ public class MGrainDao extends AbstractDao<MGrain, Long> {
         entity.__setDaoSession(daoSession);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public MGrain readEntity(Cursor cursor, int offset) {
         MGrain entity = new MGrain( //
@@ -187,9 +179,7 @@ public class MGrainDao extends AbstractDao<MGrain, Long> {
         return entity;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MGrain entity, int offset) {
         entity.setGrainId(cursor.getLong(offset + 0));
@@ -210,18 +200,14 @@ public class MGrainDao extends AbstractDao<MGrain, Long> {
         entity.setLon(cursor.isNull(offset + 15) ? null : cursor.getDouble(offset + 15));
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MGrain entity, long rowId) {
         entity.setGrainId(rowId);
         return rowId;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long getKey(MGrain entity) {
         if (entity != null) {
@@ -231,18 +217,16 @@ public class MGrainDao extends AbstractDao<MGrain, Long> {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {
         return true;
     }
 
-    /**
+/**
      * Properties of entity MGrain.<br/>
      * Can be used for QueryBuilder and for referencing column names.
-     */
+    */
     public static class Properties {
         public final static Property GrainId = new Property(0, long.class, "grainId", true, "GRAIN_ID");
         public final static Property UserId = new Property(1, Long.class, "userId", false, "USER_ID");
@@ -261,5 +245,5 @@ public class MGrainDao extends AbstractDao<MGrain, Long> {
         public final static Property Lat = new Property(14, Double.class, "lat", false, "LAT");
         public final static Property Lon = new Property(15, Double.class, "lon", false, "LON");
     }
-
+    
 }

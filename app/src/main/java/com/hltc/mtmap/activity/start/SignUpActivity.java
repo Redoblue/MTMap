@@ -19,7 +19,6 @@ import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.LocalUserInfo;
-import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -52,8 +51,6 @@ public class SignUpActivity extends Activity {
     Button btnBarLeft;
     @InjectView(R.id.tv_bar_title)
     TextView tvBarTitle;
-    @InjectView(R.id.btn_bar_right)
-    Button btnBarRight;
     @InjectView(R.id.et_signup_phone)
     EditText etSignupPhone;
     @InjectView(R.id.btn_signup_send_verifycode)
@@ -93,9 +90,6 @@ public class SignUpActivity extends Activity {
 
     private void initView() {
         tvBarTitle.setText(source == 0 ? "注册" : "修改密码");
-        btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
-        btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
-        btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
 
         etSignupPhone.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_phone), 20));
         etSignupVerifycode.setHint(ViewUtils.getHint(getResources().getString(R.string.singup_verifycode_hint), 20));

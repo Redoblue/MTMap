@@ -2,7 +2,6 @@ package com.hltc.mtmap.orm;
 
 import java.util.List;
 import java.util.ArrayList;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -48,7 +47,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MTCOMMENT' (" + //
                 "'_id' INTEGER PRIMARY KEY NOT NULL ," + // 0: id
                 "'CONTENT' TEXT NOT NULL ," + // 1: content
@@ -58,29 +57,25 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
                 "'GRAIN_ID' INTEGER NOT NULL );"); // 5: grainId
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'MTCOMMENT'";
         db.execSQL(sql);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected void bindValues(SQLiteStatement stmt, MTComment entity) {
         stmt.clearBindings();
         stmt.bindLong(1, entity.getId());
         stmt.bindString(2, entity.getContent());
         stmt.bindLong(3, entity.getDate().getTime());
-
+ 
         Long toCommentId = entity.getToCommentId();
         if (toCommentId != null) {
             stmt.bindLong(4, toCommentId);
         }
-
+ 
         Long userId = entity.getUserId();
         if (userId != null) {
             stmt.bindLong(5, userId);
@@ -94,17 +89,13 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         entity.__setDaoSession(daoSession);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public MTComment readEntity(Cursor cursor, int offset) {
         MTComment entity = new MTComment( //
@@ -118,9 +109,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         return entity;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTComment entity, int offset) {
         entity.setId(cursor.getLong(offset + 0));
@@ -131,18 +120,14 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         entity.setGrainId(cursor.getLong(offset + 5));
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTComment entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long getKey(MTComment entity) {
         if (entity != null) {
@@ -155,14 +140,12 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
     /**
      * @inheritdoc
      */
-    @Override
+    @Override    
     protected boolean isEntityUpdateable() {
         return true;
     }
 
-    /**
-     * Internal query to resolve the "comments2User" to-many relationship of MTUser.
-     */
+    /** Internal query to resolve the "comments2User" to-many relationship of MTUser. */
     public List<MTComment> _queryMTUser_Comments2User(Long userId) {
         synchronized (this) {
             if (mTUser_Comments2UserQuery == null) {
@@ -176,9 +159,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         return query.list();
     }
 
-    /**
-     * Internal query to resolve the "comments2Grain" to-many relationship of MTGrain.
-     */
+    /** Internal query to resolve the "comments2Grain" to-many relationship of MTGrain. */
     public List<MTComment> _queryMTGrain_Comments2Grain(long grainId) {
         synchronized (this) {
             if (mTGrain_Comments2GrainQuery == null) {
@@ -192,9 +173,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         return query.list();
     }
 
-    /**
-     * Internal query to resolve the "children" to-many relationship of MTComment.
-     */
+    /** Internal query to resolve the "children" to-many relationship of MTComment. */
     public List<MTComment> _queryMTComment_Children(Long toCommentId) {
         synchronized (this) {
             if (mTComment_ChildrenQuery == null) {
@@ -237,7 +216,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         offset += daoSession.getMTUserDao().getAllColumns().length;
 
         MTGrain mTGrain = loadCurrentOther(daoSession.getMTGrainDao(), cursor, offset);
-        if (mTGrain != null) {
+        if(mTGrain != null) {
             entity.setMTGrain(mTGrain);
         }
         offset += daoSession.getMTGrainDao().getAllColumns().length;
@@ -247,7 +226,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
 
         return entity;
     }
-
+    
     public MTComment loadDeep(Long key) {
         assertSinglePk();
         if (key == null) {
@@ -259,7 +238,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
         String sql = builder.toString();
 
-        String[] keyArray = new String[]{key.toString()};
+        String[] keyArray = new String[] { key.toString() };
         Cursor cursor = db.rawQuery(sql, keyArray);
 
         try {
@@ -275,9 +254,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         }
     }
 
-    /**
-     * Reads all available rows from the given cursor and returns a list of new ImageTO objects.
-     */
+    /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
     public List<MTComment> loadAllDeepFromCursor(Cursor cursor) {
         int count = cursor.getCount();
         List<MTComment> list = new ArrayList<MTComment>(count);
@@ -299,7 +276,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         }
         return list;
     }
-
+    
     protected List<MTComment> loadDeepAllAndCloseCursor(Cursor cursor) {
         try {
             return loadAllDeepFromCursor(cursor);
@@ -308,18 +285,16 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         }
     }
 
-    /**
-     * A raw-style query where you can pass any WHERE clause and arguments.
-     */
+    /** A raw-style query where you can pass any WHERE clause and arguments. */
     public List<MTComment> queryDeep(String where, String... selectionArg) {
         Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
         return loadDeepAllAndCloseCursor(cursor);
     }
-
-    /**
+    
+/**
      * Properties of entity MTComment.<br/>
      * Can be used for QueryBuilder and for referencing column names.
-     */
+    */
     public static class Properties {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
         public final static Property Content = new Property(1, String.class, "content", false, "CONTENT");
@@ -328,5 +303,5 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         public final static Property UserId = new Property(4, Long.class, "userId", false, "USER_ID");
         public final static Property GrainId = new Property(5, long.class, "grainId", false, "GRAIN_ID");
     }
-
+ 
 }

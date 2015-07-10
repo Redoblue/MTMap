@@ -2,7 +2,6 @@ package com.hltc.mtmap.orm;
 
 import java.util.List;
 import java.util.ArrayList;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -46,24 +45,20 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MTFAVOURITE' (" + //
                 "'_id' INTEGER PRIMARY KEY NOT NULL ," + // 0: id
                 "'USER_ID' INTEGER NOT NULL ," + // 1: userId
                 "'GRAIN_ID' INTEGER NOT NULL );"); // 2: grainId
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'MTFAVOURITE'";
         db.execSQL(sql);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected void bindValues(SQLiteStatement stmt, MTFavourite entity) {
         stmt.clearBindings();
@@ -78,17 +73,13 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         entity.__setDaoSession(daoSession);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public MTFavourite readEntity(Cursor cursor, int offset) {
         MTFavourite entity = new MTFavourite( //
@@ -99,9 +90,7 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         return entity;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTFavourite entity, int offset) {
         entity.setId(cursor.getLong(offset + 0));
@@ -109,18 +98,14 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         entity.setGrainId(cursor.getLong(offset + 2));
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTFavourite entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long getKey(MTFavourite entity) {
         if (entity != null) {
@@ -133,14 +118,12 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
     /**
      * @inheritdoc
      */
-    @Override
+    @Override    
     protected boolean isEntityUpdateable() {
         return true;
     }
 
-    /**
-     * Internal query to resolve the "favourite2User" to-many relationship of MTUser.
-     */
+    /** Internal query to resolve the "favourite2User" to-many relationship of MTUser. */
     public List<MTFavourite> _queryMTUser_Favourite2User(long userId) {
         synchronized (this) {
             if (mTUser_Favourite2UserQuery == null) {
@@ -154,9 +137,7 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         return query.list();
     }
 
-    /**
-     * Internal query to resolve the "favourites2Grain" to-many relationship of MTGrain.
-     */
+    /** Internal query to resolve the "favourites2Grain" to-many relationship of MTGrain. */
     public List<MTFavourite> _queryMTGrain_Favourites2Grain(long grainId) {
         synchronized (this) {
             if (mTGrain_Favourites2GrainQuery == null) {
@@ -192,19 +173,19 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         int offset = getAllColumns().length;
 
         MTUser mTUser = loadCurrentOther(daoSession.getMTUserDao(), cursor, offset);
-        if (mTUser != null) {
+        if(mTUser != null) {
             entity.setMTUser(mTUser);
         }
         offset += daoSession.getMTUserDao().getAllColumns().length;
 
         MTGrain mTGrain = loadCurrentOther(daoSession.getMTGrainDao(), cursor, offset);
-        if (mTGrain != null) {
+        if(mTGrain != null) {
             entity.setMTGrain(mTGrain);
         }
 
         return entity;
     }
-
+    
     public MTFavourite loadDeep(Long key) {
         assertSinglePk();
         if (key == null) {
@@ -216,7 +197,7 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
         String sql = builder.toString();
 
-        String[] keyArray = new String[]{key.toString()};
+        String[] keyArray = new String[] { key.toString() };
         Cursor cursor = db.rawQuery(sql, keyArray);
 
         try {
@@ -232,9 +213,7 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         }
     }
 
-    /**
-     * Reads all available rows from the given cursor and returns a list of new ImageTO objects.
-     */
+    /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
     public List<MTFavourite> loadAllDeepFromCursor(Cursor cursor) {
         int count = cursor.getCount();
         List<MTFavourite> list = new ArrayList<MTFavourite>(count);
@@ -256,7 +235,7 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         }
         return list;
     }
-
+    
     protected List<MTFavourite> loadDeepAllAndCloseCursor(Cursor cursor) {
         try {
             return loadAllDeepFromCursor(cursor);
@@ -265,22 +244,20 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         }
     }
 
-    /**
-     * A raw-style query where you can pass any WHERE clause and arguments.
-     */
+    /** A raw-style query where you can pass any WHERE clause and arguments. */
     public List<MTFavourite> queryDeep(String where, String... selectionArg) {
         Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
         return loadDeepAllAndCloseCursor(cursor);
     }
-
-    /**
+    
+/**
      * Properties of entity MTFavourite.<br/>
      * Can be used for QueryBuilder and for referencing column names.
-     */
+    */
     public static class Properties {
         public final static Property Id = new Property(0, long.class, "id", true, "_id");
         public final static Property UserId = new Property(1, long.class, "userId", false, "USER_ID");
         public final static Property GrainId = new Property(2, long.class, "grainId", false, "GRAIN_ID");
     }
-
+ 
 }

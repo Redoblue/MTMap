@@ -67,7 +67,6 @@ public class GrainFragment extends Fragment {
 
     private List<SwipeGrain> mSwipeItems;
     private SwipeViewAdapter mSwipeAdapter;
-    private List<HashMap<Long, Integer>> states = new ArrayList<>();
 
     private boolean stateNomore = false;
 

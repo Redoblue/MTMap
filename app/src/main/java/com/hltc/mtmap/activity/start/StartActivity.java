@@ -8,7 +8,6 @@ import android.view.Window;
 import android.view.animation.Interpolator;
 import android.widget.Button;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.flaviofaria.kenburnsview.KenBurnsView;
 import com.flaviofaria.kenburnsview.RandomTransitionGenerator;
@@ -46,8 +45,6 @@ public class StartActivity extends Activity {
     Button signUpBtn;
     @InjectView(R.id.btn_start_skip)
     Button skipBtn;
-    @InjectView(R.id.btn_start_switch_server)
-    ToggleButton btnStartSwitchServer;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,8 +53,6 @@ public class StartActivity extends Activity {
         setContentView(R.layout.activity_start);
         ButterKnife.inject(this);
         AppManager.getAppManager().addActivity(this);
-
-        ApiUtils.URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
     }
 
     private void initBackground() {
@@ -105,22 +100,7 @@ public class StartActivity extends Activity {
         }
     }
 
-    // will be removed after development
-    @OnClick(R.id.btn_start_switch_server)
-    public void switchServer() {
-        if (btnStartSwitchServer.isChecked()) {
-            ApiUtils.URL_ROOT = "http://www.maitianditu.com/maitian/v1/";
-        } else {
-            ApiUtils.URL_ROOT = "http://192.168.0.109/maitian/v1/";
-        }
-    }
-
     private void httpGetVisitorId() {
-//        RequestParams params = new RequestParams();
-//        params.addQueryStringParameter(ApiUtils.KEY_SOURCE, "Android");
-//        params.addQueryStringParameter(ApiUtils.KEY_PHONE, mPhone);
-//        params.addQueryStringParameter(ApiUtils.KEY_VCODE, mVCode);
-
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.GET,
                 ApiUtils.URL_ROOT + ApiUtils.URL_GET_VISITOR_ID,
@@ -132,7 +112,6 @@ public class StartActivity extends Activity {
                             return;
                         try {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                                ToastUtils.showShort(StartActivity.this, "验证成功");
                                 JSONObject son = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 long vid = son.getLong("vid");
                                 AppConfig.getAppConfig().set(AppConfig.CONFIG_APP, "vid", String.valueOf(vid));     //将临时Token保存

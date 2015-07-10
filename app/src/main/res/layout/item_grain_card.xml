@@ -33,7 +33,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_margin="10dp"
-            android:src="@drawable/cluster_pic" />
+            android:src="@drawable/pic_default_portrait" />
 
         <TextView
             android:id="@+id/tv_item_grain_card_comment"

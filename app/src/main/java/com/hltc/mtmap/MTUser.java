@@ -1,9 +1,7 @@
 package com.hltc.mtmap;
 
 import java.util.List;
-
 import com.hltc.mtmap.orm.DaoSession;
-
 import de.greenrobot.dao.DaoException;
 
 import com.hltc.mtmap.orm.MTCommentDao;
@@ -16,7 +14,6 @@ import com.hltc.mtmap.orm.MTUserDao;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
-
 /**
  * Entity mapped to table MTUSER.
  */
@@ -37,9 +34,7 @@ public class MTUser {
      */
     private transient DaoSession daoSession;
 
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     private transient MTUserDao myDao;
 
     private List<MTComment> comments2User;
@@ -69,9 +64,7 @@ public class MTUser {
         this.firstCharacter = firstCharacter;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMTUserDao() : null;
@@ -149,9 +142,7 @@ public class MTUser {
         this.firstCharacter = firstCharacter;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity.
-     */
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
     public List<MTComment> getComments2User() {
         if (comments2User == null) {
             if (daoSession == null) {
@@ -168,16 +159,12 @@ public class MTUser {
         return comments2User;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetComments2User() {
         comments2User = null;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity.
-     */
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
     public List<MTFavourite> getFavourite2User() {
         if (favourite2User == null) {
             if (daoSession == null) {
@@ -194,16 +181,12 @@ public class MTUser {
         return favourite2User;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetFavourite2User() {
         favourite2User = null;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity.
-     */
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
     public List<MTGrain> getGrains2User() {
         if (grains2User == null) {
             if (daoSession == null) {
@@ -220,16 +203,12 @@ public class MTUser {
         return grains2User;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetGrains2User() {
         grains2User = null;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity.
-     */
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
     public List<MTPhoto> getPhoto2User() {
         if (photo2User == null) {
             if (daoSession == null) {
@@ -246,40 +225,32 @@ public class MTUser {
         return photo2User;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetPhoto2User() {
         photo2User = null;
     }
 
-    /**
-     * Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context.
-     */
+    /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */
     public void delete() {
         if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
-        }
+        }    
         myDao.delete(this);
     }
 
-    /**
-     * Convenient call for {@link AbstractDao#update(Object)}. Entity must attached to an entity context.
-     */
+    /** Convenient call for {@link AbstractDao#update(Object)}. Entity must attached to an entity context. */
     public void update() {
         if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
-        }
+        }    
         myDao.update(this);
     }
 
-    /**
-     * Convenient call for {@link AbstractDao#refresh(Object)}. Entity must attached to an entity context.
-     */
+    /** Convenient call for {@link AbstractDao#refresh(Object)}. Entity must attached to an entity context. */
     public void refresh() {
         if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
-        }
+        }    
         myDao.refresh(this);
     }
 

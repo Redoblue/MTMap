@@ -14,10 +14,12 @@ import android.widget.Toast;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.event.CommentEvent;
 import com.hltc.mtmap.util.StringUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by redoblue on 15-7-3.
@@ -64,6 +66,11 @@ public class SingleEditActivity extends Activity implements TextView.OnEditorAct
                 Intent intent = new Intent();
                 intent.putExtra("old", newString);
                 setResult(RESULT_OK, intent);
+
+                CommentEvent ce = new CommentEvent();
+                ce.setComment(newString);
+                EventBus.getDefault().post(ce);
+
                 finish();
             }
         }

@@ -25,6 +25,8 @@ import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.profile.FriendListActivity;
+import com.hltc.mtmap.activity.profile.MyFavouritesActivity;
+import com.hltc.mtmap.activity.profile.MyGrainActivity2;
 import com.hltc.mtmap.activity.profile.SettingsActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
@@ -34,7 +36,6 @@ import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.FileUtils;
 import com.hltc.mtmap.util.StringUtils;
-import com.hltc.mtmap.util.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -74,7 +75,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private CircleImageView portraitCiv;
     private TextView nickName;
-    private TextView signature;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,6 +97,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             initView();
             return view;
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        initView();
     }
 
     private void initView() {
@@ -134,24 +140,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         //昵称和签名
         nickName = (TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_header_nickname);
         nickName.setText(AppConfig.getAppConfig().getConfUsrNickName());
-//        signature = (TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_header_signature);
-//        signature.setText(AppConfig.getAppConfig().getConfUserSignature());
-//        nickName.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(), SingleEditActivity.class);
-//                intent.putExtra("old", AppConfig.getAppConfig().getConfUsrNickName());
-//                startActivityForResult(intent, EDIT_NICKNAME_REQUEST_CODE);
-//            }
-//        });
-//        signature.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getActivity(), SingleEditActivity.class);
-//                intent.putExtra("old", AppConfig.getAppConfig().getConfUserSignature());
-//                startActivityForResult(intent, EDIT_SIGNATURE_REQUEST_CODE);
-//            }
-//        });
 
         //更新麦粒数量
         ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_chihe))
@@ -170,14 +158,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 toClass = SettingsActivity.class;
                 break;
             case R.id.btn_profile_maitian:
-                ToastUtils.showShort(getActivity(), "maitian");
+                toClass = MyGrainActivity2.class;
                 break;
             case R.id.btn_profile_favourite:
+                toClass = MyFavouritesActivity.class;
                 break;
             case R.id.btn_profile_friend:
                 toClass = FriendListActivity.class;
-                break;
-            default:
                 break;
         }
         Intent intent = new Intent(getActivity(), toClass);
@@ -260,11 +247,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     String s1 = data.getStringExtra("new");
                     AppConfig.getAppConfig().setConfUsrNickName(s1);
                     nickName.setText(s1);
-                    break;
-                case EDIT_SIGNATURE_REQUEST_CODE:
-                    String s2 = data.getStringExtra("new");
-                    AppConfig.getAppConfig().setConfUserSignature(s2);
-                    signature.setText(s2);
                     break;
             }
         }

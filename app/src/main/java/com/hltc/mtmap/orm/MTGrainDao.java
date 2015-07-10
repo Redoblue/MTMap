@@ -2,7 +2,6 @@ package com.hltc.mtmap.orm;
 
 import java.util.List;
 import java.util.ArrayList;
-
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
@@ -48,7 +47,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MTGRAIN' (" + //
                 "'GRAIN_ID' INTEGER PRIMARY KEY NOT NULL ," + // 0: grainId
                 "'TEXT' TEXT," + // 1: text
@@ -60,40 +59,36 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
                 "'USER_ID' INTEGER NOT NULL );"); // 7: userId
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'MTGRAIN'";
         db.execSQL(sql);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected void bindValues(SQLiteStatement stmt, MTGrain entity) {
         stmt.clearBindings();
         stmt.bindLong(1, entity.getGrainId());
-
+ 
         String text = entity.getText();
         if (text != null) {
             stmt.bindString(2, text);
         }
-
+ 
         String cateId = entity.getCateId();
         if (cateId != null) {
             stmt.bindString(3, cateId);
         }
-
+ 
         String createTime = entity.getCreateTime();
         if (createTime != null) {
             stmt.bindString(4, createTime);
         }
-
+ 
         Boolean isPublic = entity.getIsPublic();
         if (isPublic != null) {
-            stmt.bindLong(5, isPublic ? 1l : 0l);
+            stmt.bindLong(5, isPublic ? 1l: 0l);
         }
         stmt.bindString(6, entity.getSiteId());
         stmt.bindLong(7, entity.getCategoryId());
@@ -106,17 +101,13 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         entity.__setDaoSession(daoSession);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public MTGrain readEntity(Cursor cursor, int offset) {
         MTGrain entity = new MTGrain( //
@@ -132,9 +123,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         return entity;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTGrain entity, int offset) {
         entity.setGrainId(cursor.getLong(offset + 0));
@@ -147,18 +136,14 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         entity.setUserId(cursor.getLong(offset + 7));
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTGrain entity, long rowId) {
         entity.setGrainId(rowId);
         return rowId;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long getKey(MTGrain entity) {
         if (entity != null) {
@@ -171,14 +156,12 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
     /**
      * @inheritdoc
      */
-    @Override
+    @Override    
     protected boolean isEntityUpdateable() {
         return true;
     }
 
-    /**
-     * Internal query to resolve the "grains2User" to-many relationship of MTUser.
-     */
+    /** Internal query to resolve the "grains2User" to-many relationship of MTUser. */
     public List<MTGrain> _queryMTUser_Grains2User(long userId) {
         synchronized (this) {
             if (mTUser_Grains2UserQuery == null) {
@@ -192,9 +175,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         return query.list();
     }
 
-    /**
-     * Internal query to resolve the "grains2Site" to-many relationship of MTSite.
-     */
+    /** Internal query to resolve the "grains2Site" to-many relationship of MTSite. */
     public List<MTGrain> _queryMTSite_Grains2Site(String siteId) {
         synchronized (this) {
             if (mTSite_Grains2SiteQuery == null) {
@@ -208,9 +189,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         return query.list();
     }
 
-    /**
-     * Internal query to resolve the "grains2Category" to-many relationship of MTCategory.
-     */
+    /** Internal query to resolve the "grains2Category" to-many relationship of MTCategory. */
     public List<MTGrain> _queryMTCategory_Grains2Category(long categoryId) {
         synchronized (this) {
             if (mTCategory_Grains2CategoryQuery == null) {
@@ -249,25 +228,25 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         int offset = getAllColumns().length;
 
         MTSite mTSite = loadCurrentOther(daoSession.getMTSiteDao(), cursor, offset);
-        if (mTSite != null) {
+        if(mTSite != null) {
             entity.setMTSite(mTSite);
         }
         offset += daoSession.getMTSiteDao().getAllColumns().length;
 
         MTUser mTUser = loadCurrentOther(daoSession.getMTUserDao(), cursor, offset);
-        if (mTUser != null) {
+        if(mTUser != null) {
             entity.setMTUser(mTUser);
         }
         offset += daoSession.getMTUserDao().getAllColumns().length;
 
         MTCategory mTCategory = loadCurrentOther(daoSession.getMTCategoryDao(), cursor, offset);
-        if (mTCategory != null) {
+        if(mTCategory != null) {
             entity.setMTCategory(mTCategory);
         }
 
         return entity;
     }
-
+    
     public MTGrain loadDeep(Long key) {
         assertSinglePk();
         if (key == null) {
@@ -279,7 +258,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
         String sql = builder.toString();
 
-        String[] keyArray = new String[]{key.toString()};
+        String[] keyArray = new String[] { key.toString() };
         Cursor cursor = db.rawQuery(sql, keyArray);
 
         try {
@@ -295,9 +274,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         }
     }
 
-    /**
-     * Reads all available rows from the given cursor and returns a list of new ImageTO objects.
-     */
+    /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
     public List<MTGrain> loadAllDeepFromCursor(Cursor cursor) {
         int count = cursor.getCount();
         List<MTGrain> list = new ArrayList<MTGrain>(count);
@@ -319,7 +296,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         }
         return list;
     }
-
+    
     protected List<MTGrain> loadDeepAllAndCloseCursor(Cursor cursor) {
         try {
             return loadAllDeepFromCursor(cursor);
@@ -328,18 +305,16 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         }
     }
 
-    /**
-     * A raw-style query where you can pass any WHERE clause and arguments.
-     */
+    /** A raw-style query where you can pass any WHERE clause and arguments. */
     public List<MTGrain> queryDeep(String where, String... selectionArg) {
         Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
         return loadDeepAllAndCloseCursor(cursor);
     }
-
-    /**
+    
+/**
      * Properties of entity MTGrain.<br/>
      * Can be used for QueryBuilder and for referencing column names.
-     */
+    */
     public static class Properties {
         public final static Property GrainId = new Property(0, long.class, "grainId", true, "GRAIN_ID");
         public final static Property Text = new Property(1, String.class, "text", false, "TEXT");
@@ -350,5 +325,5 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         public final static Property CategoryId = new Property(6, long.class, "categoryId", false, "CATEGORY_ID");
         public final static Property UserId = new Property(7, long.class, "userId", false, "USER_ID");
     }
-
+ 
 }

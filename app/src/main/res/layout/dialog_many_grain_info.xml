@@ -11,12 +11,13 @@
         android:orientation="vertical">
 
         <ImageButton
+            android:id="@+id/btn_exit"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="12dp"
             android:layout_marginTop="11dp"
-            android:background="#ff0000" />
+            android:background="@drawable/btn_grain_info_exit" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"

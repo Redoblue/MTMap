@@ -1,9 +1,7 @@
 package com.hltc.mtmap;
 
 import java.util.List;
-
 import com.hltc.mtmap.orm.DaoSession;
-
 import de.greenrobot.dao.DaoException;
 
 import com.hltc.mtmap.orm.MTCategoryDao;
@@ -18,7 +16,6 @@ import com.hltc.mtmap.orm.MTUserDao;
 
 // KEEP INCLUDES - put your custom includes here
 // KEEP INCLUDES END
-
 /**
  * Entity mapped to table MTGRAIN.
  */
@@ -36,14 +33,10 @@ public class MTGrain {
     private long categoryId;
     private long userId;
 
-    /**
-     * Used to resolve relations
-     */
+    /** Used to resolve relations */
     private transient DaoSession daoSession;
 
-    /**
-     * Used for active entity operations.
-     */
+    /** Used for active entity operations. */
     private transient MTGrainDao myDao;
 
     private MTSite mTSite;
@@ -80,9 +73,7 @@ public class MTGrain {
         this.userId = userId;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getMTGrainDao() : null;
@@ -128,16 +119,12 @@ public class MTGrain {
         this.isPublic = isPublic;
     }
 
-    /**
-     * Not-null value.
-     */
+    /** Not-null value. */
     public String getSiteId() {
         return siteId;
     }
 
-    /**
-     * Not-null value; ensure this value is available before it is saved to the database.
-     */
+    /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setSiteId(String siteId) {
         this.siteId = siteId;
     }
@@ -158,9 +145,7 @@ public class MTGrain {
         this.userId = userId;
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     public MTSite getMTSite() {
         String __key = this.siteId;
         if (mTSite__resolvedKey == null || mTSite__resolvedKey != __key) {
@@ -188,9 +173,7 @@ public class MTGrain {
         }
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     public MTUser getMTUser() {
         long __key = this.userId;
         if (mTUser__resolvedKey == null || !mTUser__resolvedKey.equals(__key)) {
@@ -218,9 +201,7 @@ public class MTGrain {
         }
     }
 
-    /**
-     * To-one relationship, resolved on first access.
-     */
+    /** To-one relationship, resolved on first access. */
     public MTCategory getMTCategory() {
         long __key = this.categoryId;
         if (mTCategory__resolvedKey == null || !mTCategory__resolvedKey.equals(__key)) {
@@ -248,9 +229,7 @@ public class MTGrain {
         }
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity.
-     */
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
     public List<MTComment> getComments2Grain() {
         if (comments2Grain == null) {
             if (daoSession == null) {
@@ -267,16 +246,12 @@ public class MTGrain {
         return comments2Grain;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetComments2Grain() {
         comments2Grain = null;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity.
-     */
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
     public List<MTFavourite> getFavourites2Grain() {
         if (favourites2Grain == null) {
             if (daoSession == null) {
@@ -293,16 +268,12 @@ public class MTGrain {
         return favourites2Grain;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetFavourites2Grain() {
         favourites2Grain = null;
     }
 
-    /**
-     * To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity.
-     */
+    /** To-many relationship, resolved on first access (and after reset). Changes to to-many relations are not persisted, make changes to the target entity. */
     public List<MTPhoto> getPhotos2Grain() {
         if (photos2Grain == null) {
             if (daoSession == null) {
@@ -319,40 +290,32 @@ public class MTGrain {
         return photos2Grain;
     }
 
-    /**
-     * Resets a to-many relationship, making the next get call to query for a fresh result.
-     */
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
     public synchronized void resetPhotos2Grain() {
         photos2Grain = null;
     }
 
-    /**
-     * Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context.
-     */
+    /** Convenient call for {@link AbstractDao#delete(Object)}. Entity must attached to an entity context. */
     public void delete() {
         if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
-        }
+        }    
         myDao.delete(this);
     }
 
-    /**
-     * Convenient call for {@link AbstractDao#update(Object)}. Entity must attached to an entity context.
-     */
+    /** Convenient call for {@link AbstractDao#update(Object)}. Entity must attached to an entity context. */
     public void update() {
         if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
-        }
+        }    
         myDao.update(this);
     }
 
-    /**
-     * Convenient call for {@link AbstractDao#refresh(Object)}. Entity must attached to an entity context.
-     */
+    /** Convenient call for {@link AbstractDao#refresh(Object)}. Entity must attached to an entity context. */
     public void refresh() {
         if (myDao == null) {
             throw new DaoException("Entity is detached from DAO context");
-        }
+        }    
         myDao.refresh(this);
     }
 

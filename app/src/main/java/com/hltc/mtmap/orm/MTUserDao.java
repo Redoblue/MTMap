@@ -35,7 +35,7 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MTUSER' (" + //
                 "'USER_ID' INTEGER PRIMARY KEY NOT NULL ," + // 0: userId
                 "'NICK_NAME' TEXT," + // 1: nickName
@@ -48,17 +48,13 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
                 "'FIRST_CHARACTER' TEXT);"); // 8: firstCharacter
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'MTUSER'";
         db.execSQL(sql);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected void bindValues(SQLiteStatement stmt, MTUser entity) {
         stmt.clearBindings();
@@ -111,17 +107,13 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
         entity.__setDaoSession(daoSession);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public MTUser readEntity(Cursor cursor, int offset) {
         MTUser entity = new MTUser( //
@@ -138,9 +130,7 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
         return entity;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTUser entity, int offset) {
         entity.setUserId(cursor.getLong(offset + 0));
@@ -154,18 +144,14 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
         entity.setFirstCharacter(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTUser entity, long rowId) {
         entity.setUserId(rowId);
         return rowId;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long getKey(MTUser entity) {
         if (entity != null) {
@@ -175,18 +161,16 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {
         return true;
     }
 
-    /**
+/**
      * Properties of entity MTUser.<br/>
      * Can be used for QueryBuilder and for referencing column names.
-     */
+    */
     public static class Properties {
         public final static Property UserId = new Property(0, long.class, "userId", true, "USER_ID");
         public final static Property NickName = new Property(1, String.class, "nickName", false, "NICK_NAME");
@@ -198,5 +182,5 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
         public final static Property Remark = new Property(7, String.class, "remark", false, "REMARK");
         public final static Property FirstCharacter = new Property(8, String.class, "firstCharacter", false, "FIRST_CHARACTER");
     }
-
+    
 }

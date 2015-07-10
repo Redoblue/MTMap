@@ -1,5 +1,6 @@
 package com.hltc.mtmap.fragment;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +14,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.map.GrainInfoDialog;
+import com.hltc.mtmap.activity.map.ManyGrainInfoDialog;
+import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.gmodel.ClusterGrain;
 import com.hltc.mtmap.util.StringUtils;
 
@@ -74,7 +78,7 @@ public class ManyGrainInfoFragment extends Fragment {
         }
 
         @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder holder = new ViewHolder();
             if (convertView == null) {
                 convertView = LayoutInflater.from(getActivity()).inflate(R.layout.item_many_grain_grid, null);
@@ -88,6 +92,16 @@ public class ManyGrainInfoFragment extends Fragment {
             holder.portrait.setImageDrawable(Drawable.createFromPath(getItem(position).getPicUrl()));
             String name = getItem(position).remark;
             holder.name.setText(StringUtils.isEmpty(name) ? getItem(position).nickName : name);
+
+            holder.portrait.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getActivity(), GrainInfoDialog.class);
+                    intent.putExtra("grain", getItem(position));
+                    startActivity(intent);
+                    AppManager.getAppManager().finishActivity(ManyGrainInfoDialog.class);
+                }
+            });
 
             return convertView;
         }

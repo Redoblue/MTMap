@@ -58,6 +58,24 @@ public class Generator {
         mGrain.addDoubleProperty("lat");
         mGrain.addDoubleProperty("lon");
 
+        //lonely
+        Entity mMyGrain = schema.addEntity("MTMyGrain");
+        mMyGrain.addLongProperty("grainId").notNull().primaryKey();
+        mMyGrain.addStringProperty("text");
+        mMyGrain.addStringProperty("createTime");
+        mMyGrain.addStringProperty("siteName");
+        mMyGrain.addStringProperty("address");
+        mMyGrain.addStringProperty("image");
+
+        //lonely
+        Entity mtMyFavourite = schema.addEntity("MTMyFavourite");
+        mtMyFavourite.addLongProperty("grainId").notNull().primaryKey();
+        mtMyFavourite.addStringProperty("text");
+        mtMyFavourite.addStringProperty("createTime");
+        mtMyFavourite.addStringProperty("siteName");
+        mtMyFavourite.addStringProperty("address");
+        mtMyFavourite.addStringProperty("image");
+
         //alone
         Entity mFriendStatus = schema.addEntity("MFriendStatus");
         mFriendStatus.addLongProperty("userId").primaryKey().notNull();

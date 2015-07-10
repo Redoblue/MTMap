@@ -35,7 +35,7 @@ public class MFriendDao extends AbstractDao<MFriend, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MFRIEND' (" + //
                 "'USER_ID' INTEGER PRIMARY KEY NOT NULL ," + // 0: userId
                 "'NICK_NAME' TEXT," + // 1: nickName
@@ -45,17 +45,13 @@ public class MFriendDao extends AbstractDao<MFriend, Long> {
                 "'IS_FOLDER' INTEGER);"); // 5: isFolder
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'MFRIEND'";
         db.execSQL(sql);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected void bindValues(SQLiteStatement stmt, MFriend entity) {
         stmt.clearBindings();
@@ -83,7 +79,7 @@ public class MFriendDao extends AbstractDao<MFriend, Long> {
 
         Boolean isFolder = entity.getIsFolder();
         if (isFolder != null) {
-            stmt.bindLong(6, isFolder ? 1l : 0l);
+            stmt.bindLong(6, isFolder ? 1l: 0l);
         }
     }
 
@@ -93,17 +89,13 @@ public class MFriendDao extends AbstractDao<MFriend, Long> {
         entity.__setDaoSession(daoSession);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public MFriend readEntity(Cursor cursor, int offset) {
         MFriend entity = new MFriend( //
@@ -117,9 +109,7 @@ public class MFriendDao extends AbstractDao<MFriend, Long> {
         return entity;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MFriend entity, int offset) {
         entity.setUserId(cursor.getLong(offset + 0));
@@ -130,18 +120,14 @@ public class MFriendDao extends AbstractDao<MFriend, Long> {
         entity.setIsFolder(cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MFriend entity, long rowId) {
         entity.setUserId(rowId);
         return rowId;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long getKey(MFriend entity) {
         if (entity != null) {
@@ -151,18 +137,16 @@ public class MFriendDao extends AbstractDao<MFriend, Long> {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {
         return true;
     }
 
-    /**
+/**
      * Properties of entity MFriend.<br/>
      * Can be used for QueryBuilder and for referencing column names.
-     */
+    */
     public static class Properties {
         public final static Property UserId = new Property(0, long.class, "userId", true, "USER_ID");
         public final static Property NickName = new Property(1, String.class, "nickName", false, "NICK_NAME");
@@ -171,5 +155,5 @@ public class MFriendDao extends AbstractDao<MFriend, Long> {
         public final static Property Remark = new Property(4, String.class, "remark", false, "REMARK");
         public final static Property IsFolder = new Property(5, Boolean.class, "isFolder", false, "IS_FOLDER");
     }
-
+    
 }

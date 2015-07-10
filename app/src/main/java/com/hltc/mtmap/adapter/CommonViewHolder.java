@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -90,7 +91,7 @@ public class CommonViewHolder {
 
     public CommonViewHolder loadImage(int viewId, String url) {
         ImageView imageView = getView(viewId);
-        ImageLoader.getInstance().displayImage(url, imageView);
+        ImageLoader.getInstance().displayImage(url, imageView, MyApplication.displayImageOptions);
         return this;
     }
 
@@ -109,6 +110,17 @@ public class CommonViewHolder {
     public CommonViewHolder setToggleButton(int viewId, boolean isSelected) {
         ToggleButton toggleButton = getView(viewId);
         toggleButton.setChecked(isSelected);
+        return this;
+    }
+
+    public CommonViewHolder setGrainThumbnail(int viewId, String url) {
+        try {
+            ImageLoader.getInstance().displayImage(OssManager.getGrainThumbnailUrl(url),
+                    (ImageView) getView(viewId), MyApplication.displayImageOptions
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return this;
     }
 

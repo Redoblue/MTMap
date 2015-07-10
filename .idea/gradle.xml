@@ -15,6 +15,7 @@
             <option value="$PROJECT_DIR$/library-ClusterMarker" />
             <option value="$PROJECT_DIR$/library-PullToRefresh" />
             <option value="$PROJECT_DIR$/library-PullZoomView" />
+            <option value="$PROJECT_DIR$/library-SwipeMenuListView" />
           </set>
         </option>
       </GradleProjectSettings>

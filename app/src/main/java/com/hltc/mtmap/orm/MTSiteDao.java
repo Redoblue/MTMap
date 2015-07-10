@@ -35,7 +35,7 @@ public class MTSiteDao extends AbstractDao<MTSite, String> {
      * Creates the underlying database table.
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MTSITE' (" + //
                 "'SITE_ID' TEXT PRIMARY KEY NOT NULL ," + // 0: siteId
                 "'NAME' TEXT," + // 1: name
@@ -45,17 +45,13 @@ public class MTSiteDao extends AbstractDao<MTSite, String> {
                 "'PHONE' TEXT);"); // 5: phone
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'MTSITE'";
         db.execSQL(sql);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected void bindValues(SQLiteStatement stmt, MTSite entity) {
         stmt.clearBindings();
@@ -93,17 +89,13 @@ public class MTSiteDao extends AbstractDao<MTSite, String> {
         entity.__setDaoSession(daoSession);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public String readKey(Cursor cursor, int offset) {
         return cursor.getString(offset + 0);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public MTSite readEntity(Cursor cursor, int offset) {
         MTSite entity = new MTSite( //
@@ -117,9 +109,7 @@ public class MTSiteDao extends AbstractDao<MTSite, String> {
         return entity;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTSite entity, int offset) {
         entity.setSiteId(cursor.getString(offset + 0));
@@ -130,17 +120,13 @@ public class MTSiteDao extends AbstractDao<MTSite, String> {
         entity.setPhone(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected String updateKeyAfterInsert(MTSite entity, long rowId) {
         return entity.getSiteId();
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public String getKey(MTSite entity) {
         if (entity != null) {
@@ -150,18 +136,16 @@ public class MTSiteDao extends AbstractDao<MTSite, String> {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {
         return true;
     }
 
-    /**
+/**
      * Properties of entity MTSite.<br/>
      * Can be used for QueryBuilder and for referencing column names.
-     */
+    */
     public static class Properties {
         public final static Property SiteId = new Property(0, String.class, "siteId", true, "SITE_ID");
         public final static Property Name = new Property(1, String.class, "name", false, "NAME");
@@ -170,5 +154,5 @@ public class MTSiteDao extends AbstractDao<MTSite, String> {
         public final static Property Lon = new Property(4, Double.class, "lon", false, "LON");
         public final static Property Phone = new Property(5, String.class, "phone", false, "PHONE");
     }
-
+    
 }
