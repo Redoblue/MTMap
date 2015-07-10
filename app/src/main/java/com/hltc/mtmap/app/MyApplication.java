@@ -107,7 +107,7 @@ public class MyApplication extends Application {
                         Notification mNotification = builder.build();
                         //由于Android v4包的bug，在2.3及以下系统，Builder创建出来的Notification，并没有设置RemoteView，故需要添加此代码
                         mNotification.contentView = myNotificationView;
-                        Log.d("MyApplication", "msg:" + msg);
+                        Log.d("MT", "msg:" + msg);
                         return mNotification;
                     default:
                         //默认为0，若填写的builder_id并不存在，也使用默认。

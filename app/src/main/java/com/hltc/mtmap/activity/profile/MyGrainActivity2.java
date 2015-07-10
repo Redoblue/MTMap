@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.helper.ApiHelper;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.DateUtils;
@@ -113,6 +115,12 @@ public class MyGrainActivity2 extends Activity {
                 // swipe end
             }
         });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ApiHelper.httpGetGrainDetail(mList.get(position).getGrainId());
+            }
+        });
     }
 
     private void httpDeleteGrain(final MTMyGrain mg) {
@@ -173,4 +181,5 @@ public class MyGrainActivity2 extends Activity {
             time.setTextSize(AMapUtils.dp2px(MyApplication.getContext(), 30 / date.length()));
         }
     }
+
 }
