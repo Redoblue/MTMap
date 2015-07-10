@@ -9,13 +9,11 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
-import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ToastUtils;
@@ -44,10 +42,6 @@ public class FeedbackActivity extends Activity {
 
     @InjectView(R.id.btn_bar_left)
     Button btnBarLeft;
-    @InjectView(R.id.tv_bar_title)
-    TextView tvBarTitle;
-    @InjectView(R.id.btn_bar_right)
-    Button btnBarRight;
     @InjectView(R.id.et_feedback_content)
     EditText etFeedbackContent;
     @InjectView(R.id.et_feedback_email)
@@ -67,11 +61,6 @@ public class FeedbackActivity extends Activity {
     }
 
     private void initView() {
-        tvBarTitle.setText("用户反馈");
-        btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
-        btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
-        btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
-
         btnFeedbackSubmit.setEnabled(false);
         etFeedbackEmail.addTextChangedListener(new TextWatcher() {
             @Override

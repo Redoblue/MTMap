@@ -23,7 +23,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="65dp"
+        android:layout_marginBottom="60dp"
         android:orientation="vertical"
         android:padding="15dp">
 
@@ -36,16 +36,39 @@
 
         <Button
             android:id="@+id/btn_start_signup"
-            style="@style/GreenButton"
+            style="@style/BlueButton"
             android:layout_width="match_parent"
             android:text="@string/sign_up" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/btn_start_skip"
-        style="@style/BlueButton"
+    <RelativeLayout
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_margin="15dp"
-        android:text="跳   过" />
+        android:padding="15dp">
+
+        <Button
+            android:id="@+id/btn_start_forget_passwd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginLeft="10dp"
+            android:background="@null"
+            android:text="忘记密码"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/btn_start_skip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@null"
+            android:text="跳过"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
 </RelativeLayout>

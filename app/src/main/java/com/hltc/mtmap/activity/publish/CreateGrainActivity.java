@@ -87,8 +87,6 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
     LinearLayout rootView;
     @InjectView(R.id.sv_create_grain)
     ScrollView scrollView;
-    @InjectView(R.id.bar_create_grain_green)
-    RelativeLayout greenBar;
     @InjectView(R.id.tv_bar_title)
     TextView barTitle;
     @InjectView(R.id.btn_bar_left)

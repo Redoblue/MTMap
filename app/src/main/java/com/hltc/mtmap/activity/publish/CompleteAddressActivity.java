@@ -21,7 +21,6 @@ import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.CommonAdapter;
 import com.hltc.mtmap.adapter.CommonViewHolder;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.StringUtils;
 
 import java.util.ArrayList;
@@ -72,12 +71,6 @@ public class CompleteAddressActivity extends Activity {
 
     private void initView() {
         tvBarTitle.setText("添加地址");
-        btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
-        btnBarRight.setBackgroundResource(R.drawable.ic_action_done);
-        btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
-        btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
-        btnBarRight.setWidth(AMapUtils.dp2px(this, 25));
-        btnBarRight.setHeight(AMapUtils.dp2px(this, 25));
 
         editText.setText(oldString);
         editText.setSelection(oldString.length());

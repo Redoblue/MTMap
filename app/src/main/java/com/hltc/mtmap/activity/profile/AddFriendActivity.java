@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.util.AMapUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -38,15 +37,6 @@ public class AddFriendActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_add_friend);
         ButterKnife.inject(this);
-
-        initView();
-    }
-
-    private void initView() {
-        tvBarTitle.setText("添加好友");
-        btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
-        btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
-        btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
     }
 
     @OnClick({

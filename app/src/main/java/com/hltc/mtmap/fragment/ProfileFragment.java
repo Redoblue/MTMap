@@ -30,6 +30,7 @@ import com.hltc.mtmap.activity.profile.MyGrainActivity2;
 import com.hltc.mtmap.activity.profile.SettingsActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.util.AMapUtils;
@@ -87,7 +88,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 public void onClick(View v) {
                     Intent intent = new Intent(getActivity(), StartActivity.class);
                     startActivity(intent);
-                    getActivity().finish();
+                    AppManager.getAppManager().finishActivity(MainActivity.class);
                 }
             });
             return view;
@@ -102,7 +103,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onStart() {
         super.onStart();
-        initView();
+        if (!MainActivity.isVisitor)
+            initView();
     }
 
     private void initView() {

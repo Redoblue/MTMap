@@ -23,7 +23,6 @@ import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.task.SyncDataAsyncTask;
-import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -79,11 +78,6 @@ public class FriendStatusActivity extends Activity {
     }
 
     private void initView() {
-        tvBarTitle.setText("新的朋友");
-        btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
-        btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
-        btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
-
         lvNewFriend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

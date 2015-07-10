@@ -21,7 +21,6 @@ import com.hltc.mtmap.gmodel.Friend;
 import com.hltc.mtmap.gmodel.FriendStatus;
 import com.hltc.mtmap.helper.PinyinComparator;
 import com.hltc.mtmap.task.SyncDataAsyncTask;
-import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.CharacterParser;
 import com.hltc.mtmap.widget.CharacterBar;
 import com.hltc.mtmap.widget.CharacterBar.OnTouchingLetterChangedListener;
@@ -67,14 +66,6 @@ public class FriendListActivity extends Activity {
     }
 
     private void initView() {
-        tvBarTitle.setText("好友");
-        btnBarLeft.setBackgroundResource(R.drawable.ic_action_arrow_left);
-        btnBarRight.setBackgroundResource(R.drawable.ic_action_add_friend);
-        btnBarLeft.setWidth(AMapUtils.dp2px(this, 25));
-        btnBarLeft.setHeight(AMapUtils.dp2px(this, 25));
-        btnBarRight.setWidth(AMapUtils.dp2px(this, 25));
-        btnBarRight.setHeight(AMapUtils.dp2px(this, 23));
-
         characterParser = CharacterParser.getInstance();
         pinyinComparator = new PinyinComparator();
 

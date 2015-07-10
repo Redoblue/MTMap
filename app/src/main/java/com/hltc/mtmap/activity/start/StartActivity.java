@@ -45,6 +45,8 @@ public class StartActivity extends Activity {
     Button signUpBtn;
     @InjectView(R.id.btn_start_skip)
     Button skipBtn;
+    @InjectView(R.id.btn_start_forget_passwd)
+    Button btnStartForgetPasswd;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -67,7 +69,8 @@ public class StartActivity extends Activity {
 
     @OnClick({R.id.btn_start_signin,
             R.id.btn_start_signup,
-            R.id.btn_start_skip})
+            R.id.btn_start_skip,
+            R.id.btn_start_forget_passwd})
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_start_signin:
@@ -88,13 +91,22 @@ public class StartActivity extends Activity {
                 startActivity(intent1);
                 break;
             case R.id.btn_start_skip:
+//                if (!AppUtils.isNetworkConnected(this)) {
+//                    Toast.makeText(this, "请检查您的网络", Toast.LENGTH_SHORT).show();
+//                } else {
+                httpGetVisitorId();
+                Intent intent2 = new Intent(this, MainActivity.class);
+                startActivity(intent2);
+                finish();
+//                }
+                break;
+            case R.id.btn_start_forget_passwd:
                 if (!AppUtils.isNetworkConnected(this)) {
                     Toast.makeText(this, "请检查您的网络", Toast.LENGTH_SHORT).show();
                 } else {
-                    httpGetVisitorId();
-                    Intent intent2 = new Intent(this, MainActivity.class);
-                    startActivity(intent2);
-                    finish();
+                    Intent intent = new Intent(this, SignUpActivity.class);
+                    intent.putExtra("source", 1);
+                    startActivity(intent);
                 }
                 break;
         }

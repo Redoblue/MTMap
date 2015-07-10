@@ -42,18 +42,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:text="小苹果"
+            android:text="游客"
             android:textColor="@color/white"
             android:textSize="20sp" />
 
-        <!--<TextView
-            android:id="@+id/tv_profile_header_signature"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:maxLines="2"
-            android:text="我是昵称"
-            android:textColor="@color/white"
-            android:textSize="16sp" />-->
     </LinearLayout>
 </RelativeLayout>
