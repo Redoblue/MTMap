@@ -7,9 +7,8 @@ public class UmengMessage {
 
     public String type;
 
-    public String gid;
-    public String puid;
-
-    public String cid;
-    public String cuid;
+    public String grainId;
+    public String praiseId;
+    public String commentId;
+    public String content;
 }

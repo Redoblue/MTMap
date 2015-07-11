@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/home/redoblue/Workspace/MTMap/library-PullToRefresh/src/main/res/values-de/strings.xml -->
+    <eat-comment/>
+    <string name="pull_to_refresh_pull_label">Zum Aktualisieren ziehen...</string>
+    <string name="pull_to_refresh_refreshing_label">Wird geladen...</string>
+    <string name="pull_to_refresh_release_label">Freigeben zum Aktualisieren...</string>
+    <string name="pull_to_refresh_tap_label">Tippen um zu Aktualisieren...</string>
+</resources>

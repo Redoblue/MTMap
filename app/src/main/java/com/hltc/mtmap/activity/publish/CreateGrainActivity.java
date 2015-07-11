@@ -78,11 +78,11 @@ import butterknife.OnClick;
 public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedListener,
         AMap.OnCameraChangeListener, AMapLocationListener, PoiSearch.OnPoiSearchListener {
 
-    private static final int TAKE_PHOTO = 1;
-    private static final int AUTO_COMPLETE = 2;
-    public static String[] mCateId = {
+    public static final String[] M_CATE_ID = {
             "010000", "020000", "990000"
     };
+    private static final int TAKE_PHOTO = 1;
+    private static final int AUTO_COMPLETE = 2;
     @InjectView(R.id.layout_create_grain_root)
     LinearLayout rootView;
     @InjectView(R.id.sv_create_grain)
@@ -131,6 +131,8 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
             "050000", "080000", ""
     };
 
+    private boolean isFromFavourite = false;
+
     private PopupWindow photoWindow;
 
     @Override
@@ -141,6 +143,11 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
         setContentView(R.layout.activity_create_grain);
         ButterKnife.inject(this);
         intentType = getIntent().getIntExtra("create_type", 0);
+        isFromFavourite = getIntent().getBooleanExtra("from_favourite", false);
+        if (isFromFavourite) {
+
+        }
+
         mMapView.onCreate(savedInstanceState);
         initAmap();
         initView();
@@ -190,7 +197,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
                 ParcelableGrain grain = new ParcelableGrain();
                 grain.userId = AppConfig.getAppConfig().getConfUsrUserId();
                 grain.token = AppConfig.getAppConfig().getConfToken();
-                grain.mcateId = mCateId[intentType];
+                grain.mcateId = M_CATE_ID[intentType];
 
                 if (poiTitles.contains(returnedValue)) {
                     PoiItem selectedItem = new PoiItem("", AMapUtils.convertToLatLonPoint(targetLocation), "", "");
@@ -241,12 +248,6 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
 
     private void initView() {
         barTitle.setText("创建" + createTypes[intentType]);
-        cancelAction.setBackgroundResource(R.drawable.ic_action_cancel);
-        doneAction.setBackgroundResource(R.drawable.ic_action_done);
-        cancelAction.setWidth(AMapUtils.dp2px(this, 25));
-        cancelAction.setHeight(AMapUtils.dp2px(this, 25));
-        doneAction.setWidth(AMapUtils.dp2px(this, 25));
-        doneAction.setHeight(AMapUtils.dp2px(this, 25));
 
         photosGridView.setSelector(new ColorDrawable(Color.TRANSPARENT));
         adapter = new GridAdapter(this);

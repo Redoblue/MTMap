@@ -6,4 +6,4 @@
     android:layout_gravity="center_horizontal"
     android:contentDescription="@string/app_name"
     android:scaleType="centerCrop"
-    android:src="@drawable/profile_header_bg" />
+    android:src="@drawable/pic_profile_cover" />

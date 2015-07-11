@@ -11,6 +11,7 @@ import de.greenrobot.dao.identityscope.IdentityScopeType;
 import com.hltc.mtmap.orm.MTUserDao;
 import com.hltc.mtmap.orm.MGrainDao;
 import com.hltc.mtmap.orm.MTMyGrainDao;
+import com.hltc.mtmap.orm.MTMessageDao;
 import com.hltc.mtmap.orm.MTMyFavouriteDao;
 import com.hltc.mtmap.orm.MFriendStatusDao;
 import com.hltc.mtmap.orm.MFriendDao;
@@ -34,6 +35,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(MTUserDao.class);
         registerDaoClass(MGrainDao.class);
         registerDaoClass(MTMyGrainDao.class);
+        registerDaoClass(MTMessageDao.class);
         registerDaoClass(MTMyFavouriteDao.class);
         registerDaoClass(MFriendStatusDao.class);
         registerDaoClass(MFriendDao.class);
@@ -52,6 +54,7 @@ public class DaoMaster extends AbstractDaoMaster {
         MTUserDao.createTable(db, ifNotExists);
         MGrainDao.createTable(db, ifNotExists);
         MTMyGrainDao.createTable(db, ifNotExists);
+        MTMessageDao.createTable(db, ifNotExists);
         MTMyFavouriteDao.createTable(db, ifNotExists);
         MFriendStatusDao.createTable(db, ifNotExists);
         MFriendDao.createTable(db, ifNotExists);
@@ -68,6 +71,7 @@ public class DaoMaster extends AbstractDaoMaster {
         MTUserDao.dropTable(db, ifExists);
         MGrainDao.dropTable(db, ifExists);
         MTMyGrainDao.dropTable(db, ifExists);
+        MTMessageDao.dropTable(db, ifExists);
         MTMyFavouriteDao.dropTable(db, ifExists);
         MFriendStatusDao.dropTable(db, ifExists);
         MFriendDao.dropTable(db, ifExists);

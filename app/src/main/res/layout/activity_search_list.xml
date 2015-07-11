@@ -21,7 +21,6 @@
             android:drawableLeft="@drawable/ic_action_search"
             android:drawablePadding="8dp"
             android:drawableStart="@drawable/ic_action_search"
-            android:hint="搜索手机号码"
             android:imeOptions="actionSearch"
             android:inputType="phone"
             android:paddingLeft="8dp"

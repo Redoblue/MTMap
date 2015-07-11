@@ -93,7 +93,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
-    }
+    }    
 
     /** @inheritdoc */
     @Override
@@ -108,7 +108,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         );
         return entity;
     }
-
+     
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTComment entity, int offset) {
@@ -118,15 +118,15 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         entity.setToCommentId(cursor.isNull(offset + 3) ? null : cursor.getLong(offset + 3));
         entity.setUserId(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
         entity.setGrainId(cursor.getLong(offset + 5));
-    }
-
+     }
+    
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTComment entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
-
+    
     /** @inheritdoc */
     @Override
     public Long getKey(MTComment entity) {
@@ -137,14 +137,12 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override    
     protected boolean isEntityUpdateable() {
         return true;
     }
-
+    
     /** Internal query to resolve the "comments2User" to-many relationship of MTUser. */
     public List<MTComment> _queryMTUser_Comments2User(Long userId) {
         synchronized (this) {
@@ -216,7 +214,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
         offset += daoSession.getMTUserDao().getAllColumns().length;
 
         MTGrain mTGrain = loadCurrentOther(daoSession.getMTGrainDao(), cursor, offset);
-        if(mTGrain != null) {
+        if (mTGrain != null) {
             entity.setMTGrain(mTGrain);
         }
         offset += daoSession.getMTGrainDao().getAllColumns().length;
@@ -284,7 +282,7 @@ public class MTCommentDao extends AbstractDao<MTComment, Long> {
             cursor.close();
         }
     }
-
+    
     /** A raw-style query where you can pass any WHERE clause and arguments. */
     public List<MTComment> queryDeep(String where, String... selectionArg) {
         Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);

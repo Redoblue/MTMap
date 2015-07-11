@@ -9,25 +9,36 @@ import android.graphics.Color;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.hltc.mtmap.MTMessage;
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.profile.MyGrainActivity2;
+import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.DaoManager;
+import com.hltc.mtmap.gmodel.PraiseAndCommentInfo;
 import com.hltc.mtmap.gmodel.UmengMessage;
+import com.hltc.mtmap.util.ApiUtils;
+import com.hltc.mtmap.util.StringUtils;
+import com.lidroid.xutils.HttpUtils;
+import com.lidroid.xutils.exception.HttpException;
+import com.lidroid.xutils.http.RequestParams;
+import com.lidroid.xutils.http.ResponseInfo;
+import com.lidroid.xutils.http.callback.RequestCallBack;
+import com.lidroid.xutils.http.client.HttpRequest;
 import com.umeng.message.UTrack;
 import com.umeng.message.UmengBaseIntentService;
 import com.umeng.message.entity.UMessage;
 
 import org.android.agoo.client.BaseConstants;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
 
 /**
  * Created by redoblue on 15-6-29.
  */
 public class MyPushIntentService extends UmengBaseIntentService {
-
-    public static final int TYPE_PRAISE = 1;
-    public static final int TYPE_COMMENT = 2;
-    public static final int TYPE_ADD_FRIEND = 3;
-    public static final int TYPE_AGREE_REQUEST = 4;
 
     @Override
     protected void onMessage(Context context, Intent intent) {
@@ -40,41 +51,10 @@ public class MyPushIntentService extends UmengBaseIntentService {
 
             JSONObject json = new JSONObject(message).getJSONObject("extra");
             UmengMessage umeng = new Gson().fromJson(json.toString(), UmengMessage.class);
-            handleMessage(umeng);
+            //TODO
         } catch (Exception e) {
             Log.d("MT", e.getMessage());
         }
-    }
-
-    private void handleMessage(UmengMessage msg) {
-        int type = getType(msg);
-        switch (type) {
-            case TYPE_PRAISE:
-                showNotification("你收到了一个赞", "你的好友xxx赞了你的麦粒", MyGrainActivity2.class);
-                break;
-            case TYPE_COMMENT:
-                //TODO
-                break;
-            case TYPE_ADD_FRIEND:
-                //TODO
-                break;
-            case TYPE_AGREE_REQUEST:
-                //TODO
-                break;
-        }
-    }
-
-    private int getType(UmengMessage msg) {
-        int type = 0;
-        if (msg.type.equals("praise"))
-            type = TYPE_PRAISE;
-        else if (msg.type.equals("comment"))
-            type = TYPE_COMMENT;
-        else if (msg.type.equals("add_friend"))
-            type = TYPE_ADD_FRIEND;
-        else if (msg.type.equals("agree_request"))
-            type = TYPE_AGREE_REQUEST;
-        return type;
     }
 
     /**
@@ -105,30 +85,14 @@ public class MyPushIntentService extends UmengBaseIntentService {
 
         // 设置通知的事件消息
         Intent notificationIntent = new Intent(this, toClass); // 点击该通知后要跳转的Activity
+//        if (target != -1)
+//            notificationIntent.putExtra("target_fragment", target);
         PendingIntent contentItent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         notification.setLatestEventInfo(this, "麦田地图", content, contentItent);
 
         // 把Notification传递给NotificationManager
         notificationManager.notify(0, notification);
     }
-
-    /*private void showNotification2(String ticker, String content, Class toClass) {
-        Intent notificationIntent = new Intent(this, toClass); // 点击该通知后要跳转的Activity
-        PendingIntent contentItent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        Notification notification = new Notification.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker(ticker)
-                .setContentTitle("麦田地图")
-                .setContentText(content)
-                .setWhen(System.currentTimeMillis())
-                .setShowWhen(true)
-                .setAutoCancel(true)
-                .setDefaults(Notification.DEFAULT_SOUND)
-                .setLights(Color.BLUE, 1000, 1000)
-                .setContentIntent(contentItent)
-                .build();
-    }*/
 
     //删除通知
     private void clearNotification() {

@@ -77,7 +77,7 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
-    }
+    }    
 
     /** @inheritdoc */
     @Override
@@ -89,22 +89,22 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         );
         return entity;
     }
-
+     
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTFavourite entity, int offset) {
         entity.setId(cursor.getLong(offset + 0));
         entity.setUserId(cursor.getLong(offset + 1));
         entity.setGrainId(cursor.getLong(offset + 2));
-    }
-
+     }
+    
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTFavourite entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
-
+    
     /** @inheritdoc */
     @Override
     public Long getKey(MTFavourite entity) {
@@ -115,14 +115,12 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override    
     protected boolean isEntityUpdateable() {
         return true;
     }
-
+    
     /** Internal query to resolve the "favourite2User" to-many relationship of MTUser. */
     public List<MTFavourite> _queryMTUser_Favourite2User(long userId) {
         synchronized (this) {
@@ -173,13 +171,13 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
         int offset = getAllColumns().length;
 
         MTUser mTUser = loadCurrentOther(daoSession.getMTUserDao(), cursor, offset);
-        if(mTUser != null) {
+        if (mTUser != null) {
             entity.setMTUser(mTUser);
         }
         offset += daoSession.getMTUserDao().getAllColumns().length;
 
         MTGrain mTGrain = loadCurrentOther(daoSession.getMTGrainDao(), cursor, offset);
-        if(mTGrain != null) {
+        if (mTGrain != null) {
             entity.setMTGrain(mTGrain);
         }
 
@@ -243,7 +241,7 @@ public class MTFavouriteDao extends AbstractDao<MTFavourite, Long> {
             cursor.close();
         }
     }
-
+    
     /** A raw-style query where you can pass any WHERE clause and arguments. */
     public List<MTFavourite> queryDeep(String where, String... selectionArg) {
         Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);

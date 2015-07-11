@@ -118,15 +118,15 @@ public class MFriendDao extends AbstractDao<MFriend, Long> {
         entity.setPortrait(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setRemark(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
         entity.setIsFolder(cursor.isNull(offset + 5) ? null : cursor.getShort(offset + 5) != 0);
-    }
-
+     }
+     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MFriend entity, long rowId) {
         entity.setUserId(rowId);
         return rowId;
     }
-
+    
     /** @inheritdoc */
     @Override
     public Long getKey(MFriend entity) {
@@ -136,7 +136,7 @@ public class MFriendDao extends AbstractDao<MFriend, Long> {
             return null;
         }
     }
-
+    
     /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {

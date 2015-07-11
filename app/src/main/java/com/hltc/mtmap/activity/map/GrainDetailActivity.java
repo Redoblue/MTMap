@@ -272,12 +272,14 @@ public class GrainDetailActivity extends FragmentActivity {
         praise.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                popWindow.dismiss();
                 httpPraiseGrain();
             }
         });
         comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                popWindow.dismiss();
                 Intent intent = new Intent(GrainDetailActivity.this, SingleEditActivity.class);
                 intent.putExtra("old", "");
                 startActivity(intent);

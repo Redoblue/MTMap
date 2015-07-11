@@ -68,12 +68,33 @@ public class Generator {
         mMyGrain.addStringProperty("image");
 
         //lonely
+        Entity messageTab = schema.addEntity("MTMessage");
+        messageTab.addIdProperty().notNull().primaryKey().autoincrement();
+        messageTab.addStringProperty("type");
+        messageTab.addLongProperty("userId");
+        messageTab.addStringProperty("portrait");
+        messageTab.addStringProperty("nickName");
+        messageTab.addStringProperty("remark");
+        messageTab.addLongProperty("grainId");
+        messageTab.addStringProperty("name");
+        messageTab.addStringProperty("address");
+        messageTab.addStringProperty("image");
+        messageTab.addStringProperty("text");
+        messageTab.addStringProperty("commentTxt");
+        messageTab.addStringProperty("createTime");
+
+        //lonely
         Entity mtMyFavourite = schema.addEntity("MTMyFavourite");
         mtMyFavourite.addLongProperty("grainId").notNull().primaryKey();
         mtMyFavourite.addStringProperty("text");
         mtMyFavourite.addStringProperty("createTime");
+        mtMyFavourite.addStringProperty("cateId");
+        mtMyFavourite.addStringProperty("nickName");
+        mtMyFavourite.addStringProperty("remark");
         mtMyFavourite.addStringProperty("siteName");
         mtMyFavourite.addStringProperty("address");
+        mtMyFavourite.addDoubleProperty("lat");
+        mtMyFavourite.addDoubleProperty("lon");
         mtMyFavourite.addStringProperty("image");
 
         //alone

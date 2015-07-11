@@ -169,6 +169,10 @@
         <activity
             android:name=".activity.profile.setting.AboutActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".activity.publish.CreateGrainActivity2"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <service android:name=".service.DownloadService" />
 

@@ -35,7 +35,7 @@ public class MTMyGrainDao extends AbstractDao<MTMyGrain, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MTMY_GRAIN' (" + //
                 "'GRAIN_ID' INTEGER PRIMARY KEY NOT NULL ," + // 0: grainId
                 "'TEXT' TEXT," + // 1: text
@@ -45,17 +45,13 @@ public class MTMyGrainDao extends AbstractDao<MTMyGrain, Long> {
                 "'IMAGE' TEXT);"); // 5: image
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'MTMY_GRAIN'";
         db.execSQL(sql);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected void bindValues(SQLiteStatement stmt, MTMyGrain entity) {
         stmt.clearBindings();
@@ -93,17 +89,13 @@ public class MTMyGrainDao extends AbstractDao<MTMyGrain, Long> {
         entity.__setDaoSession(daoSession);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public MTMyGrain readEntity(Cursor cursor, int offset) {
         MTMyGrain entity = new MTMyGrain( //
@@ -117,9 +109,7 @@ public class MTMyGrainDao extends AbstractDao<MTMyGrain, Long> {
         return entity;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTMyGrain entity, int offset) {
         entity.setGrainId(cursor.getLong(offset + 0));
@@ -130,18 +120,14 @@ public class MTMyGrainDao extends AbstractDao<MTMyGrain, Long> {
         entity.setImage(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTMyGrain entity, long rowId) {
         entity.setGrainId(rowId);
         return rowId;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long getKey(MTMyGrain entity) {
         if (entity != null) {
@@ -151,18 +137,16 @@ public class MTMyGrainDao extends AbstractDao<MTMyGrain, Long> {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {
         return true;
     }
 
-    /**
+/**
      * Properties of entity MTMyGrain.<br/>
      * Can be used for QueryBuilder and for referencing column names.
-     */
+    */
     public static class Properties {
         public final static Property GrainId = new Property(0, long.class, "grainId", true, "GRAIN_ID");
         public final static Property Text = new Property(1, String.class, "text", false, "TEXT");
@@ -171,5 +155,5 @@ public class MTMyGrainDao extends AbstractDao<MTMyGrain, Long> {
         public final static Property Address = new Property(4, String.class, "address", false, "ADDRESS");
         public final static Property Image = new Property(5, String.class, "image", false, "IMAGE");
     }
-
+    
 }

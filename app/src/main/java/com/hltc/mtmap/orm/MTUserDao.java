@@ -142,15 +142,15 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
         entity.setSignature(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setRemark(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setFirstCharacter(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-    }
-
+     }
+     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTUser entity, long rowId) {
         entity.setUserId(rowId);
         return rowId;
     }
-
+    
     /** @inheritdoc */
     @Override
     public Long getKey(MTUser entity) {
@@ -160,7 +160,7 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
             return null;
         }
     }
-
+    
     /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {

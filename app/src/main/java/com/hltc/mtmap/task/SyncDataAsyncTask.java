@@ -452,7 +452,7 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
         httpSyncContactStatusData();
         httpSyncGrainNumber();
         httpSyncMyGrainData();
-//        httpSyncMyFavouriteData();
+        httpSyncMyFavouriteData();
         return true;
     }
 }

@@ -18,6 +18,7 @@ import com.hltc.mtmap.activity.publish.PublishActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.event.MessageEvent;
 import com.hltc.mtmap.fragment.GrainFragment;
 import com.hltc.mtmap.fragment.MapFragment;
 import com.hltc.mtmap.fragment.MessageFragment;
@@ -33,6 +34,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
 
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
 
@@ -91,8 +93,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
 
-        //start strict mode
-//        StrictModeWrapper.init(this);
+        EventBus.getDefault().register(this);
 
         isVisitor = MyApplication.signInStatus.equals("10");
 
@@ -103,6 +104,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         if (MyApplication.signInStatus.equals("11")) {
             new SyncDataAsyncTask().execute();
         }
+    }
+
+    public void onEvent(MessageEvent event) {
+        setChioceItem(event.target);
     }
 
     private void initView() {
@@ -144,7 +149,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 }
             }
         }).start();
-        mPushAgent.setPushIntentServiceClass(MyPushIntentService.class);
+//        mPushAgent.setPushIntentServiceClass(MyPushIntentService.class);
     }
 
     @Override
@@ -251,6 +256,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     public void onDestroy() {
         super.onDestroy();
         AppManager.getAppManager().finishActivity(this);
+        EventBus.getDefault().unregister(this);
     }
 
 

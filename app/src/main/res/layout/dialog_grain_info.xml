@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:src="@color/dark_grey" />
+                android:src="@drawable/pic_profile_cover" />
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/civ_grain_info_portrait"
@@ -96,7 +96,7 @@
         <TextView
             android:id="@+id/tv_grain_info_detail"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:gravity="center"
             android:text="查看详情"
             android:textColor="#59ba45" />

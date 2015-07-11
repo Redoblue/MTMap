@@ -88,7 +88,7 @@ public class DonePublishDialog extends Activity {
 //                Intent intent = new Intent(this, MainActivity.class);
 //                startActivity(intent);
                 AppManager.getAppManager().finishActivity(this);
-                AppManager.getAppManager().finishActivity(CreateGrainActivity.class);
+                AppManager.getAppManager().finishActivity(CreateGrainActivity2.class);
                 break;
             case R.id.btn_done_publish_maitian:
                 //TODO

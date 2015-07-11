@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/home/redoblue/Workspace/MTMap/library-PullToRefresh/build/intermediates/bundles/debug/res/values-zh-rHK/values.xml -->
+    <eat-comment/>
+    <string name="pull_to_refresh_pull_label">下拉刷新</string>
+    <string name="pull_to_refresh_refreshing_label">載入中</string>
+    <string name="pull_to_refresh_release_label">放開以刷新</string>
+    <string name="pull_to_refresh_tap_label">點擊這裡刷新</string>
+</resources>

@@ -468,7 +468,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
 //            if (currentCategory != 0) {
-//                json.put(ApiUtils.KEY_GRAIN_MCATEID, CreateGrainActivity.mCateId[cateId]);
+//                json.put(ApiUtils.KEY_GRAIN_MCATEID, CreateGrainActivity.M_CATE_ID[cateId]);
 //            }
             json.put(ApiUtils.KEY_GRAIN_CITYCODE, mMapInfo.getCityCode());
             json.put(ApiUtils.KEY_GRAIN_LON, mMapInfo.getLongitude());
@@ -602,7 +602,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             grains = DaoManager.getManager().daoSession.getMGrainDao().loadAll();
         } else {
             QueryBuilder qb = DaoManager.getManager().daoSession.getMGrainDao().queryBuilder();
-            qb.where(MGrainDao.Properties.CateId.eq(CreateGrainActivity.mCateId[type]));
+            qb.where(MGrainDao.Properties.CateId.eq(CreateGrainActivity.M_CATE_ID[type]));
             grains = qb.list();
         }
 
@@ -641,7 +641,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             list.addAll(mGrains);
         } else if (mGrains != null && mGrains.size() > 0) {
             for (ClusterGrain c : mGrains) {
-                if (c.cateId.equals(CreateGrainActivity.mCateId[type])) {
+                if (c.cateId.equals(CreateGrainActivity.M_CATE_ID[type])) {
                     list.add(c);
                 }
             }

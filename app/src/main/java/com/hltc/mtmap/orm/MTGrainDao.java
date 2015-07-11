@@ -105,7 +105,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
-    }
+    }    
 
     /** @inheritdoc */
     @Override
@@ -122,7 +122,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         );
         return entity;
     }
-
+     
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTGrain entity, int offset) {
@@ -134,15 +134,15 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         entity.setSiteId(cursor.getString(offset + 5));
         entity.setCategoryId(cursor.getLong(offset + 6));
         entity.setUserId(cursor.getLong(offset + 7));
-    }
-
+     }
+    
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTGrain entity, long rowId) {
         entity.setGrainId(rowId);
         return rowId;
     }
-
+    
     /** @inheritdoc */
     @Override
     public Long getKey(MTGrain entity) {
@@ -153,14 +153,12 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override    
     protected boolean isEntityUpdateable() {
         return true;
     }
-
+    
     /** Internal query to resolve the "grains2User" to-many relationship of MTUser. */
     public List<MTGrain> _queryMTUser_Grains2User(long userId) {
         synchronized (this) {
@@ -228,19 +226,19 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
         int offset = getAllColumns().length;
 
         MTSite mTSite = loadCurrentOther(daoSession.getMTSiteDao(), cursor, offset);
-        if(mTSite != null) {
+        if (mTSite != null) {
             entity.setMTSite(mTSite);
         }
         offset += daoSession.getMTSiteDao().getAllColumns().length;
 
         MTUser mTUser = loadCurrentOther(daoSession.getMTUserDao(), cursor, offset);
-        if(mTUser != null) {
+        if (mTUser != null) {
             entity.setMTUser(mTUser);
         }
         offset += daoSession.getMTUserDao().getAllColumns().length;
 
         MTCategory mTCategory = loadCurrentOther(daoSession.getMTCategoryDao(), cursor, offset);
-        if(mTCategory != null) {
+        if (mTCategory != null) {
             entity.setMTCategory(mTCategory);
         }
 
@@ -304,7 +302,7 @@ public class MTGrainDao extends AbstractDao<MTGrain, Long> {
             cursor.close();
         }
     }
-
+    
     /** A raw-style query where you can pass any WHERE clause and arguments. */
     public List<MTGrain> queryDeep(String where, String... selectionArg) {
         Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);

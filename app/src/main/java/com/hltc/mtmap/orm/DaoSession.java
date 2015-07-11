@@ -12,6 +12,7 @@ import de.greenrobot.dao.internal.DaoConfig;
 import com.hltc.mtmap.MTUser;
 import com.hltc.mtmap.MGrain;
 import com.hltc.mtmap.MTMyGrain;
+import com.hltc.mtmap.MTMessage;
 import com.hltc.mtmap.MTMyFavourite;
 import com.hltc.mtmap.MFriendStatus;
 import com.hltc.mtmap.MFriend;
@@ -25,6 +26,7 @@ import com.hltc.mtmap.MTFavourite;
 import com.hltc.mtmap.orm.MTUserDao;
 import com.hltc.mtmap.orm.MGrainDao;
 import com.hltc.mtmap.orm.MTMyGrainDao;
+import com.hltc.mtmap.orm.MTMessageDao;
 import com.hltc.mtmap.orm.MTMyFavouriteDao;
 import com.hltc.mtmap.orm.MFriendStatusDao;
 import com.hltc.mtmap.orm.MFriendDao;
@@ -47,6 +49,7 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig mTUserDaoConfig;
     private final DaoConfig mGrainDaoConfig;
     private final DaoConfig mTMyGrainDaoConfig;
+    private final DaoConfig mTMessageDaoConfig;
     private final DaoConfig mTMyFavouriteDaoConfig;
     private final DaoConfig mFriendStatusDaoConfig;
     private final DaoConfig mFriendDaoConfig;
@@ -60,6 +63,7 @@ public class DaoSession extends AbstractDaoSession {
     private final MTUserDao mTUserDao;
     private final MGrainDao mGrainDao;
     private final MTMyGrainDao mTMyGrainDao;
+    private final MTMessageDao mTMessageDao;
     private final MTMyFavouriteDao mTMyFavouriteDao;
     private final MFriendStatusDao mFriendStatusDao;
     private final MFriendDao mFriendDao;
@@ -82,6 +86,9 @@ public class DaoSession extends AbstractDaoSession {
 
         mTMyGrainDaoConfig = daoConfigMap.get(MTMyGrainDao.class).clone();
         mTMyGrainDaoConfig.initIdentityScope(type);
+
+        mTMessageDaoConfig = daoConfigMap.get(MTMessageDao.class).clone();
+        mTMessageDaoConfig.initIdentityScope(type);
 
         mTMyFavouriteDaoConfig = daoConfigMap.get(MTMyFavouriteDao.class).clone();
         mTMyFavouriteDaoConfig.initIdentityScope(type);
@@ -113,6 +120,7 @@ public class DaoSession extends AbstractDaoSession {
         mTUserDao = new MTUserDao(mTUserDaoConfig, this);
         mGrainDao = new MGrainDao(mGrainDaoConfig, this);
         mTMyGrainDao = new MTMyGrainDao(mTMyGrainDaoConfig, this);
+        mTMessageDao = new MTMessageDao(mTMessageDaoConfig, this);
         mTMyFavouriteDao = new MTMyFavouriteDao(mTMyFavouriteDaoConfig, this);
         mFriendStatusDao = new MFriendStatusDao(mFriendStatusDaoConfig, this);
         mFriendDao = new MFriendDao(mFriendDaoConfig, this);
@@ -126,6 +134,7 @@ public class DaoSession extends AbstractDaoSession {
         registerDao(MTUser.class, mTUserDao);
         registerDao(MGrain.class, mGrainDao);
         registerDao(MTMyGrain.class, mTMyGrainDao);
+        registerDao(MTMessage.class, mTMessageDao);
         registerDao(MTMyFavourite.class, mTMyFavouriteDao);
         registerDao(MFriendStatus.class, mFriendStatusDao);
         registerDao(MFriend.class, mFriendDao);
@@ -141,6 +150,7 @@ public class DaoSession extends AbstractDaoSession {
         mTUserDaoConfig.getIdentityScope().clear();
         mGrainDaoConfig.getIdentityScope().clear();
         mTMyGrainDaoConfig.getIdentityScope().clear();
+        mTMessageDaoConfig.getIdentityScope().clear();
         mTMyFavouriteDaoConfig.getIdentityScope().clear();
         mFriendStatusDaoConfig.getIdentityScope().clear();
         mFriendDaoConfig.getIdentityScope().clear();
@@ -162,6 +172,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public MTMyGrainDao getMTMyGrainDao() {
         return mTMyGrainDao;
+    }
+
+    public MTMessageDao getMTMessageDao() {
+        return mTMessageDao;
     }
 
     public MTMyFavouriteDao getMTMyFavouriteDao() {

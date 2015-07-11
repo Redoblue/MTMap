@@ -118,14 +118,14 @@ public class MTSiteDao extends AbstractDao<MTSite, String> {
         entity.setLat(cursor.isNull(offset + 3) ? null : cursor.getDouble(offset + 3));
         entity.setLon(cursor.isNull(offset + 4) ? null : cursor.getDouble(offset + 4));
         entity.setPhone(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-    }
-
+     }
+     
     /** @inheritdoc */
     @Override
     protected String updateKeyAfterInsert(MTSite entity, long rowId) {
         return entity.getSiteId();
     }
-
+    
     /** @inheritdoc */
     @Override
     public String getKey(MTSite entity) {
@@ -135,7 +135,7 @@ public class MTSiteDao extends AbstractDao<MTSite, String> {
             return null;
         }
     }
-
+    
     /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {

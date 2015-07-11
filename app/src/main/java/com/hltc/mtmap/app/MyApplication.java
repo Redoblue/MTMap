@@ -10,8 +10,11 @@ import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.hltc.mtmap.MTMessage;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.bean.LocalUserInfo;
+import com.hltc.mtmap.gmodel.PraiseAndCommentInfo;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -38,6 +41,11 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 
 public class MyApplication extends Application {
+
+    public static final int TYPE_PRAISE = 1;
+    public static final int TYPE_COMMENT = 2;
+    public static final int TYPE_ADD_FRIEND = 3;
+    public static final int TYPE_AGREE_REQUEST = 4;
 
     public static String signInStatus = "00"; // "00", "01", "10", "11" 第一位: 1 在线 0 离线  第二位： 1 登录 0 未登录
     //显示图片的配置
@@ -74,12 +82,6 @@ public class MyApplication extends Application {
         mPushAgent = PushAgent.getInstance(mContext);
         mPushAgent.setDebugMode(true);
 
-        /**
-         * 该Handler是在IntentService中被调用，故
-         * 1. 如果需启动Activity，需添加Intent.FLAG_ACTIVITY_NEW_TASK
-         * 2. IntentService里的onHandleIntent方法是并不处于主线程中，因此，如果需调用到主线程，需如下所示;
-         * 	      或者可以直接启动Service
-         * */
         UmengMessageHandler messageHandler = new UmengMessageHandler() {
             @Override
             public void dealWithCustomMessage(final Context context, final UMessage msg) {
@@ -96,19 +98,8 @@ public class MyApplication extends Application {
             public Notification getNotification(Context context, UMessage msg) {
                 switch (msg.builder_id) {
                     case 1:
-                        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-                        RemoteViews myNotificationView = new RemoteViews(context.getPackageName(), R.layout.notification_umeng);
-                        myNotificationView.setTextViewText(R.id.notification_title, msg.title);
-                        myNotificationView.setTextViewText(R.id.notification_text, msg.text);
-                        myNotificationView.setImageViewBitmap(R.id.notification_large_icon, getLargeIcon(context, msg));
-                        myNotificationView.setImageViewResource(R.id.notification_small_icon, getSmallIconId(context, msg));
-                        builder.setContent(myNotificationView);
-                        builder.setAutoCancel(true);
-                        Notification mNotification = builder.build();
-                        //由于Android v4包的bug，在2.3及以下系统，Builder创建出来的Notification，并没有设置RemoteView，故需要添加此代码
-                        mNotification.contentView = myNotificationView;
-                        Log.d("MT", "msg:" + msg);
-                        return mNotification;
+                        manageMessage(msg);//处理消息
+                        return buildNotification(context, msg);
                     default:
                         //默认为0，若填写的builder_id并不存在，也使用默认。
                         return super.getNotification(context, msg);
@@ -117,18 +108,129 @@ public class MyApplication extends Application {
         };
         mPushAgent.setMessageHandler(messageHandler);
 
-        /**
-         * 该Handler是在BroadcastReceiver中被调用，故
-         * 如果需启动Activity，需添加Intent.FLAG_ACTIVITY_NEW_TASK
-         * */
         UmengNotificationClickHandler notificationClickHandler = new UmengNotificationClickHandler() {
             @Override
             public void dealWithCustomAction(Context context, UMessage msg) {
-                Log.d("MyApplication", "msg:" + msg);
+                Log.d("MT", "click:" + msg);
                 Toast.makeText(context, msg.custom, Toast.LENGTH_LONG).show();
             }
         };
         mPushAgent.setNotificationClickHandler(notificationClickHandler);
+    }
+
+    private Notification buildNotification(Context context, UMessage msg) {
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+        RemoteViews myNotificationView = new RemoteViews(context.getPackageName(), R.layout.notification_umeng);
+        myNotificationView.setTextViewText(R.id.notification_title, msg.title);
+        myNotificationView.setTextViewText(R.id.notification_text, msg.text);
+        myNotificationView.setImageViewResource(R.id.notification_large_icon, R.mipmap.ic_launcher);
+//        myNotificationView.setImageViewResource(R.id.notification_small_icon, getSmallIconId(context, msg));
+        builder.setContent(myNotificationView);
+        builder.setAutoCancel(true);
+        Notification mNotification = builder.build();
+        //由于Android v4包的bug，在2.3及以下系统，Builder创建出来的Notification，并没有设置RemoteView，故需要添加此代码
+        mNotification.contentView = myNotificationView;
+        return mNotification;
+    }
+
+    private void manageMessage(UMessage msg) {
+        int type = getType(msg);
+        switch (type) {
+            case TYPE_PRAISE:
+                httpGetMessageInfo(TYPE_PRAISE, msg);
+                break;
+            case TYPE_COMMENT:
+                httpGetMessageInfo(TYPE_COMMENT, msg);
+                break;
+            case TYPE_ADD_FRIEND:
+                //TODO
+                break;
+            case TYPE_AGREE_REQUEST:
+                //TODO
+                break;
+        }
+    }
+
+    private int getType(UMessage msg) {
+        String type = msg.extra.get("type");
+        if (type.equals("praise"))
+            return TYPE_PRAISE;
+        else if (type.equals("comment"))
+            return TYPE_COMMENT;
+        else if (type.equals("add_friend"))
+            return TYPE_ADD_FRIEND;
+        else if (type.equals("agree_request"))
+            return TYPE_AGREE_REQUEST;
+        else return -1;
+    }
+
+
+    private void httpGetMessageInfo(int type, final UMessage msg) {
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_SOURCE, "Android");
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
+            json.put("grainId", StringUtils.toLong(msg.extra.get("grainId")));
+            if (type == TYPE_PRAISE) {
+                json.put("praiseId", StringUtils.toLong(msg.extra.get("praiseId")));
+            } else if (type == TYPE_COMMENT) {
+                json.put("commentId", StringUtils.toLong(msg.extra.get("commentId")));
+            }
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        String url = "";
+        if (type == TYPE_PRAISE) {
+            url = ApiUtils.URL_ROOT + "message/praise.json";
+        } else if (type == TYPE_COMMENT) {
+            url = ApiUtils.URL_ROOT + "message/comment.json";
+        }
+
+        HttpUtils http = new HttpUtils();
+        http.send(HttpRequest.HttpMethod.POST, url,
+                params, new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+                        if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                            Gson gson = new Gson();
+                            PraiseAndCommentInfo paci = gson.fromJson(result, PraiseAndCommentInfo.class);
+                            paci.type = msg.extra.get("type");
+                            //TODO 保存到数据库
+                            MTMessage message = toMTMessage(paci);
+                            DaoManager.getManager().daoSession.getMTMessageDao().insert(message);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+
+                    }
+                });
+    }
+
+    private MTMessage toMTMessage(PraiseAndCommentInfo paci) {
+        MTMessage message = new MTMessage();
+        message.setType(paci.type);
+        message.setUserId(paci.user.userId);
+        message.setPortrait(paci.user.portrait);
+        message.setNickName(paci.user.nickName);
+        message.setRemark(paci.user.remark);
+        message.setGrainId(paci.grain.grainId);
+        message.setName(paci.grain.name);
+        message.setAddress(paci.grain.address);
+        message.setImage(paci.grain.image);
+        message.setText(paci.grain.text);
+        message.setCommentTxt(paci.commentTxt);
+        message.setCreateTime(paci.createTime);
+        return message;
     }
 
     private void initIdentify() {

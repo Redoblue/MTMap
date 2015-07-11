@@ -86,15 +86,15 @@ public class MTCategoryDao extends AbstractDao<MTCategory, Long> {
         entity.setId(cursor.getLong(offset + 0));
         entity.setName(cursor.getString(offset + 1));
         entity.setIconURL(cursor.getString(offset + 2));
-    }
-
+     }
+     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTCategory entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
-
+    
     /** @inheritdoc */
     @Override
     public Long getKey(MTCategory entity) {
@@ -104,7 +104,7 @@ public class MTCategoryDao extends AbstractDao<MTCategory, Long> {
             return null;
         }
     }
-
+    
     /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {

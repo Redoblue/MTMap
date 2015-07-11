@@ -2,6 +2,7 @@ package com.hltc.mtmap.activity.profile;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -10,12 +11,15 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.amap.api.maps.model.LatLng;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.hltc.mtmap.MTMyFavourite;
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.publish.CreateGrainActivity;
+import com.hltc.mtmap.activity.publish.CreateGrainActivity2;
 import com.hltc.mtmap.adapter.CommonAdapter;
 import com.hltc.mtmap.adapter.CommonViewHolder;
 import com.hltc.mtmap.app.AppConfig;
@@ -104,7 +108,12 @@ public class MyFavouritesActivity extends Activity {
                 MTMyFavourite mg = mList.get(position);
                 switch (index) {
                     case 0:
-                        //TODO 添加到我的麦田
+                        Intent intent = new Intent(MyFavouritesActivity.this, CreateGrainActivity.class);
+                        intent.putExtra("type", getCreateType(mg));
+                        intent.putExtra("address", mg.getAddress());
+                        LatLng latLng = new LatLng(mg.getLat(), mg.getLon());
+                        intent.putExtra("location", latLng);
+                        startActivity(intent);
                         break;
                     case 1:
                         httpDeleteFavourite(mg);
@@ -124,6 +133,14 @@ public class MyFavouritesActivity extends Activity {
                 // swipe end
             }
         });
+    }
+
+    private int getCreateType(MTMyFavourite mg) {
+        for (int i = 0; i < CreateGrainActivity2.mCateId.length; i++) {
+            if (mg.getCateId().equals(CreateGrainActivity2.mCateId[i]))
+                return i;
+        }
+        return -1;
     }
 
     private void httpDeleteFavourite(final MTMyFavourite mg) {

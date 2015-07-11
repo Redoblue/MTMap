@@ -28,7 +28,7 @@
             android:layout_height="50dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="30dp"
-            android:src="@drawable/cluster_pic" />
+            android:src="@drawable/pic_default_portrait" />
 
         <TextView
             android:id="@+id/tv_item_friend_list_name"

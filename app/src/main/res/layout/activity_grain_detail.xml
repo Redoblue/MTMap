@@ -74,6 +74,12 @@
                 android:layout_height="180dp"
                 android:background="@color/dark_grey">
 
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/pic_profile_cover" />
+
                 <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/civ_grain_detail_portrait"
                     android:layout_width="100dp"

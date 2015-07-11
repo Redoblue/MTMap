@@ -35,27 +35,28 @@ public class MTMyFavouriteDao extends AbstractDao<MTMyFavourite, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MTMY_FAVOURITE' (" + //
                 "'GRAIN_ID' INTEGER PRIMARY KEY NOT NULL ," + // 0: grainId
                 "'TEXT' TEXT," + // 1: text
                 "'CREATE_TIME' TEXT," + // 2: createTime
-                "'SITE_NAME' TEXT," + // 3: siteName
-                "'ADDRESS' TEXT," + // 4: address
-                "'IMAGE' TEXT);"); // 5: image
+                "'CATE_ID' TEXT," + // 3: cateId
+                "'NICK_NAME' TEXT," + // 4: nickName
+                "'REMARK' TEXT," + // 5: remark
+                "'SITE_NAME' TEXT," + // 6: siteName
+                "'ADDRESS' TEXT," + // 7: address
+                "'LAT' REAL," + // 8: lat
+                "'LON' REAL," + // 9: lon
+                "'IMAGE' TEXT);"); // 10: image
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(SQLiteDatabase db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "'MTMY_FAVOURITE'";
         db.execSQL(sql);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected void bindValues(SQLiteStatement stmt, MTMyFavourite entity) {
         stmt.clearBindings();
@@ -71,19 +72,44 @@ public class MTMyFavouriteDao extends AbstractDao<MTMyFavourite, Long> {
             stmt.bindString(3, createTime);
         }
 
+        String cateId = entity.getCateId();
+        if (cateId != null) {
+            stmt.bindString(4, cateId);
+        }
+
+        String nickName = entity.getNickName();
+        if (nickName != null) {
+            stmt.bindString(5, nickName);
+        }
+
+        String remark = entity.getRemark();
+        if (remark != null) {
+            stmt.bindString(6, remark);
+        }
+
         String siteName = entity.getSiteName();
         if (siteName != null) {
-            stmt.bindString(4, siteName);
+            stmt.bindString(7, siteName);
         }
 
         String address = entity.getAddress();
         if (address != null) {
-            stmt.bindString(5, address);
+            stmt.bindString(8, address);
+        }
+
+        Double lat = entity.getLat();
+        if (lat != null) {
+            stmt.bindDouble(9, lat);
+        }
+
+        Double lon = entity.getLon();
+        if (lon != null) {
+            stmt.bindDouble(10, lon);
         }
 
         String image = entity.getImage();
         if (image != null) {
-            stmt.bindString(6, image);
+            stmt.bindString(11, image);
         }
     }
 
@@ -93,55 +119,55 @@ public class MTMyFavouriteDao extends AbstractDao<MTMyFavourite, Long> {
         entity.__setDaoSession(daoSession);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public MTMyFavourite readEntity(Cursor cursor, int offset) {
         MTMyFavourite entity = new MTMyFavourite( //
                 cursor.getLong(offset + 0), // grainId
                 cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // text
                 cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // createTime
-                cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // siteName
-                cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // address
-                cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // image
+                cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // cateId
+                cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // nickName
+                cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // remark
+                cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // siteName
+                cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // address
+                cursor.isNull(offset + 8) ? null : cursor.getDouble(offset + 8), // lat
+                cursor.isNull(offset + 9) ? null : cursor.getDouble(offset + 9), // lon
+                cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10) // image
         );
         return entity;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTMyFavourite entity, int offset) {
         entity.setGrainId(cursor.getLong(offset + 0));
         entity.setText(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setCreateTime(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setSiteName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
-        entity.setAddress(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setImage(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setCateId(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setNickName(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setRemark(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setSiteName(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setAddress(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
+        entity.setLat(cursor.isNull(offset + 8) ? null : cursor.getDouble(offset + 8));
+        entity.setLon(cursor.isNull(offset + 9) ? null : cursor.getDouble(offset + 9));
+        entity.setImage(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTMyFavourite entity, long rowId) {
         entity.setGrainId(rowId);
         return rowId;
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     public Long getKey(MTMyFavourite entity) {
         if (entity != null) {
@@ -151,25 +177,28 @@ public class MTMyFavouriteDao extends AbstractDao<MTMyFavourite, Long> {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {
         return true;
     }
 
-    /**
+/**
      * Properties of entity MTMyFavourite.<br/>
      * Can be used for QueryBuilder and for referencing column names.
-     */
+    */
     public static class Properties {
         public final static Property GrainId = new Property(0, long.class, "grainId", true, "GRAIN_ID");
         public final static Property Text = new Property(1, String.class, "text", false, "TEXT");
         public final static Property CreateTime = new Property(2, String.class, "createTime", false, "CREATE_TIME");
-        public final static Property SiteName = new Property(3, String.class, "siteName", false, "SITE_NAME");
-        public final static Property Address = new Property(4, String.class, "address", false, "ADDRESS");
-        public final static Property Image = new Property(5, String.class, "image", false, "IMAGE");
+    public final static Property CateId = new Property(3, String.class, "cateId", false, "CATE_ID");
+    public final static Property NickName = new Property(4, String.class, "nickName", false, "NICK_NAME");
+    public final static Property Remark = new Property(5, String.class, "remark", false, "REMARK");
+    public final static Property SiteName = new Property(6, String.class, "siteName", false, "SITE_NAME");
+    public final static Property Address = new Property(7, String.class, "address", false, "ADDRESS");
+    public final static Property Lat = new Property(8, Double.class, "lat", false, "LAT");
+    public final static Property Lon = new Property(9, Double.class, "lon", false, "LON");
+    public final static Property Image = new Property(10, String.class, "image", false, "IMAGE");
     }
-
+    
 }

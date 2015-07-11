@@ -81,7 +81,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.getLong(offset + 0);
-    }
+    }    
 
     /** @inheritdoc */
     @Override
@@ -95,7 +95,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         );
         return entity;
     }
-
+     
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, MTPhoto entity, int offset) {
@@ -104,15 +104,15 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         entity.setThumbnailURL(cursor.getString(offset + 2));
         entity.setUserId(cursor.getLong(offset + 3));
         entity.setGrainId(cursor.getLong(offset + 4));
-    }
-
+     }
+    
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MTPhoto entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
-
+    
     /** @inheritdoc */
     @Override
     public Long getKey(MTPhoto entity) {
@@ -123,14 +123,12 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         }
     }
 
-    /**
-     * @inheritdoc
-     */
+    /** @inheritdoc */
     @Override    
     protected boolean isEntityUpdateable() {
         return true;
     }
-
+    
     /** Internal query to resolve the "photo2User" to-many relationship of MTUser. */
     public List<MTPhoto> _queryMTUser_Photo2User(long userId) {
         synchronized (this) {
@@ -181,13 +179,13 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
         int offset = getAllColumns().length;
 
         MTUser mTUser = loadCurrentOther(daoSession.getMTUserDao(), cursor, offset);
-        if(mTUser != null) {
+        if (mTUser != null) {
             entity.setMTUser(mTUser);
         }
         offset += daoSession.getMTUserDao().getAllColumns().length;
 
         MTGrain mTGrain = loadCurrentOther(daoSession.getMTGrainDao(), cursor, offset);
-        if(mTGrain != null) {
+        if (mTGrain != null) {
             entity.setMTGrain(mTGrain);
         }
 
@@ -251,7 +249,7 @@ public class MTPhotoDao extends AbstractDao<MTPhoto, Long> {
             cursor.close();
         }
     }
-
+    
     /** A raw-style query where you can pass any WHERE clause and arguments. */
     public List<MTPhoto> queryDeep(String where, String... selectionArg) {
         Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);

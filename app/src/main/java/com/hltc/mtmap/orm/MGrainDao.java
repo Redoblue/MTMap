@@ -198,15 +198,15 @@ public class MGrainDao extends AbstractDao<MGrain, Long> {
         entity.setMtype(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
         entity.setLat(cursor.isNull(offset + 14) ? null : cursor.getDouble(offset + 14));
         entity.setLon(cursor.isNull(offset + 15) ? null : cursor.getDouble(offset + 15));
-    }
-
+     }
+     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MGrain entity, long rowId) {
         entity.setGrainId(rowId);
         return rowId;
     }
-
+    
     /** @inheritdoc */
     @Override
     public Long getKey(MGrain entity) {
@@ -216,7 +216,7 @@ public class MGrainDao extends AbstractDao<MGrain, Long> {
             return null;
         }
     }
-
+    
     /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {

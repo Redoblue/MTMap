@@ -20,7 +20,6 @@ import com.hltc.mtmap.activity.SingleEditActivity;
 import com.hltc.mtmap.activity.profile.setting.AboutActivity;
 import com.hltc.mtmap.activity.profile.setting.CheckUpdateActivity;
 import com.hltc.mtmap.activity.profile.setting.FeedbackActivity;
-import com.hltc.mtmap.activity.profile.setting.UpdateNicknameActivity;
 import com.hltc.mtmap.activity.start.SignUpActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
@@ -229,10 +228,6 @@ public class SettingsActivity extends Activity {
                             JSONObject farther = new JSONObject(result);
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
                                 AppConfig.getAppConfig().setConfUsrNickName(nickname);
-
-                                AppManager.getAppManager().finishActivity(UpdateNicknameActivity.class);
-                                AppManager.getAppManager().finishActivity(SettingsActivity.class);
-
                                 Toast.makeText(SettingsActivity.this, "修改成功", Toast.LENGTH_SHORT).show();
                             } else {
                                 String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);

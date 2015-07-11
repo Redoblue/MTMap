@@ -2,10 +2,14 @@ package com.hltc.mtmap.app;
 
 import com.hltc.mtmap.MFriend;
 import com.hltc.mtmap.MFriendStatus;
+import com.hltc.mtmap.MTMessage;
 import com.hltc.mtmap.MTMyFavourite;
 import com.hltc.mtmap.MTMyGrain;
 import com.hltc.mtmap.orm.DaoMaster;
 import com.hltc.mtmap.orm.DaoSession;
+import com.hltc.mtmap.orm.MTMessageDao;
+import com.hltc.mtmap.orm.MTMyFavouriteDao;
+import com.hltc.mtmap.orm.MTMyGrainDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +64,9 @@ public class DaoManager {
     public List<MTMyGrain> getAllMyGrains() {
         List<MTMyGrain> list = new ArrayList<>();
         try {
-            list = DaoManager.getManager().daoSession.getMTMyGrainDao().loadAll();
+            list = DaoManager.getManager().daoSession.getMTMyGrainDao().queryBuilder()
+                    .orderDesc(MTMyGrainDao.Properties.CreateTime)
+                    .list();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -73,7 +79,24 @@ public class DaoManager {
     public List<MTMyFavourite> getAllMyFavourites() {
         List<MTMyFavourite> list = new ArrayList<>();
         try {
-            list = DaoManager.getManager().daoSession.getMTMyFavouriteDao().loadAll();
+            list = DaoManager.getManager().daoSession.getMTMyFavouriteDao().queryBuilder()
+                    .orderDesc(MTMyFavouriteDao.Properties.CreateTime)
+                    .list();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    /**
+     * get favourites list
+     */
+    public List<MTMessage> getAllMessage() {
+        List<MTMessage> list = new ArrayList<>();
+        try {
+            list = DaoManager.getManager().daoSession.getMTMessageDao().queryBuilder()
+                    .orderDesc(MTMessageDao.Properties.CreateTime)
+                    .list();
         } catch (Exception e) {
             e.printStackTrace();
         }

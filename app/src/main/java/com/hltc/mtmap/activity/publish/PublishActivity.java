@@ -120,8 +120,8 @@ public class PublishActivity extends Activity {
                 int type = getCreateType(v);
                 LogUtils.d(getClass(), String.valueOf(type));///
                 if (type != -1) {
-                    Intent intent = new Intent(mContext, CreateGrainActivity.class);
-                    intent.putExtra("create_type", type);
+                    Intent intent = new Intent(mContext, CreateGrainActivity2.class);
+                    intent.putExtra("type", type);
                     startActivity(intent);
                     overridePendingTransition(R.anim.abc_fade_in, R.anim.abc_fade_out);
                     AppManager.getAppManager().finishActivity(PublishActivity.this);

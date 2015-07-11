@@ -56,7 +56,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/shape_et_search"
-            android:hint="搜索手机号码"
             android:imeOptions="actionDone"
             android:inputType="text"
             android:paddingLeft="10dp"

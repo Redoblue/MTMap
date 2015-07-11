@@ -110,15 +110,15 @@ public class MFriendStatusDao extends AbstractDao<MFriendStatus, Long> {
         entity.setNickName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setText(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setStatus(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-    }
-
+     }
+     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(MFriendStatus entity, long rowId) {
         entity.setUserId(rowId);
         return rowId;
     }
-
+    
     /** @inheritdoc */
     @Override
     public Long getKey(MFriendStatus entity) {
@@ -128,7 +128,7 @@ public class MFriendStatusDao extends AbstractDao<MFriendStatus, Long> {
             return null;
         }
     }
-
+    
     /** @inheritdoc */
     @Override
     protected boolean isEntityUpdateable() {
