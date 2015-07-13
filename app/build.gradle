@@ -43,6 +43,7 @@ dependencies {
     compile 'cn.trinea.android.common:trinea-android-common:4.2.15'
     compile 'com.loopj.android:android-async-http:1.4.5'
     compile 'de.greenrobot:eventbus:2.4.0'
+    compile 'it.sephiroth.android.library.imagezoom:imagezoom:1.0.5'
     compile project(':library-ArcMenu')
     compile project(':library-ClusterMarker')
     compile project(':library-PullZoomView')

@@ -54,7 +54,7 @@ public class FriendListAdapter extends BaseAdapter implements SectionIndexer {
         if (getItem(position).getIsFolder()) {
             view = LayoutInflater.from(mContext).inflate(R.layout.item_friend_list_folder, null);
             ImageView portrait = (ImageView) view.findViewById(R.id.civ_item_friend_list_portrait);
-            portrait.setImageResource(R.drawable.profile_header_pic);
+            portrait.setImageResource(R.drawable.icon_new_friend);
         } else {
             view = LayoutInflater.from(mContext).inflate(R.layout.item_friend_list_person, null);
             CircleImageView portrait = (CircleImageView) view.findViewById(R.id.civ_item_friend_list_portrait);

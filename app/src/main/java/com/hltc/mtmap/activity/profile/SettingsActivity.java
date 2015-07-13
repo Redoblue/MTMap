@@ -150,18 +150,23 @@ public class SettingsActivity extends Activity {
             case R.id.btn_settings_logout:
                 AppUtils.logout();
                 clearData();
-                Toast.makeText(this, "退出成功", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(this, "退出成功", Toast.LENGTH_SHORT).show();
                 Intent intent2 = new Intent(this, StartActivity.class);
                 startActivity(intent2);
-                AppManager.getAppManager().finishActivity(MainActivity.class);
                 AppManager.getAppManager().finishActivity(this);
+                AppManager.getAppManager().finishActivity(MainActivity.class);
                 break;
         }
     }
 
     private void clearData() {
         //TODO 清除一些数据
-        FileUtils.clearCache();
+        try {
+            AppConfig.getAppConfig().clear(AppConfig.CONFIG_USER);
+            FileUtils.clearCache();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -216,8 +221,7 @@ public class SettingsActivity extends Activity {
 
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.getUpdateNicknameUrl(),
-                params,
+                ApiUtils.getUpdateNicknameUrl(), params,
                 new RequestCallBack<String>() {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {

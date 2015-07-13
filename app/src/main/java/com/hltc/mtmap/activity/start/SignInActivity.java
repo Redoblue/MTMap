@@ -20,6 +20,7 @@ import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.LocalUserInfo;
 import com.hltc.mtmap.helper.ProgressGenerator;
+import com.hltc.mtmap.task.SyncDataAsyncTask;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -182,6 +183,10 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
                                 AppConfig.getAppConfig().setConfToken(data.getString(ApiUtils.KEY_TOKEN));
                                 //更新身份状态
                                 MyApplication.signInStatus = "11";
+
+                                //同步数据
+                                new SyncDataAsyncTask().execute();
+
                                 // 进入主界面
                                 Toast.makeText(SignInActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(SignInActivity.this, MainActivity.class);

@@ -1,6 +1,7 @@
 package com.hltc.mtmap.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.alibaba.sdk.android.oss.callback.GetFileCallback;
 import com.alibaba.sdk.android.oss.model.OSSException;
@@ -17,6 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
+import com.hltc.mtmap.activity.profile.MyFavouritesActivity;
 import com.hltc.mtmap.adapter.CommonAdapter;
 import com.hltc.mtmap.adapter.CommonViewHolder;
 import com.hltc.mtmap.app.AppConfig;
@@ -45,7 +48,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -146,7 +148,12 @@ public class GrainFragment extends Fragment {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_bar_left:
-                //TODO 我的麦田
+                if (!MainActivity.isVisitor) {
+                    Intent intent = new Intent(getActivity(), MyFavouritesActivity.class);
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "登录即可查看", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.btn_grain_ignore:
                 if (ivGrainCover.getVisibility() != View.VISIBLE) {

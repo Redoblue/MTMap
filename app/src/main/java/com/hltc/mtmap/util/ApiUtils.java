@@ -42,7 +42,7 @@ public class ApiUtils {
     // 检索通讯录
     public static final String URL_CHE_CONTACT = "user/register/check_contact.json";
     // 反馈
-    public static final String URL_FEEDBACK = "user/settings/feedback.json";
+    public static final String URL_FEEDBACK = "my/settings/feedback.json";
     // FederationToken
     public static final String URL_FEDERATION_TOKEN = "auth/oss_federation_token.json";
     // 麦粒

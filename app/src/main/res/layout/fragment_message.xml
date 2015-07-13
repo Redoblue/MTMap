@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="消息"
+            android:text="消 息"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 

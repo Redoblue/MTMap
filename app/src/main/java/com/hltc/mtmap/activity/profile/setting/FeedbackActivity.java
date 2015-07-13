@@ -1,14 +1,17 @@
 package com.hltc.mtmap.activity.profile.setting;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppConfig;
@@ -30,6 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -62,6 +67,17 @@ public class FeedbackActivity extends Activity {
 
     private void initView() {
         btnFeedbackSubmit.setEnabled(false);
+        etFeedbackContent.setFocusable(true);
+        etFeedbackContent.setFocusableInTouchMode(true);
+        etFeedbackContent.requestFocus();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            public void run() {
+                InputMethodManager inputManager =
+                        (InputMethodManager) etFeedbackContent.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.showSoftInput(etFeedbackContent, 0);
+            }
+        }, 500);
         etFeedbackEmail.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -87,6 +103,10 @@ public class FeedbackActivity extends Activity {
                 AppManager.getAppManager().finishActivity(this);
                 break;
             case R.id.btn_feedback_submit:
+                if (!StringUtils.isEmail(etFeedbackEmail.getText().toString())) {
+                    Toast.makeText(this, "邮箱格式不正确", Toast.LENGTH_SHORT).show();
+                    break;
+                }
                 httpFeedBack();
                 break;
         }

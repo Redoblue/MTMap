@@ -36,12 +36,11 @@ public class OpenGrainDetailTask extends AsyncTask<Long, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         if (aBoolean) {
-            //TODO 进入详情界面
             Intent intent = new Intent();
             intent.putExtra("grain", grainDetail);
             MyApplication.getContext().startActivity(intent);
         } else {
-            Toast.makeText(MyApplication.getContext(), "检索详情失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MyApplication.getContext(), "获取详情失败", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -1,5 +1,7 @@
 package com.hltc.mtmap.helper;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
@@ -7,7 +9,10 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.activity.map.GrainDetailActivity;
+import com.hltc.mtmap.activity.map.GrainInfoDialog;
 import com.hltc.mtmap.app.AppConfig;
+import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.DialogManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.gmodel.GrainDetail;
 import com.hltc.mtmap.util.ApiUtils;
@@ -75,7 +80,10 @@ public class ApiHelper {
         });
     }
 
-    public static void httpGetGrainDetail(long grainId) {
+    public static void httpGetGrainDetail(final Context context, long grainId) {
+        final ProgressDialog dialog = DialogManager.buildProgressDialog(context, "加载中...");
+        dialog.show();
+
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
@@ -105,6 +113,7 @@ public class ApiHelper {
                                 GrainDetail grainDetail = gson.fromJson(json.toString(), new TypeToken<GrainDetail>() {
                                 }.getType());
 
+                                dialog.dismiss();
                                 if (grainDetail != null) {
                                     //TODO 进入详情界面
                                     Intent intent = new Intent(MyApplication.getContext(), GrainDetailActivity.class);
@@ -112,6 +121,7 @@ public class ApiHelper {
                                     intent.putExtra("grain", grainDetail);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     MyApplication.getContext().startActivity(intent);
+                                    AppManager.getAppManager().finishActivity(GrainInfoDialog.class);
                                 } else {
                                     Toast.makeText(MyApplication.getContext(), "检索详情失败", Toast.LENGTH_SHORT).show();
                                 }
@@ -123,7 +133,8 @@ public class ApiHelper {
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-
+                        dialog.dismiss();
+                        Toast.makeText(context, "加载失败", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

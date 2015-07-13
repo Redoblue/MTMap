@@ -41,18 +41,13 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
         ButterKnife.inject(this);
         AppManager.getAppManager().addActivity(this);
 
-        initView();
         initAnimation();
-    }
-
-    private void initView() {
-        background.setBackgroundResource(R.drawable.pic_start);
     }
 
     private void initAnimation() {
         // 渐变启动
-        AlphaAnimation animation = new AlphaAnimation(0.3f, 1.0f);
-        animation.setDuration(2000);
+        AlphaAnimation animation = new AlphaAnimation(1.0f, 1.0f);
+        animation.setDuration(3000);
         background.startAnimation(animation);
         animation.setAnimationListener(this);
     }
@@ -78,12 +73,11 @@ public class SplashActivity extends Activity implements Animation.AnimationListe
             startActivity(intent);
         } else {    //判断登录状态，是则进入主界面，否则进入登录界面
             String status = MyApplication.signInStatus;
-            Log.d("MT", "splash: " + MyApplication.signInStatus);
+            Log.d("MT", "splash status: " + MyApplication.signInStatus);
             if (status.equals("11") || status.equals("01")) {
                 Intent intent = new Intent(this, MainActivity.class);
                 startActivity(intent);
             } else if (status.equals("10") || status.equals("00")) {
-                LogUtils.d("未登录分支");
                 Intent intent = new Intent(this, StartActivity.class);
                 startActivity(intent);
             }

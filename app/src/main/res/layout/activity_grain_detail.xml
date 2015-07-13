@@ -42,13 +42,15 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <Button
+            <ToggleButton
                 android:id="@+id/btn_bar_favor"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
-                android:background="@drawable/selector_btn_bar_favor" />
+                android:background="@drawable/selector_btn_bar_favor"
+                android:textOff=""
+                android:textOn="" />
 
             <Button
                 android:id="@+id/btn_bar_share"
@@ -86,7 +88,7 @@
                     android:layout_height="100dp"
                     android:layout_centerInParent="true"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/profile_header_pic"
+                    android:src="@drawable/pic_default_portrait"
                     app:border_color="@color/white"
                     app:border_width="0dp" />
 

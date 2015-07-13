@@ -26,7 +26,7 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="关于"
+            android:text="关 于"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 

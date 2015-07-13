@@ -1,10 +1,12 @@
 package com.hltc.mtmap.activity.profile;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,6 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -68,7 +72,19 @@ public class FriendRequestActivity extends Activity implements EditText.OnEditor
     }
 
     private void initView() {
+        etEdit.setHint("打个招呼吧");
+        etEdit.setFocusable(true);
+        etEdit.setFocusableInTouchMode(true);
+        etEdit.requestFocus();
         etEdit.setOnEditorActionListener(this);
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            public void run() {
+                InputMethodManager inputManager =
+                        (InputMethodManager) etEdit.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputManager.showSoftInput(etEdit, 0);
+            }
+        }, 500);
     }
 
     @Override

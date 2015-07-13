@@ -38,6 +38,7 @@
                 android:id="@+id/tv_item_friend_status_text"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
                 android:singleLine="true"
                 android:text="用于验证的"
                 android:textSize="15sp" />
@@ -51,7 +52,6 @@
 
             <Button
                 android:id="@+id/btn_item_friend_status_status"
-                style="@style/BlueButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"

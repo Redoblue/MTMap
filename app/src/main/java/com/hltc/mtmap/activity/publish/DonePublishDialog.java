@@ -2,6 +2,7 @@ package com.hltc.mtmap.activity.publish;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -14,11 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.profile.MyGrainActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.bean.ParcelableGrain;
 import com.hltc.mtmap.helper.PhotoHelper;
 import com.hltc.mtmap.task.PublishAsyncTask;
+import com.hltc.mtmap.task.SyncDataAsyncTask;
 import com.hltc.mtmap.util.ApiUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -91,7 +94,10 @@ public class DonePublishDialog extends Activity {
                 AppManager.getAppManager().finishActivity(CreateGrainActivity2.class);
                 break;
             case R.id.btn_done_publish_maitian:
-                //TODO
+                Intent intent = new Intent(DonePublishDialog.this, MyGrainActivity.class);
+                startActivity(intent);
+                AppManager.getAppManager().finishActivity(this);
+                AppManager.getAppManager().finishActivity(CreateGrainActivity2.class);
                 break;
             case R.id.btn_done_publish_share:
                 if (shareWindow != null && shareWindow.isShowing()) {
@@ -199,6 +205,9 @@ public class DonePublishDialog extends Activity {
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result = responseInfo.result;
                         if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                            //同步麦粒
+                            SyncDataAsyncTask.httpSyncGrainNumber();
+                            SyncDataAsyncTask.httpSyncMyGrainData();
                             // 上传图片
                             if (PhotoHelper.larges.size() > 0) {
                                 new PublishAsyncTask().execute();

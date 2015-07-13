@@ -182,6 +182,10 @@ public class StringUtils {
         return pattern.matcher(str).matches();
     }
 
+    public static boolean isEmail(String s) {
+        return emailer.matcher(s).matches();
+    }
+
     public static String getFileNameFromPath(String path) {
         return path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
     }

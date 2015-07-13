@@ -2,8 +2,12 @@ package com.hltc.mtmap.app;
 
 import android.app.Application;
 import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -99,7 +103,8 @@ public class MyApplication extends Application {
                 switch (msg.builder_id) {
                     case 1:
                         manageMessage(msg);//处理消息
-                        return buildNotification(context, msg);
+//                        return buildNotification(context, msg);
+                        return buildNotification2(msg, null);
                     default:
                         //默认为0，若填写的builder_id并不存在，也使用默认。
                         return super.getNotification(context, msg);
@@ -132,6 +137,45 @@ public class MyApplication extends Application {
         mNotification.contentView = myNotificationView;
         return mNotification;
     }
+
+    /**
+     * 在状态栏显示通知
+     */
+    private Notification buildNotification2(UMessage msg, Class toClass) {
+        // 创建一个NotificationManager的引用
+        NotificationManager notificationManager = (NotificationManager)
+                this.getSystemService(android.content.Context.NOTIFICATION_SERVICE);
+        // 定义Notification的各种属性
+        Notification notification = new Notification(R.mipmap.ic_launcher, msg.ticker, System.currentTimeMillis());
+        //FLAG_AUTO_CANCEL   该通知能被状态栏的清除按钮给清除掉
+        //FLAG_NO_CLEAR      该通知不能被状态栏的清除按钮给清除掉
+        //FLAG_ONGOING_EVENT 通知放置在正在运行
+        //FLAG_INSISTENT     是否一直进行，比如音乐一直播放，知道用户响应
+//        notification.flags |= Notification.FLAG_ONGOING_EVENT; // 将此通知放到通知栏的"Ongoing"即"正在运行"组中
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+//        notification.flags |= Notification.FLAG_SHOW_LIGHTS;
+        //DEFAULT_ALL     使用所有默认值，比如声音，震动，闪屏等等
+        //DEFAULT_LIGHTS  使用默认闪光提示
+        //DEFAULT_SOUNDS  使用默认提示声音
+        //DEFAULT_VIBRATE 使用默认手机震动，需加上<uses-permission android:name="android.permission.VIBRATE" />权限
+        notification.defaults = Notification.DEFAULT_SOUND;
+        //叠加效果常量
+        //notification.defaults=Notification.DEFAULT_LIGHTS|Notification.DEFAULT_SOUND;
+        notification.ledARGB = Color.BLUE;
+        notification.ledOnMS = 5000; //闪光时间，毫秒
+
+        // 设置通知的事件消息
+        Intent notificationIntent = new Intent(this, toClass); // 点击该通知后要跳转的Activity
+//        if (target != -1)
+//            notificationIntent.putExtra("target_fragment", target);
+        PendingIntent contentItent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        notification.setLatestEventInfo(this, msg.title, msg.text, contentItent);
+
+        // 把Notification传递给NotificationManager
+//        notificationManager.notify(0, notification);
+        return notification;
+    }
+
 
     private void manageMessage(UMessage msg) {
         int type = getType(msg);
@@ -266,10 +310,10 @@ public class MyApplication extends Application {
         }
 
         HttpUtils http = new HttpUtils();
+        http.configTimeout(2500);
         http.send(HttpRequest.HttpMethod.POST,
                 ApiUtils.getLoginByTokenUrl(),
-                params,
-                new RequestCallBack<String>() {
+                params, new RequestCallBack<String>() {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result = responseInfo.result;

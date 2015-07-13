@@ -44,8 +44,10 @@ public class SingleEditActivity extends Activity implements TextView.OnEditorAct
 
     private void initView() {
         String oldString = getIntent().getStringExtra("old");
-        etEdit.setText(oldString);
-        etEdit.setSelection(oldString.length());
+        if (!StringUtils.isEmpty(oldString)) {
+            etEdit.setText(oldString);
+            etEdit.setSelection(oldString.length());
+        }
         etEdit.setOnEditorActionListener(this);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +66,7 @@ public class SingleEditActivity extends Activity implements TextView.OnEditorAct
                 Toast.makeText(this, "写点儿什么吧", Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent();
-                intent.putExtra("old", newString);
+                intent.putExtra("new", newString);
                 setResult(RESULT_OK, intent);
 
                 CommentEvent ce = new CommentEvent();

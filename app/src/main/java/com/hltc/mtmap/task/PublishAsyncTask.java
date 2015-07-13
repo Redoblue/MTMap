@@ -10,7 +10,7 @@ import com.hltc.mtmap.util.FileUtils;
 /**
  * Created by redoblue on 15-5-18.
  */
-public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
+public class PublishAsyncTask extends AsyncTask<Void, Integer, Void> {
 
     public PublishAsyncTask() {
         super();
@@ -22,19 +22,7 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
     }
 
     @Override
-    protected void onPostExecute(Boolean aBoolean) {
-        if (aBoolean) {
-            SyncDataAsyncTask.httpSyncGrainNumber();
-            SyncDataAsyncTask.httpSyncMyGrainData();
-        }
-    }
-
-    @Override
-    protected void onProgressUpdate(Integer... values) {
-    }
-
-    @Override
-    protected Boolean doInBackground(Void... params) {
+    protected Void doInBackground(Void... params) {
         for (int i = 0; i < PhotoHelper.larges.size(); i++) {
             String path = PhotoHelper.larges.get(i);
             OssManager.getOssManager().uploadImage(path, OssManager.getFileKeyByLocalUrl(path));
@@ -45,7 +33,7 @@ public class PublishAsyncTask extends AsyncTask<Void, Integer, Boolean> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return true;
+        return null;
     }
 
     private void initData() {

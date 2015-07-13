@@ -58,10 +58,6 @@ public class FriendStatusActivity extends Activity {
     public static List<MFriendStatus> adapterList;
     @InjectView(R.id.btn_bar_left)
     Button btnBarLeft;
-    @InjectView(R.id.tv_bar_title)
-    TextView tvBarTitle;
-    @InjectView(R.id.btn_bar_right)
-    Button btnBarRight;
     @InjectView(R.id.lv_new_friend)
     ListView lvNewFriend;
     private FriendStatusListAdapter adapter;
@@ -278,10 +274,10 @@ public class FriendStatusActivity extends Activity {
                 holder.status.setBackgroundResource(R.color.transparent);
             } else if (s.equals(FriendStatusActivity.STATUS_UNACCEPTED)) {
                 holder.status.setText("接受");
-                holder.status.setBackgroundResource(R.drawable.selector_btn_green_press);
+                holder.status.setBackgroundResource(R.drawable.selector_friend_status);
             } else if (s.equals(FriendStatusActivity.STATUS_ADDABLE)) {
                 holder.status.setText("添加");
-                holder.status.setBackgroundResource(R.drawable.selector_btn_blue_press);
+                holder.status.setBackgroundResource(R.drawable.selector_friend_status);
             } else if (s.equals(FriendStatusActivity.STATUS_ACCEPTED)) {
                 holder.status.setText("已添加");
                 holder.status.setBackgroundResource(R.color.transparent);

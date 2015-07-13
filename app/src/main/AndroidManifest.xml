@@ -31,6 +31,9 @@
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="3dc4a0b3a8924a0181f9dddab9cbafcd" />
+        <!--<meta-data-->
+        <!--android:name="com.amap.api.v2.apikey"-->
+        <!--android:value="867cd86da901faa04eb7766b4d32a111" />-->
         <meta-data
             android:name="ServerAddress"
             android:value="www.maitianditu.com" />
@@ -110,9 +113,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat" />
         <activity
-            android:name=".activity.profile.setting.UpdateNicknameActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activity.profile.setting.FeedbackActivity"
             android:screenOrientation="portrait" />
         <activity
@@ -126,9 +126,6 @@
             android:theme="@android:style/Theme.Dialog" />
         <activity
             android:name=".activity.profile.FriendStatusActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".activity.profile.UserDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.profile.AddFriendActivity"
@@ -148,12 +145,12 @@
         <activity
             android:name=".activity.map.GrainInfoDialog"
             android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Holo.Dialog.NoActionBar" />
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.NoActionBar" />
         <activity
             android:name=".activity.map.SearchPositionActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.profile.MyGrainActivity2"
+            android:name=".activity.profile.MyGrainActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activity.map.ManyGrainInfoDialog"
@@ -173,6 +170,10 @@
             android:name=".activity.publish.CreateGrainActivity2"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".activity.map.LargeImageActivity" />
+        <activity
+            android:name=".activity.profile.FriendProfileActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name=".service.DownloadService" />
 

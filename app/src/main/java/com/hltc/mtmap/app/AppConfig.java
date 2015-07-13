@@ -304,4 +304,11 @@ public class AppConfig {
                 .getSharedPreferences(config, Context.MODE_PRIVATE);
         return preferences.getString(key, "");
     }
+
+    public void clear(String config) {
+        SharedPreferences preferences = MyApplication.getContext()
+                .getSharedPreferences(config, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear().commit();
+    }
 }

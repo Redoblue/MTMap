@@ -100,10 +100,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         initView();
         initPushAgent();
 
-        // 更新数据
-        if (MyApplication.signInStatus.equals("11")) {
-            new SyncDataAsyncTask().execute();
-        }
     }
 
     public void onEvent(MessageEvent event) {

@@ -3,7 +3,6 @@ package com.hltc.mtmap.gmodel;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +21,7 @@ public class GrainDetail implements Parcelable {
     };
     public long grainId;
     public String text;
+    public int isFavored = 0;
     public String createTime;
     public List<String> images;
     public Publisher publisher;
@@ -35,14 +35,13 @@ public class GrainDetail implements Parcelable {
     protected GrainDetail(Parcel in) {
         this.grainId = in.readLong();
         this.text = in.readString();
+        this.isFavored = in.readInt();
         this.createTime = in.readString();
         this.images = in.createStringArrayList();
         this.publisher = in.readParcelable(Publisher.class.getClassLoader());
         this.site = in.readParcelable(Site.class.getClassLoader());
-        this.praise = new ArrayList<Praise>();
-        in.readList(this.praise, Praise.class.getClassLoader());
-        this.comment = new ArrayList<Comment>();
-        in.readList(this.comment, Comment.class.getClassLoader());
+        this.praise = in.createTypedArrayList(Praise.CREATOR);
+        this.comment = in.createTypedArrayList(Comment.CREATOR);
     }
 
     @Override
@@ -54,12 +53,13 @@ public class GrainDetail implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.grainId);
         dest.writeString(this.text);
+        dest.writeInt(this.isFavored);
         dest.writeString(this.createTime);
         dest.writeStringList(this.images);
-        dest.writeParcelable(this.publisher, flags);
-        dest.writeParcelable(this.site, flags);
-        dest.writeList(this.praise);
-        dest.writeList(this.comment);
+        dest.writeParcelable(this.publisher, 0);
+        dest.writeParcelable(this.site, 0);
+        dest.writeTypedList(praise);
+        dest.writeTypedList(comment);
     }
 
     public static class Publisher implements Parcelable {

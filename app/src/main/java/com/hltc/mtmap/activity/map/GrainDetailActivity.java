@@ -1,5 +1,6 @@
 package com.hltc.mtmap.activity.map;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -19,16 +20,17 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.SingleEditActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.DialogManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.event.CommentEvent;
 import com.hltc.mtmap.gmodel.GrainDetail;
-import com.hltc.mtmap.helper.ApiHelper;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.DateUtils;
@@ -47,6 +49,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -61,7 +64,7 @@ public class GrainDetailActivity extends FragmentActivity {
     @InjectView(R.id.btn_bar_back)
     Button btnBarBack;
     @InjectView(R.id.btn_bar_favor)
-    Button btnBarFavor;
+    ToggleButton btnBarFavor;
     @InjectView(R.id.btn_bar_share)
     Button btnBarShare;
     @InjectView(R.id.civ_grain_detail_portrait)
@@ -89,6 +92,7 @@ public class GrainDetailActivity extends FragmentActivity {
     private ViewPager photoViewPager;
     private GrainDetail grainDetail;
     private PopupWindow popWindow;
+    private boolean isFavored = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,7 +127,7 @@ public class GrainDetailActivity extends FragmentActivity {
                 AppManager.getAppManager().finishActivity(this);
                 break;
             case R.id.btn_bar_favor:
-                ApiHelper.httpActOnGrain(ApiHelper.ACTION_FAVOR, grainDetail.grainId);
+                httpFavorGrain();
                 break;
             case R.id.btn_bar_share:
                 Toast.makeText(this, "分享", Toast.LENGTH_SHORT).show();
@@ -133,6 +137,51 @@ public class GrainDetailActivity extends FragmentActivity {
 
     public void onEvent(CommentEvent ce) {
         httpCommentGrain(ce.getComment());
+    }
+
+    private void httpFavorGrain() {
+        final ProgressDialog dialog = DialogManager.buildProgressDialog(this, "操作中...");
+        dialog.show();
+
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
+            json.put("gid", grainDetail.grainId);
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpUtils http = new HttpUtils();
+        http.send(HttpRequest.HttpMethod.POST, ApiUtils.URL_ROOT + ApiUtils.URL_FAVOR_GRAIN,
+                params, new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        if (responseInfo.result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                            // 收藏成功
+                            dialog.dismiss();
+                            if (isFavored) {
+                                Toast.makeText(GrainDetailActivity.this, "取消收藏成功", Toast.LENGTH_SHORT).show();
+                                isFavored = false;
+                            } else {
+                                Toast.makeText(MyApplication.getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
+                                isFavored = true;
+                            }
+                            btnBarFavor.setChecked(isFavored);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        dialog.dismiss();
+                        Toast.makeText(GrainDetailActivity.this, "操作失败,请检查您的网络", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     public void httpCommentGrain(final String s) {
@@ -161,10 +210,11 @@ public class GrainDetailActivity extends FragmentActivity {
                             try {
                                 JSONObject json = new JSONObject(responseInfo.result).getJSONObject("data");
                                 GrainDetail.Comment comment = new GrainDetail.Comment();
-                                comment.cid = json.getLong("cid");
+                                comment.cid = json.getLong("commentId");
                                 comment.nickName = AppConfig.getAppConfig().getConfUsrNickName();
                                 comment.userId = AppConfig.getAppConfig().getConfUsrUserId();
                                 comment.portrait = AppConfig.getAppConfig().getConfUsrPortrait();
+                                comment.createTime = String.valueOf(System.currentTimeMillis());
                                 comment.text = s;
                                 grainDetail.comment.add(comment);
                                 refreshComment();
@@ -183,6 +233,9 @@ public class GrainDetailActivity extends FragmentActivity {
 
     private void initView() {
         grainDetail = getIntent().getParcelableExtra("grain");
+        isFavored = grainDetail.isFavored == 1;
+
+        btnBarFavor.setChecked(isFavored);
 
         ImageLoader.getInstance().displayImage(
                 grainDetail.publisher.portrait, civGrainDetailPortrait, MyApplication.displayImageOptions);
@@ -196,7 +249,7 @@ public class GrainDetailActivity extends FragmentActivity {
         refreshComment();
 
         if (grainDetail.images.size() > 0) {
-            for (String s : grainDetail.images) {
+            for (final String s : grainDetail.images) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 params.setMargins(0, 0, AMapUtils.dp2px(this, 10), 0);
@@ -204,6 +257,14 @@ public class GrainDetailActivity extends FragmentActivity {
                 iv.setLayoutParams(params);
                 ImageLoader.getInstance().displayImage(
                         OssManager.getGrainThumbnailUrl(s), iv, MyApplication.displayImageOptions);
+                iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(GrainDetailActivity.this, LargeImageActivity.class);
+                        intent.putExtra("image", s);
+                        startActivity(intent);
+                    }
+                });
                 layoutGrainDetailImage.addView(iv);
             }
         } else {
@@ -212,11 +273,16 @@ public class GrainDetailActivity extends FragmentActivity {
     }
 
     private void refreshPraise() {
-        if (grainDetail.praise.size() > 1) {
+        if (grainDetail.praise.size() > 0) {
+            tvGrainDetailPraise.setVisibility(View.VISIBLE);
             StringBuilder sb = new StringBuilder();
             List<GrainDetail.Praise> praises = grainDetail.praise;
             for (GrainDetail.Praise p : praises) {
-                sb.append(StringUtils.isEmpty(p.remark) ? p.nickName : p.remark);
+                if (p.userId == AppConfig.getAppConfig().getConfUsrUserId())
+                    sb.append("我");
+                else
+                    sb.append(StringUtils.isEmpty(p.remark) ? p.nickName : p.remark);
+
                 if (p.equals(praises.get(praises.size() - 1))) {
                     break;
                 }
@@ -237,7 +303,8 @@ public class GrainDetailActivity extends FragmentActivity {
         layoutGrainDetailComment.removeAllViews();
         if (grainDetail.comment.size() > 0) {
             ViewHolder holder = new ViewHolder();
-            for (GrainDetail.Comment c : grainDetail.comment) {
+            for (int i = grainDetail.comment.size() - 1; i >= 0; i--) {
+                GrainDetail.Comment c = grainDetail.comment.get(i);
                 View commentView = LayoutInflater.from(this).inflate(R.layout.item_grain_detail_comment, null);
                 holder.portrait = (CircleImageView) commentView.findViewById(R.id.civ_item_grain_detail_portrait);
                 holder.name = (TextView) commentView.findViewById(R.id.tv_item_grain_detail_nickname);
@@ -247,9 +314,9 @@ public class GrainDetailActivity extends FragmentActivity {
                 holder.time.setText(DateUtils.getFriendlyTime(c.createTime));
                 holder.comment.setText(c.text);
                 layoutGrainDetailComment.addView(commentView);
-                layoutGrainDetailComment.invalidate();
             }
         }
+        layoutGrainDetailComment.invalidate();
     }
 
     private void showPopActions() {
@@ -307,18 +374,27 @@ public class GrainDetailActivity extends FragmentActivity {
                 params, new RequestCallBack<String>() {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
-                        if (responseInfo.result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                            Toast.makeText(GrainDetailActivity.this, "点赞成功", Toast.LENGTH_SHORT).show();
-
+                        if (responseInfo.result.contains(ApiUtils.KEY_SUCCESS)) {
+                            List<Long> ids = new ArrayList<>();
                             for (GrainDetail.Praise p : grainDetail.praise) {
-                                if (p.userId != AppConfig.getAppConfig().getConfUsrUserId()) {
-                                    GrainDetail.Praise praise = new GrainDetail.Praise();
-                                    praise.userId = AppConfig.getAppConfig().getConfUsrUserId();
-                                    praise.nickName = AppConfig.getAppConfig().getConfUsrNickName();
-                                    grainDetail.praise.add(praise);
-                                    refreshPraise();
-                                }
+                                ids.add(p.userId);
                             }
+
+                            if (ids.contains(AppConfig.getAppConfig().getConfUsrUserId())) {
+                                Toast.makeText(GrainDetailActivity.this, "取消点赞成功", Toast.LENGTH_SHORT).show();
+                                for (GrainDetail.Praise p : grainDetail.praise) {
+                                    if (p.userId == AppConfig.getAppConfig().getConfUsrUserId())
+                                        grainDetail.praise.remove(p);
+                                }
+                            } else {
+
+                                Toast.makeText(GrainDetailActivity.this, "点赞成功", Toast.LENGTH_SHORT).show();
+                                GrainDetail.Praise praise = new GrainDetail.Praise();
+                                praise.userId = AppConfig.getAppConfig().getConfUsrUserId();
+                                praise.nickName = AppConfig.getAppConfig().getConfUsrNickName();
+                                grainDetail.praise.add(praise);
+                            }
+                            refreshPraise();
                         }
                     }
 
@@ -326,7 +402,9 @@ public class GrainDetailActivity extends FragmentActivity {
                     public void onFailure(HttpException e, String s) {
                         // 收藏失败
                     }
-                });
+                }
+
+        );
     }
 
     class ViewHolder {

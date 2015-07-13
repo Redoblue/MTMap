@@ -3,23 +3,27 @@ package com.hltc.mtmap.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.alibaba.sdk.android.oss.callback.GetFileCallback;
 import com.alibaba.sdk.android.oss.model.OSSException;
@@ -50,7 +54,6 @@ import com.amp.apis.libc.ClusterClickListener;
 import com.amp.apis.libc.ClusterItem;
 import com.amp.apis.libc.ClusterOverlay;
 import com.amp.apis.libc.ClusterRender;
-import com.capricorn.ArcMenu;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.MGrain;
@@ -128,14 +131,16 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     public static MapInfo mMapInfo;
     @InjectView(R.id.map)
     MapView mMapView;
-    @InjectView(R.id.arc_menu)
-    ArcMenu mArcMenu;
+    //    @InjectView(R.id.arc_menu)
+//    ArcMenu mArcMenu;
     @InjectView(R.id.et_map_search)
     EditText etMapSearch;
     @InjectView(R.id.btn_map_locate)
-    ImageButton btnMapLocate;
+    Button btnMapLocate;
     @InjectView(R.id.layout_map_search)
     RelativeLayout layoutMapSearch;
+    @InjectView(R.id.btn_map_ray)
+    ToggleButton btnMapRay;
     private AMap mAmap;
     private OfflineMapManager offlineMapManager;
     private PoiSearch.Query mQuery;
@@ -173,7 +178,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             initData();
             initView();
             initAmap();
-            initArcMenu();
+//            initArcMenu();
             Log.d("MT", "MapFragment Finished");
             return view;
         }
@@ -194,6 +199,13 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        });
+
+        btnMapRay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopActions();
             }
         });
     }
@@ -232,7 +244,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         }
     }
 
-    private void initArcMenu() {
+    /*private void initArcMenu() {
         for (int i = 0; i < ITEM_DRAWABLES.length; i++) {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View item = inflater.inflate(R.layout.layout_map_arc, null);
@@ -270,6 +282,64 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                 }
             });
         }
+    }*/
+
+    private void showPopActions() {
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.window_map_ray, null);
+        final PopupWindow popWindow = new PopupWindow(view,
+                WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, false);
+        //设置可以获取焦点，否则弹出菜单中的EditText是无法获取输入的
+        popWindow.setFocusable(true);
+        //这句是为了防止弹出菜单获取焦点之后，点击activity的其他组件没有响应
+        popWindow.setBackgroundDrawable(new BitmapDrawable());
+
+        int[] location = new int[2];
+        btnMapRay.getLocationOnScreen(location);
+        popWindow.showAtLocation(btnMapRay,
+                Gravity.NO_GRAVITY, location[0], location[1] - AMapUtils.dp2px(getActivity(), 165));
+
+        TextView chihe = (TextView) view.findViewById(R.id.textView);
+        TextView wanle = (TextView) view.findViewById(R.id.textView2);
+        TextView other = (TextView) view.findViewById(R.id.textView3);
+
+        chihe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popWindow.dismiss();
+                if (currentCategory != TYPE_CHIHE) {
+                    currentCategory = TYPE_CHIHE;
+                    addGrainToOverlay(getGrainFromMem(TYPE_CHIHE));
+                }
+            }
+        });
+        wanle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popWindow.dismiss();
+                if (currentCategory != TYPE_WANLE) {
+                    currentCategory = TYPE_WANLE;
+                    addGrainToOverlay(getGrainFromMem(TYPE_WANLE));
+                }
+            }
+        });
+        other.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popWindow.dismiss();
+                if (currentCategory != TYPE_ALL) {
+                    currentCategory = TYPE_ALL;
+                    addGrainToOverlay(getGrainFromMem(TYPE_ALL));
+                }
+            }
+        });
+
+        popWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                btnMapRay.setChecked(false);
+            }
+        });
+
     }
 
     @Override
@@ -303,7 +373,13 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                     new CameraPosition(latLng, DEFAULT_ZOOM, DEFAULT_TILT, DEFAULT_BEARING)));
             myLocation = latLng;//更新个人位置
         }
+        initOverlay();
 
+        //添加我的位置maker
+        addPinToMap();
+    }
+
+    private void initOverlay() {
         overlay = new
                 ClusterOverlay(mAmap, AMapUtils.dp2px(getActivity(), clusterRadius), getActivity());
         overlay.setClusterRenderer(new ClusterRender() {
@@ -334,6 +410,13 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                     intent.putExtra("grain", (ClusterGrain) clusterItems.get(0));
                     startActivity(intent);
                 } else if (clusterItems.size() >= 2) {
+                    float zoom = mAmap.getCameraPosition().zoom;
+                    if (zoom < DEFAULT_ZOOM) {
+                        mAmap.animateCamera(CameraUpdateFactory.newCameraPosition(
+                                new CameraPosition(marker.getPosition(), zoom + 1,
+                                        DEFAULT_TILT, mAmap.getCameraPosition().bearing)), 400, null);
+                        return;
+                    }
                     ArrayList<ClusterGrain> cgs = new ArrayList<>();
                     for (ClusterItem ci : clusterItems) {
                         cgs.add((ClusterGrain) ci);
@@ -344,9 +427,6 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                 }
             }
         });
-
-        //添加我的位置maker
-        addPinToMap();
     }
 
     private void updateOfflineMap() {

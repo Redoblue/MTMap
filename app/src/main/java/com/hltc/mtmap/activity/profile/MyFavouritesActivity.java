@@ -55,6 +55,8 @@ public class MyFavouritesActivity extends Activity {
 
     @InjectView(R.id.btn_bar_left)
     Button btnBarLeft;
+    @InjectView(R.id.tv_bar_title)
+    TextView tvBarTitle;
     @InjectView(R.id.listView)
     SwipeMenuListView listView;
     SwipeMenuCreator creator = new SwipeMenuCreator() {
@@ -76,6 +78,8 @@ public class MyFavouritesActivity extends Activity {
             menu.addMenuItem(deleteItem);
         }
     };
+    @InjectView(R.id.tv_hint)
+    TextView tvHint;
     private List<MTMyFavourite> mList;
     private MyFavouriteAdapter mAdapter;
 
@@ -91,6 +95,7 @@ public class MyFavouritesActivity extends Activity {
     }
 
     private void initView() {
+        tvBarTitle.setText("我的收藏");
         btnBarLeft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,6 +104,7 @@ public class MyFavouritesActivity extends Activity {
         });
 
         mList = DaoManager.getManager().getAllMyFavourites();
+        refreshHint();
         mAdapter = new MyFavouriteAdapter(this, mList, R.layout.item_my_maitian);
         listView.setAdapter(mAdapter);
         listView.setMenuCreator(creator);
@@ -135,6 +141,15 @@ public class MyFavouritesActivity extends Activity {
         });
     }
 
+    private void refreshHint() {
+        if (mList == null || mList.size() < 1) {
+            tvHint.setVisibility(View.VISIBLE);
+            tvHint.setText("暂时还没有收藏哦,快去逛逛吧!");
+        } else {
+            tvHint.setVisibility(View.INVISIBLE);
+        }
+    }
+
     private int getCreateType(MTMyFavourite mg) {
         for (int i = 0; i < CreateGrainActivity2.mCateId.length; i++) {
             if (mg.getCateId().equals(CreateGrainActivity2.mCateId[i]))
@@ -166,6 +181,7 @@ public class MyFavouritesActivity extends Activity {
                         if (responseInfo.result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                             if (mList.remove(mg))
                                 mAdapter.notifyDataSetChanged();
+                            refreshHint();
                             DaoManager.getManager().daoSession.getMTMyFavouriteDao().deleteByKey(mg.getGrainId());
                         }
                     }

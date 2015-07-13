@@ -94,7 +94,7 @@ public class DateUtils {
 //                    TimeZone.getTimeZone("GMT+08"), TimeZone.getDefault());
 
         if (time == null) {
-            return "Unknown";
+            return "未知";
         }
         String ftime = "";
         Calendar cal = Calendar.getInstance();
@@ -127,7 +127,7 @@ public class DateUtils {
         } else if (days == 1) {
             ftime = "昨天";
         } else if (days == 2) {
-            ftime = "前天 ";
+            ftime = "前天";
         } else if (days > 2 && days < 31) {
             ftime = days + "天前";
         } else if (days >= 31 && days <= 2 * 31) {

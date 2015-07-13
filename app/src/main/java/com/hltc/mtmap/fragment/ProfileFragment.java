@@ -26,7 +26,7 @@ import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.profile.FriendListActivity;
 import com.hltc.mtmap.activity.profile.MyFavouritesActivity;
-import com.hltc.mtmap.activity.profile.MyGrainActivity2;
+import com.hltc.mtmap.activity.profile.MyGrainActivity;
 import com.hltc.mtmap.activity.profile.SettingsActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
@@ -73,9 +73,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     PullToZoomScrollViewEx scrollView;
 
     private String[] ways = new String[]{"选择本地图片", "拍照"};
+    private String type = "portrait";
 
     private CircleImageView portraitCiv;
-    private TextView nickName;
+    private ImageView cover;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -135,12 +136,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         portraitCiv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                type = "portrait";
+                showDialog();
+            }
+        });
+        cover = (ImageView) scrollView.getPullRootView().findViewById(R.id.iv_profile_header_cover);
+        ImageLoader.getInstance().displayImage(AppConfig.getAppConfig()
+                .getConfUsrCoverImg(), cover, MyApplication.displayImageOptions);
+        cover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                type = "cover";
                 showDialog();
             }
         });
 
         //昵称和签名
-        nickName = (TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_header_nickname);
+        TextView nickName = (TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_header_nickname);
         nickName.setText(AppConfig.getAppConfig().getConfUsrNickName());
 
         //更新麦粒数量
@@ -160,7 +172,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 toClass = SettingsActivity.class;
                 break;
             case R.id.btn_profile_maitian:
-                toClass = MyGrainActivity2.class;
+                toClass = MyGrainActivity.class;
                 break;
             case R.id.btn_profile_favourite:
                 toClass = MyFavouritesActivity.class;
@@ -175,7 +187,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private void showDialog() {
         new AlertDialog.Builder(getActivity())
-                .setTitle("设置头像")
+                .setTitle(type.equals("portrait") ? "设置头像" : "设置背景")
                 .setItems(ways, new DialogInterface.OnClickListener() {
 
                     @Override
@@ -185,8 +197,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                                 Intent intentFromGallery = new Intent();
                                 intentFromGallery.setType("image/*"); // 设置文件类型
                                 intentFromGallery.setAction(Intent.ACTION_GET_CONTENT);
-                                startActivityForResult(intentFromGallery,
-                                        IMAGE_REQUEST_CODE);
+                                startActivityForResult(intentFromGallery, IMAGE_REQUEST_CODE);
                                 break;
                             case 1:
                                 Intent intentFromCapture = new Intent(
@@ -218,7 +229,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (resultCode != Activity.RESULT_CANCELED) {
             switch (requestCode) {
                 case IMAGE_REQUEST_CODE:
-                    startPhotoZoom(data.getData());
+                    if (type.equals("portrait"))
+                        cropPortrait(data.getData());
+                    else cropCover(data.getData());
                     break;
                 case CAMERA_REQUEST_CODE:
                     // 判断存储卡是否可以用，可用进行存储
@@ -226,7 +239,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     if (state.equals(Environment.MEDIA_MOUNTED)) {
                         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
                         File tempFile = new File(path, "avatar.jpg");
-                        startPhotoZoom(Uri.fromFile(tempFile));
+                        if (type.equals("portrait"))
+                            cropPortrait(Uri.fromFile(tempFile));
+                        else cropCover(Uri.fromFile(tempFile));
                     } else {
                         Toast.makeText(getActivity(), "未找到存储卡，无法存储照片！", Toast.LENGTH_SHORT).show();
                     }
@@ -235,20 +250,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     if (data != null) {
                         Bitmap bitmap = data.getExtras().getParcelable("data");
                         String where = FileUtils.saveBitmap(bitmap, StringUtils.getUUID());
-                        getImageToView(bitmap);
-                        String remotePath = "http://" + OssManager.bucketName + "." + OssManager.ossHost + "/"
-                                + OssManager.getFileKeyByLocalUrl(where);
-                        httpUpdatePortrait(where, remotePath);
-                        //删除头像
-//                        File file = new File(path);
-//                        FileUtils.delFile(file);
+                        String remotePath = OssManager.getRemoteFileUrl(where);
+
+                        if (type.equals("portrait")) {
+                            httpUpdatePortrait(where, remotePath);
+                        } else {
+                            httpUpdateCoverImage(where, remotePath);
+                        }
                     }
-                    break;
-                // 昵称和签名
-                case EDIT_NICKNAME_REQUEST_CODE:
-                    String s1 = data.getStringExtra("new");
-                    AppConfig.getAppConfig().setConfUsrNickName(s1);
-                    nickName.setText(s1);
                     break;
             }
         }
@@ -256,11 +265,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
-     * 裁剪图片方法实现
+     * 裁剪头像
      *
      * @param uri
      */
-    public void startPhotoZoom(Uri uri) {
+    public void cropPortrait(Uri uri) {
         Intent intent = new Intent("com.android.camera.action.CROP");
         intent.setDataAndType(uri, "image/*");
         // 设置裁剪
@@ -276,14 +285,35 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     /**
+     * 裁剪背景
+     *
+     * @param uri
+     */
+    public void cropCover(Uri uri) {
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.setDataAndType(uri, "image/*");
+        // 设置裁剪
+        intent.putExtra("crop", "true");
+        // aspectX aspectY 是宽高的比例
+        intent.putExtra("aspectX", 1);
+        intent.putExtra("aspectY", 1);
+        // outputX outputY 是裁剪图片宽高
+        intent.putExtra("outputX", 720);
+        intent.putExtra("outputY", 540);
+        intent.putExtra("return-data", true);
+        startActivityForResult(intent, RESULT_REQUEST_CODE);
+    }
+
+
+    /**
      * 保存裁剪之后的图片数据
      *
      * @param
      */
-    private void getImageToView(Bitmap bitmap) {
+    private void getImageToView(ImageView iv, Bitmap bitmap) {
         if (bitmap != null) {
             Drawable drawable = new BitmapDrawable(this.getResources(), bitmap);
-            portraitCiv.setImageDrawable(drawable);
+            iv.setImageDrawable(drawable);
         }
     }
 
@@ -311,35 +341,67 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result = responseInfo.result;
-                        if (StringUtils.isEmpty(result))
-                            return;
-                        try {
-                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                                AppConfig.getAppConfig().setConfUsrPortrait(remote);
-                                Toast.makeText(getActivity(), "头像更新成功", Toast.LENGTH_SHORT).show();
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        OssManager.getOssManager().uploadImage(path, OssManager.getFileKeyByLocalUrl(path));
-                                    }
-                                }).start();
-                            } else {
-                                JSONObject girl = new JSONObject(result);
-                                String errorMsg = girl.getString(ApiUtils.KEY_ERROR_MESSAGE);
-                                if (errorMsg != null) {
-                                    // 发送验证码失败
-                                    // TODO 没有验证错误码
-                                    Toast.makeText(getActivity(), "头像更新失败", Toast.LENGTH_SHORT).show();
+                        if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                            AppConfig.getAppConfig().setConfUsrPortrait(remote);
+                            portraitCiv.setImageDrawable(Drawable.createFromPath(path));
+                            Toast.makeText(getActivity(), "头像更新成功", Toast.LENGTH_SHORT).show();
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    OssManager.getOssManager().uploadImage(path, OssManager.getFileKeyByLocalUrl(path));
                                 }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            }).start();
                         }
                     }
 
                     @Override
                     public void onFailure(HttpException e, String s) {
                         Toast.makeText(getActivity(), "头像更新失败", Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+        );
+    }
+
+    private void httpUpdateCoverImage(final String path, final String remote) {
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_SOURCE, "Android");
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
+            json.put(ApiUtils.KEY_USR_COVER_IMG, remote);
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpUtils http = new HttpUtils();
+        http.send(HttpRequest.HttpMethod.POST,
+                ApiUtils.URL_ROOT + "my/coverImg.json",
+                params, new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+                        if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                            AppConfig.getAppConfig().setConfUsrCoverImg(remote);
+                            cover.setImageDrawable(Drawable.createFromPath(path));
+                            Toast.makeText(getActivity(), "背景更新成功", Toast.LENGTH_SHORT).show();
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    OssManager.getOssManager().uploadImage(path, OssManager.getFileKeyByLocalUrl(path));
+                                }
+                            }).start();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        Toast.makeText(getActivity(), "背景更新失败", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

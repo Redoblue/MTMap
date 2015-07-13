@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="35dp"
+    android:layout_height="165dp"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/textView"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/btn_map_rad_chihe" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:gravity="center_horizontal"
+        android:text="附近吃喝"
+        android:textSize="8sp" />
+
+    <Button
+        android:id="@+id/textView2"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/btn_map_rad_wanle" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:gravity="center_horizontal"
+        android:text="附近玩乐"
+        android:textSize="8sp" />
+
+    <Button
+        android:id="@+id/textView3"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:background="@drawable/btn_map_rad_wanle" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:gravity="center_horizontal"
+        android:text="附近所有"
+        android:textSize="8sp" />
+
+</LinearLayout>

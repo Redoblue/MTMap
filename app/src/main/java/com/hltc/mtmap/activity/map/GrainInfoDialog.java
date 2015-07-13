@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.gmodel.ClusterGrain;
 import com.hltc.mtmap.helper.ApiHelper;
 import com.hltc.mtmap.util.StringUtils;
@@ -44,6 +45,7 @@ public class GrainInfoDialog extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppManager.getAppManager().addActivity(this);
         setContentView(R.layout.dialog_grain_info);
         ButterKnife.inject(this);
 
@@ -77,8 +79,7 @@ public class GrainInfoDialog extends Activity {
                 //TODO ignore this grain
                 break;
             case R.id.tv_grain_info_detail:
-                ApiHelper.httpGetGrainDetail(mGrainItem.grainId);
-                finish();
+                ApiHelper.httpGetGrainDetail(GrainInfoDialog.this, mGrainItem.grainId);
                 break;
         }
     }
