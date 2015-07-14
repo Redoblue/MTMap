@@ -139,6 +139,47 @@ public class GrainDetailActivity extends FragmentActivity {
         httpCommentGrain(ce.getComment());
     }
 
+    private void initView() {
+        grainDetail = getIntent().getParcelableExtra("grain");
+        isFavored = grainDetail.isFavored == 1;
+
+        btnBarFavor.setChecked(isFavored);
+
+        ImageLoader.getInstance().displayImage(
+                grainDetail.publisher.portrait, civGrainDetailPortrait, MyApplication.displayImageOptions);
+        tvGrainDetailNickname.setText(StringUtils.isEmpty(grainDetail.publisher.remark) ?
+                grainDetail.publisher.nickName : grainDetail.publisher.remark);
+        tvGrainDetailText.setText(grainDetail.text);
+        tvGrainDetailAddress.setText(grainDetail.site.name);
+        tvGrainDetailTime.setText(DateUtils.getFriendlyTime(grainDetail.createTime));
+
+        refreshPraise();
+        refreshComment();
+
+        if (grainDetail.images.size() > 0) {
+            for (final String s : grainDetail.images) {
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.setMargins(0, 0, 0, 0);
+                ImageView iv = new ImageView(this);
+                iv.setLayoutParams(params);
+                ImageLoader.getInstance().displayImage(
+                        OssManager.getGrainThumbnailUrl(s), iv, MyApplication.displayImageOptions);
+                iv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(GrainDetailActivity.this, LargeImageActivity.class);
+                        intent.putExtra("image", s);
+                        startActivity(intent);
+                    }
+                });
+                layoutGrainDetailImage.addView(iv);
+            }
+        } else {
+            hsvGrainDetailGallery.setVisibility(View.GONE);
+        }
+    }
+
     private void httpFavorGrain() {
         final ProgressDialog dialog = DialogManager.buildProgressDialog(this, "操作中...");
         dialog.show();
@@ -229,47 +270,6 @@ public class GrainDetailActivity extends FragmentActivity {
                         // 收藏失败
                     }
                 });
-    }
-
-    private void initView() {
-        grainDetail = getIntent().getParcelableExtra("grain");
-        isFavored = grainDetail.isFavored == 1;
-
-        btnBarFavor.setChecked(isFavored);
-
-        ImageLoader.getInstance().displayImage(
-                grainDetail.publisher.portrait, civGrainDetailPortrait, MyApplication.displayImageOptions);
-        tvGrainDetailNickname.setText(StringUtils.isEmpty(grainDetail.publisher.remark) ?
-                grainDetail.publisher.nickName : grainDetail.publisher.remark);
-        tvGrainDetailText.setText(grainDetail.text);
-        tvGrainDetailAddress.setText(grainDetail.site.address);
-        tvGrainDetailTime.setText(DateUtils.getFriendlyTime(grainDetail.createTime));
-
-        refreshPraise();
-        refreshComment();
-
-        if (grainDetail.images.size() > 0) {
-            for (final String s : grainDetail.images) {
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                params.setMargins(0, 0, AMapUtils.dp2px(this, 10), 0);
-                ImageView iv = new ImageView(this);
-                iv.setLayoutParams(params);
-                ImageLoader.getInstance().displayImage(
-                        OssManager.getGrainThumbnailUrl(s), iv, MyApplication.displayImageOptions);
-                iv.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(GrainDetailActivity.this, LargeImageActivity.class);
-                        intent.putExtra("image", s);
-                        startActivity(intent);
-                    }
-                });
-                layoutGrainDetailImage.addView(iv);
-            }
-        } else {
-            hsvGrainDetailGallery.setVisibility(View.GONE);
-        }
     }
 
     private void refreshPraise() {

@@ -28,7 +28,7 @@
             android:layout_height="match_parent"
             android:layout_centerInParent="true"
             android:gravity="center"
-            android:text="登   录"
+            android:text="登 录"
             android:textColor="#ffffff"
             android:textSize="20sp" />
 
@@ -71,7 +71,7 @@
             android:layout_marginBottom="15dp"
             android:inputType="text" />
 
-        <com.dd.processbutton.iml.ActionProcessButton xmlns:custom="http://schemas.android.com/apk/res-auto"
+        <!--<com.dd.processbutton.iml.ActionProcessButton xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:id="@+id/btn_process_signin"
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -84,7 +84,15 @@
             custom:pb_colorPressed="@color/green_pressed"
             custom:pb_colorProgress="@color/purple_progress"
             custom:pb_textComplete="@string/signin_btn_complete"
-            custom:pb_textProgress="@string/signin_btn_process" />
+            custom:pb_textProgress="@string/signin_btn_process" />-->
+
+        <Button
+            android:id="@+id/btn_signin"
+            style="@style/GreenButton"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:enabled="false"
+            android:text="登 录" />
 
     </LinearLayout>
 </LinearLayout>

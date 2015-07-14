@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:clickable="true"
-            android:padding="15.0dip"
+            android:padding="5dp"
             android:src="@drawable/selector_guide_dot" />
 
         <ImageView
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:clickable="true"
-            android:padding="15.0dip"
+            android:padding="5dp"
             android:src="@drawable/selector_guide_dot" />
 
         <ImageView
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:clickable="true"
-            android:padding="15.0dip"
+            android:padding="5dp"
             android:src="@drawable/selector_guide_dot" />
 
         <ImageView
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:clickable="true"
-            android:padding="15.0dip"
+            android:padding="5dp"
             android:src="@drawable/selector_guide_dot" />
 
         <ImageView
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:clickable="true"
-            android:padding="15.0dip"
+            android:padding="5dp"
             android:src="@drawable/selector_guide_dot" />
     </LinearLayout>
 </RelativeLayout>

@@ -25,7 +25,6 @@ import com.hltc.mtmap.fragment.MessageFragment;
 import com.hltc.mtmap.fragment.ProfileFragment;
 import com.hltc.mtmap.fragment.PublishFragment;
 import com.hltc.mtmap.helper.DoubleClickExitHelper;
-import com.hltc.mtmap.service.MyPushIntentService;
 import com.hltc.mtmap.task.SyncDataAsyncTask;
 import com.umeng.message.PushAgent;
 
@@ -100,6 +99,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         initView();
         initPushAgent();
 
+        //同步数据
+        new SyncDataAsyncTask().execute();
     }
 
     public void onEvent(MessageEvent event) {

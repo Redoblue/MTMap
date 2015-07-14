@@ -24,6 +24,9 @@ public class AppConfig {
     public static final String CONFIG_GRAIN = "grain_number";
     //app
     public static final String CONF_FIRST_USE = "first_use";
+    public static final String CONF_GUIDE_MAP = "guide_map";
+    public static final String CONF_GUIDE_PUBLISH = "guide_publish";
+    public static final String CONF_GUIDE_GRAIN = "guide_grain";
     //grain
     public static final String CONF_GRAIN_CHIHE = "chihe";
     public static final String CONF_GRAIN_WANLE = "wanle";

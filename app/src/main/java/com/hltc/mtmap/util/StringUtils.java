@@ -18,7 +18,9 @@ public class StringUtils {
     public static final String phoneRegexp = "1[3|5|7|8|][0-9]{9}";
     public static final String vcodeRegexp = "[0-9]{4}";
     public static final String passwdRegexp = "[0-9]{6}";   //密码格式需要设置
-
+    //
+//    private final static Pattern passwd = Pattern
+//            .compile("^[\\@A-Za-z0-9\\!\\#\\$\\%\\^\\&\\*\\.\\~]{7,18}$");
     private final static Pattern emailer = Pattern
             .compile("\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*");
     private final static SimpleDateFormat dateFormater = new

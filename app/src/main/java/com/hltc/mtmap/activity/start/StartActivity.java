@@ -91,14 +91,10 @@ public class StartActivity extends Activity {
                 startActivity(intent1);
                 break;
             case R.id.btn_start_skip:
-//                if (!AppUtils.isNetworkConnected(this)) {
-//                    Toast.makeText(this, "请检查您的网络", Toast.LENGTH_SHORT).show();
-//                } else {
                 httpGetVisitorId();
                 Intent intent2 = new Intent(this, MainActivity.class);
                 startActivity(intent2);
                 finish();
-//                }
                 break;
             case R.id.btn_start_forget_passwd:
                 if (!AppUtils.isNetworkConnected(this)) {

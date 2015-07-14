@@ -74,6 +74,7 @@ import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.FileUtils;
+import com.hltc.mtmap.util.GuideUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -177,6 +178,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             mMapView.onCreate(savedInstanceState);
             initData();
             initView();
+            initGuide();
             initAmap();
 //            initArcMenu();
             Log.d("MT", "MapFragment Finished");
@@ -208,6 +210,17 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                 showPopActions();
             }
         });
+
+    }
+
+    private void initGuide() {
+        //显示遮罩
+        if (!AppUtils.isGuidePresented(AppConfig.CONF_GUIDE_MAP)) {
+            GuideUtils guideUtil = GuideUtils.getInstance();
+            guideUtil.initGuide(getActivity(), R.drawable.guide_map_maker);
+            guideUtil.initGuide(getActivity(), R.drawable.guide_map_pop);
+            AppConfig.getAppConfig().set(AppConfig.CONFIG_APP, AppConfig.CONF_GUIDE_MAP, "true");
+        }
     }
 
     @OnClick({R.id.layout_map_search, R.id.et_map_search})

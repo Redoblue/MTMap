@@ -29,6 +29,7 @@ import com.hltc.mtmap.gmodel.SwipeGrain;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.FileUtils;
+import com.hltc.mtmap.util.GuideUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -79,7 +80,20 @@ public class GrainFragment extends Fragment {
         ButterKnife.inject(this, view);
 
         initView();
+        initGuide();
         return view;
+    }
+
+    private void initGuide() {
+        //显示遮罩
+        if (!AppUtils.isGuidePresented(AppConfig.CONF_GUIDE_GRAIN)) {
+            GuideUtils guideUtil = GuideUtils.getInstance();
+            guideUtil.initGuide(getActivity(), R.drawable.guide_grain_4);
+            guideUtil.initGuide(getActivity(), R.drawable.guide_grain_3);
+            guideUtil.initGuide(getActivity(), R.drawable.guide_grain_2);
+            guideUtil.initGuide(getActivity(), R.drawable.guide_grain_1);
+            AppConfig.getAppConfig().set(AppConfig.CONFIG_APP, AppConfig.CONF_GUIDE_GRAIN, "true");
+        }
     }
 
     private void initView() {

@@ -1,6 +1,7 @@
 package com.hltc.mtmap.activity.start;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
@@ -12,11 +13,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dd.processbutton.iml.ActionProcessButton;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.DialogManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.LocalUserInfo;
 import com.hltc.mtmap.helper.ProgressGenerator;
@@ -47,7 +48,7 @@ import butterknife.OnClick;
 /**
  * Created by Redoblue on 2015/4/26.
  */
-public class SignInActivity extends Activity implements ProgressGenerator.OnCompleteListener {
+public class SignInActivity extends Activity {
 
     @InjectView(R.id.btn_bar_left)
     Button btnBarLeft;
@@ -57,8 +58,8 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
     EditText etSigninPhone;
     @InjectView(R.id.et_signin_passwd)
     EditText etSigninPasswd;
-    @InjectView(R.id.btn_process_signin)
-    ActionProcessButton btnProcessSignin;
+    @InjectView(R.id.btn_signin)
+    Button btnSignin;
 
     private ProgressGenerator mGenerator;
 
@@ -71,7 +72,7 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
         AppManager.getAppManager().addActivity(this);
 
         initViews();
-        mGenerator = new ProgressGenerator(this);
+//        mGenerator = new ProgressGenerator(this);
     }
 
     private void initViews() {
@@ -85,7 +86,7 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                btnProcessSignin.setEnabled(s.length() > 0);
+                btnSignin.setEnabled(s.length() > 0);
             }
 
             @Override
@@ -93,12 +94,12 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
 
             }
         });
-        btnProcessSignin.setMode(ActionProcessButton.Mode.ENDLESS);
+//        btnProcessSignin.setMode(ActionProcessButton.Mode.ENDLESS);
     }
 
     @OnClick({R.id.btn_bar_left,
             R.id.btn_bar_right,
-            R.id.btn_process_signin})
+            R.id.btn_signin})
     public void onClick(View v) {
         int id = v.getId();
         if (id != R.id.btn_bar_left && id != R.id.btn_bar_right
@@ -115,30 +116,30 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
                 intent.putExtra("source", 1);
                 startActivity(intent);
                 break;
-            case R.id.btn_process_signin:
+            case R.id.btn_signin:
                 if (StringUtils.isEmpty(etSigninPhone.getText().toString())
                         || StringUtils.isEmpty(etSigninPasswd.getText().toString())) {
                     Toast.makeText(this, "请完善登录信息", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                btnProcessSignin.setEnabled(false);
+//                btnSignin.setEnabled(false);
 //                btnProcessSignin.setClickable(true);
                 etSigninPasswd.setEnabled(false);
                 httpSignIn();
                 break;
         }
     }
-
-    @Override
-    public void onComplete() {
-        btnProcessSignin.setEnabled(true);
-//        btnProcessSignin.setClickable(true);
-        etSigninPasswd.setEnabled(true);
-    }
+//
+//    @Override
+//    public void onComplete() {
+//        btnProcessSignin.setEnabled(true);
+////        btnProcessSignin.setClickable(true);
+//        etSigninPasswd.setEnabled(true);
+//    }
 
     private void httpSignIn() {
-        // button begin to animate
-        mGenerator.start(btnProcessSignin);
+        final ProgressDialog dialog = DialogManager.buildProgressDialog(this, "登录中...");
+        dialog.show();
 
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
@@ -155,7 +156,7 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
         }
 
         HttpUtils http = new HttpUtils();
-        http.configTimeout(5000);
+        http.configTimeout(4000);
         http.send(HttpRequest.HttpMethod.POST,
                 ApiUtils.getSigninUrl(),
                 params,
@@ -183,12 +184,13 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
                                 AppConfig.getAppConfig().setConfToken(data.getString(ApiUtils.KEY_TOKEN));
                                 //更新身份状态
                                 MyApplication.signInStatus = "11";
+                                dialog.dismiss();
 
                                 //同步数据
-                                new SyncDataAsyncTask().execute();
+//                                new SyncDataAsyncTask().execute();
 
                                 // 进入主界面
-                                Toast.makeText(SignInActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(SignInActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
                                 Intent intent = new Intent(SignInActivity.this, MainActivity.class);
                                 startActivity(intent);
                                 AppManager.getAppManager().finishActivity(SignInActivity.this);
@@ -208,8 +210,9 @@ public class SignInActivity extends Activity implements ProgressGenerator.OnComp
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-                        mGenerator.stop();
+//                        mGenerator.stop();
                         Toast.makeText(SignInActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                        dialog.dismiss();
                     }
                 });
     }

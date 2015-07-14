@@ -293,7 +293,7 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
                                     try {
                                         DaoManager.getManager().daoSession.getMTMyGrainDao().deleteAll();
                                         for (MTMyGrain f : mgs) {
-                                            DaoManager.getManager().daoSession.getMTMyGrainDao().insertOrReplace(f);
+                                            DaoManager.getManager().daoSession.getMTMyGrainDao().insert(f);
                                         }
                                     } catch (Exception e) {
                                         e.printStackTrace();
@@ -451,8 +451,8 @@ public class SyncDataAsyncTask extends AsyncTask<Void, Void, Boolean> {
         httpSyncFriendStatusData();
         httpSyncContactStatusData();
         httpSyncGrainNumber();
-        httpSyncMyGrainData();
-        httpSyncMyFavouriteData();
+//        httpSyncMyGrainData();
+//        httpSyncMyFavouriteData();
         return true;
     }
 }

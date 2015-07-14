@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.profile.MyFavouritesActivity;
 import com.hltc.mtmap.activity.profile.MyGrainActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.OssManager;
@@ -74,10 +75,7 @@ public class DonePublishDialog extends Activity {
         getWindow().setBackgroundDrawableResource(R.color.half_transparent);
 
         grain = getIntent().getParcelableExtra("GRAIN");
-        Log.d("Publish", "received grain: " + grain.toString());
         httpPublish();
-
-//        new PublishAsyncTask(grain).execute();
     }
 
     @OnClick({
@@ -88,16 +86,16 @@ public class DonePublishDialog extends Activity {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_done_publish_home:
-//                Intent intent = new Intent(this, MainActivity.class);
-//                startActivity(intent);
                 AppManager.getAppManager().finishActivity(this);
                 AppManager.getAppManager().finishActivity(CreateGrainActivity2.class);
                 break;
             case R.id.btn_done_publish_maitian:
                 Intent intent = new Intent(DonePublishDialog.this, MyGrainActivity.class);
+                intent.putExtra("from", DonePublishDialog.this.getLocalClassName());
                 startActivity(intent);
                 AppManager.getAppManager().finishActivity(this);
                 AppManager.getAppManager().finishActivity(CreateGrainActivity2.class);
+                AppManager.getAppManager().finishActivity(MyFavouritesActivity.class);
                 break;
             case R.id.btn_done_publish_share:
                 if (shareWindow != null && shareWindow.isShowing()) {
@@ -199,8 +197,7 @@ public class DonePublishDialog extends Activity {
         HttpUtils http = new HttpUtils();
         http.send(HttpRequest.HttpMethod.POST,
                 ApiUtils.getPublishUrl(),
-                params,
-                new RequestCallBack<String>() {
+                params, new RequestCallBack<String>() {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result = responseInfo.result;

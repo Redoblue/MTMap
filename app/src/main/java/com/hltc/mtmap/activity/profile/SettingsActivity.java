@@ -1,6 +1,7 @@
 package com.hltc.mtmap.activity.profile;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -18,13 +19,12 @@ import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.SingleEditActivity;
 import com.hltc.mtmap.activity.profile.setting.AboutActivity;
-import com.hltc.mtmap.activity.profile.setting.CheckUpdateActivity;
 import com.hltc.mtmap.activity.profile.setting.FeedbackActivity;
 import com.hltc.mtmap.activity.start.SignUpActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.app.DialogManager;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.FileUtils;
@@ -114,27 +114,10 @@ public class SettingsActivity extends Activity {
                 startActivity(i3);
                 break;
             case R.id.btn_settings_check_update:
-                PackageManager manager = getPackageManager();
-                try {
-                    PackageInfo info = manager.getPackageInfo(getPackageName(), 0);
-//                    String appVersion = info.versionName; // 版本名
-                    int currentVersion = info.versionCode; // 版本号
-                    int newVersion = httpGetNewVersion();
-                    if (currentVersion < newVersion) {
-                        showUpdateDialog();
-                    }
-                } catch (PackageManager.NameNotFoundException e) {
-                    e.printStackTrace();
-                }
-                //上面是获取manifest中的版本数据，我是使用versionCode
-                //在从服务器获取到最新版本的versionCode,比较
-                showUpdateDialog();
+                httpCheckUpdate();
                 break;
             case R.id.btn_settings_five_star:
-                Uri uri = Uri.parse("market://details?id=" + getPackageName());
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
+                gotoMarket();
                 break;
             case R.id.btn_settings_recommend:
                 Intent sendIntent = new Intent();
@@ -180,6 +163,13 @@ public class SettingsActivity extends Activity {
         }
     }
 
+    private void gotoMarket() {
+        Uri uri = Uri.parse("market://details?id=" + getPackageName());
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+
     private void showUpdateDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder
@@ -189,9 +179,7 @@ public class SettingsActivity extends Activity {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent it = new Intent(SettingsActivity.this, CheckUpdateActivity.class);
-                        startActivity(it);
-                        MyApplication.isDownloadingNewVersion = true;
+                        gotoMarket();
                         dialog.dismiss();
                     }
                 }).setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -254,7 +242,49 @@ public class SettingsActivity extends Activity {
 
     }
 
-    private int httpGetNewVersion() {
-        return 2;
+    private void httpCheckUpdate() {
+        final ProgressDialog dialog = DialogManager.buildProgressDialog(this, "检测更新中...");
+        dialog.show();
+        RequestParams params = new RequestParams();
+        HttpUtils http = new HttpUtils();
+        http.send(HttpRequest.HttpMethod.GET,
+                ApiUtils.URL_ROOT + "my/settings/latest_version.json",
+                params, new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+
+                        try {
+                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                                dialog.dismiss();
+
+                                JSONObject json = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
+                                int versionCode = json.getInt("versionCode");
+
+                                PackageManager manager = getPackageManager();
+                                PackageInfo info = manager.getPackageInfo(getPackageName(), 0);
+                                int currentVersion = info.versionCode; // 版本号
+
+                                if (versionCode > currentVersion) {
+                                    showUpdateDialog();
+                                }
+                            } else {
+                                dialog.dismiss();
+                                Toast.makeText(SettingsActivity.this, "检测失败", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (PackageManager.NameNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        dialog.dismiss();
+                        Toast.makeText(SettingsActivity.this, "请检查你的网络", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
+
 }

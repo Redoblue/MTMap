@@ -14,7 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.util.AppUtils;
+import com.hltc.mtmap.util.GuideUtils;
 import com.hltc.mtmap.util.LogUtils;
 
 import java.util.ArrayList;
@@ -50,6 +53,16 @@ public class PublishActivity extends Activity {
         AppManager.getAppManager().addActivity(this);
         ButterKnife.inject(this);
         initView();
+        initGuide();
+    }
+
+    private void initGuide() {
+        //显示遮罩
+        if (!AppUtils.isGuidePresented(AppConfig.CONF_GUIDE_PUBLISH)) {
+            GuideUtils guideUtil = GuideUtils.getInstance();
+            guideUtil.initGuide(this, R.drawable.guide_publish);
+            AppConfig.getAppConfig().set(AppConfig.CONFIG_APP, AppConfig.CONF_GUIDE_PUBLISH, "true");
+        }
     }
 
     private void initView() {

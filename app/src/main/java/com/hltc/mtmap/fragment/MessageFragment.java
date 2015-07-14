@@ -19,6 +19,7 @@ import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.event.MessageEvent;
 import com.hltc.mtmap.util.DateUtils;
+import com.hltc.mtmap.util.GuideUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.markupartist.android.widget.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;

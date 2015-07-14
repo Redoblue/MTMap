@@ -1,6 +1,7 @@
 package com.hltc.mtmap.activity.profile;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -10,11 +11,14 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.MTMyGrain;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.CommonAdapter;
@@ -22,6 +26,7 @@ import com.hltc.mtmap.adapter.CommonViewHolder;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
+import com.hltc.mtmap.app.DialogManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.helper.ApiHelper;
 import com.hltc.mtmap.util.AMapUtils;
@@ -37,6 +42,7 @@ import com.lidroid.xutils.http.client.HttpRequest;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -93,7 +99,12 @@ public class MyGrainActivity extends Activity {
             }
         });
 
-        mList = DaoManager.getManager().getAllMyGrains();
+        //如果没有数据或从创建麦粒而来则重新加载
+        if (DaoManager.getManager().daoSession.getMTMyGrainDao().count() < 1) {
+            httpSyncGrainData(this, "同步数据中...");
+        } else {
+            mList = DaoManager.getManager().getAllMyGrains();
+        }
         refreshHint();
         mAdapter = new MyGrainAdapter(this, mList, R.layout.item_my_maitian);
         listView.setAdapter(mAdapter);
@@ -169,6 +180,75 @@ public class MyGrainActivity extends Activity {
                     @Override
                     public void onFailure(HttpException e, String s) {
                         // 收藏失败
+                    }
+                });
+    }
+
+    private void httpSyncGrainData(final Context context, String msg) {
+        final ProgressDialog dialog = DialogManager.buildProgressDialog(context, msg);
+        dialog.show();
+
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_SOURCE, "Android");
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpUtils http1 = new HttpUtils();
+        http1.send(HttpRequest.HttpMethod.POST,
+                ApiUtils.URL_ROOT + ApiUtils.URL_MY_GRAIN,
+                params, new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+                        try {
+                            JSONObject farther = new JSONObject(result);
+                            if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
+                                Gson gson = new Gson();
+                                JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
+                                List<MTMyGrain> mgs = gson.fromJson(data.toString(), new TypeToken<List<MTMyGrain>>() {
+                                }.getType());
+
+                                //保存到数据库
+                                if (mgs != null) {
+                                    dialog.dismiss();
+                                    try {
+                                        DaoManager.getManager().daoSession.getMTMyGrainDao().deleteAll();
+                                        for (MTMyGrain f : mgs) {
+                                            DaoManager.getManager().daoSession.getMTMyGrainDao().insertOrReplace(f);
+                                        }
+                                        mList = DaoManager.getManager().getAllMyGrains();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else {
+                                String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
+                                if (errorMsg != null) {
+                                    dialog.dismiss();
+                                    Toast.makeText(context, "加载失败", Toast.LENGTH_SHORT).show();
+                                    // 登录失败
+                                    // TODO 没有验证错误码
+//                                    ToastUtils.showShort(FriendListActivity.this, errorMsg);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        dialog.dismiss();
+                        Toast.makeText(context, "请检查你的网络", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

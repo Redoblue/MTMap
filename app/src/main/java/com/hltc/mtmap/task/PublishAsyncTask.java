@@ -10,11 +10,7 @@ import com.hltc.mtmap.util.FileUtils;
 /**
  * Created by redoblue on 15-5-18.
  */
-public class PublishAsyncTask extends AsyncTask<Void, Integer, Void> {
-
-    public PublishAsyncTask() {
-        super();
-    }
+public class PublishAsyncTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected void onPreExecute() {

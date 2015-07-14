@@ -19,7 +19,6 @@ import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.LocalUserInfo;
-import com.hltc.mtmap.task.SyncDataAsyncTask;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -299,7 +298,7 @@ public class SignUpActivity extends Activity {
                                 MyApplication.signInStatus = "11";
 
                                 //同步数据
-                                new SyncDataAsyncTask().execute();
+//                                new SyncDataAsyncTask().execute();
 
                                 Intent intent = new Intent(SignUpActivity.this, CheckContactActivity.class);
                                 startActivity(intent);

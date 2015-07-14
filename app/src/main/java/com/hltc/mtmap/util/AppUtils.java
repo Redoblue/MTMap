@@ -40,14 +40,16 @@ public class AppUtils {
 
 
     public static boolean isFirstTimeToUse(Context context) {
-//        File file = new File(context.getDir(AppConfig.CONFIG, Context.MODE_PRIVATE).getPath()
-//                + File.separator + AppConfig.CONFIG_APP);
-//        if (!file.exists()) {
-//            return true;
-//        } else {
         String value = AppConfig.getAppConfig().get(AppConfig.CONFIG_APP, AppConfig.CONF_FIRST_USE);
         return value.equals("") || value.equals("true");
-//        }
+    }
+
+    public static boolean isGuidePresented(String key) {
+        String value = AppConfig.getAppConfig().get(AppConfig.CONFIG_APP, key);
+        if (value.equals("") || value.equals("false")) {
+            return false;
+        } else
+            return true;
     }
 
     public static boolean isSignedIn(Context context) {

@@ -142,6 +142,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_create_grain);
         ButterKnife.inject(this);
+
         intentType = getIntent().getIntExtra("create_type", 0);
         isFromFavourite = getIntent().getBooleanExtra("from_favourite", false);
         if (isFromFavourite) {

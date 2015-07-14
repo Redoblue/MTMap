@@ -1,6 +1,7 @@
 package com.hltc.mtmap.activity.profile;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -10,21 +11,24 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.amap.api.maps.model.LatLng;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.MTMyFavourite;
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.publish.CreateGrainActivity;
 import com.hltc.mtmap.activity.publish.CreateGrainActivity2;
 import com.hltc.mtmap.adapter.CommonAdapter;
 import com.hltc.mtmap.adapter.CommonViewHolder;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
+import com.hltc.mtmap.app.DialogManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
@@ -39,6 +43,7 @@ import com.lidroid.xutils.http.client.HttpRequest;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -103,7 +108,12 @@ public class MyFavouritesActivity extends Activity {
             }
         });
 
-        mList = DaoManager.getManager().getAllMyFavourites();
+        //如果没有数据或从创建麦粒而来则重新加载
+        if (DaoManager.getManager().daoSession.getMTMyFavouriteDao().count() < 1) {
+            httpSyncMyFavourite(this, "同步数据中...");
+        } else {
+            mList = DaoManager.getManager().getAllMyFavourites();
+        }
         refreshHint();
         mAdapter = new MyFavouriteAdapter(this, mList, R.layout.item_my_maitian);
         listView.setAdapter(mAdapter);
@@ -114,7 +124,7 @@ public class MyFavouritesActivity extends Activity {
                 MTMyFavourite mg = mList.get(position);
                 switch (index) {
                     case 0:
-                        Intent intent = new Intent(MyFavouritesActivity.this, CreateGrainActivity.class);
+                        Intent intent = new Intent(MyFavouritesActivity.this, CreateGrainActivity2.class);
                         intent.putExtra("type", getCreateType(mg));
                         intent.putExtra("address", mg.getAddress());
                         LatLng latLng = new LatLng(mg.getLat(), mg.getLon());
@@ -156,6 +166,75 @@ public class MyFavouritesActivity extends Activity {
                 return i;
         }
         return -1;
+    }
+
+    private void httpSyncMyFavourite(final Context context, String msg) {
+        final ProgressDialog dialog = DialogManager.buildProgressDialog(context, msg);
+        dialog.show();
+
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_SOURCE, "Android");
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpUtils http1 = new HttpUtils();
+        http1.send(HttpRequest.HttpMethod.POST,
+                ApiUtils.URL_ROOT + ApiUtils.URL_MY_FAVOURITE,
+                params, new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+                        try {
+                            JSONObject farther = new JSONObject(result);
+                            if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
+                                Gson gson = new Gson();
+                                JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
+                                List<MTMyFavourite> mgs = gson.fromJson(data.toString(), new TypeToken<List<MTMyFavourite>>() {
+                                }.getType());
+
+                                //保存到数据库
+                                if (mgs != null) {
+                                    dialog.dismiss();
+                                    try {
+                                        DaoManager.getManager().daoSession.getMTMyFavouriteDao().deleteAll();
+                                        for (MTMyFavourite f : mgs) {
+                                            DaoManager.getManager().daoSession.getMTMyFavouriteDao().insertOrReplace(f);
+                                        }
+                                        mList = DaoManager.getManager().getAllMyFavourites();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            } else {
+                                String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
+                                if (errorMsg != null) {
+                                    dialog.dismiss();
+                                    Toast.makeText(context, "加载失败", Toast.LENGTH_SHORT).show();
+                                    // 登录失败
+                                    // TODO 没有验证错误码
+//                                    ToastUtils.showShort(FriendListActivity.this, errorMsg);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        dialog.dismiss();
+                        Toast.makeText(context, "请检查你的网络", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void httpDeleteFavourite(final MTMyFavourite mg) {

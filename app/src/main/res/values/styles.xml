@@ -17,6 +17,11 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="anim_guide">
+        <item name="android:windowEnterAnimation">@anim/guide_fade_in</item>
+        <item name="android:windowExitAnimation">@anim/guide_fade_out</item>
+    </style>
+
     <style name="AnimPublishActivityTheme">
         <item name="android:windowAnimationStyle">@style/PublishActivityAnimTheme</item>
         <item name="android:windowNoTitle">true</item>
