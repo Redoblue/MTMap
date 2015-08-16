@@ -90,7 +90,7 @@ public class SignUpActivity extends Activity {
 
     private void initView() {
         tvBarTitle.setText(source == 0 ? "注册" : "修改密码");
-
+        btnSignupCreate.setText(source==0?"注 册":"修 改");
         etSignupPhone.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_phone), 20));
         etSignupVerifycode.setHint(ViewUtils.getHint(getResources().getString(R.string.singup_verifycode_hint), 20));
         etSignupPasswd.setHint(ViewUtils.getHint(getResources().getString(R.string.hint_password), 20));
@@ -156,7 +156,7 @@ public class SignUpActivity extends Activity {
                     break;
                 }
                 mPasswd = passwd;
-                httpSignUp();
+                    httpSignUp();
                 break;
         }
     }
@@ -277,6 +277,12 @@ public class SignUpActivity extends Activity {
                             return;
                         try {
                             if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+
+                                if(source==1){
+                                    ToastUtils.showLong(SignUpActivity.this, "密码修改成功");
+                                    AppManager.getAppManager().finishActivity(SignUpActivity.this);
+                                    return;
+                                }
                                 JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 LocalUserInfo userInfo = new LocalUserInfo();
                                 userInfo.setUserId(data.getLong(ApiUtils.KEY_USER_ID));

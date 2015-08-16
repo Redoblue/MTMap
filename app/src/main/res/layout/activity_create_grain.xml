@@ -149,7 +149,7 @@
                 android:gravity="start|top"
                 android:hint="发表一下吃货的心情吧！"
                 android:imeOptions="actionDone"
-                android:inputType="text"
+                android:inputType="textMultiLine"
                 android:paddingLeft="20dp"
                 android:paddingTop="10dp" />
 

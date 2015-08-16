@@ -262,7 +262,8 @@ public class MyGrainActivity extends Activity {
         @Override
         public void convert(CommonViewHolder holder, MTMyGrain mtMyGrain) {
             holder.setText(R.id.tv_item_my_maitian_comment, mtMyGrain.getText())
-                    .setText(R.id.tv_item_my_maitian_address, mtMyGrain.getAddress());
+                    .setText(R.id.tv_item_my_maitian_address, mtMyGrain.getAddress())
+                    .setText(R.id.tv_item_my_maitian_sitename,mtMyGrain.getSiteName());
             String image = mtMyGrain.getImage();
             if (image == null || StringUtils.isEmpty(image)) {
                 holder.getView(R.id.iv_item_my_maitian_image).setVisibility(View.GONE);

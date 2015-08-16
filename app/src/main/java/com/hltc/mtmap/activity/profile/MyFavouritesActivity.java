@@ -48,6 +48,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -85,7 +86,7 @@ public class MyFavouritesActivity extends Activity {
     };
     @InjectView(R.id.tv_hint)
     TextView tvHint;
-    private List<MTMyFavourite> mList;
+    private List<MTMyFavourite> mList= new ArrayList<>();
     private MyFavouriteAdapter mAdapter;
 
     @Override

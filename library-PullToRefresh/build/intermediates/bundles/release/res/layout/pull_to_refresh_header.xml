@@ -65,4 +65,4 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:visibility="gone" />
 </RelativeLayout>
-<!-- From: file:/home/redoblue/Workspace/MTMap/library-PullToRefresh/src/main/res/layout/pull_to_refresh_header.xml -->
+<!-- From: file:/F:/liubsh/android/project/MTMap/MTMap/library-PullToRefresh/src/main/res/layout/pull_to_refresh_header.xml -->

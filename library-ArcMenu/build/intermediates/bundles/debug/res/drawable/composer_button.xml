@@ -4,4 +4,4 @@
     <item android:drawable="@drawable/composer_button_pressed" android:state_pressed="true"/>
     <item android:drawable="@drawable/composer_button_normal"/>
 
-</selector><!-- From: file:/home/redoblue/Workspace/MTMap/library-ArcMenu/src/main/res/drawable/composer_button.xml -->
+</selector><!-- From: file:/F:/liubsh/android/project/MTMap/MTMap/library-ArcMenu/src/main/res/drawable/composer_button.xml -->

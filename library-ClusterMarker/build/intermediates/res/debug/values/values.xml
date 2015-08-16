@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/home/redoblue/Workspace/MTMap/library-ClusterMarker/src/main/res/values/strings.xml -->
+    <!-- From: file:/F:/liubsh/android/project/MTMap/MTMap/library-ClusterMarker/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="app_name">ClusterMarkerLibrary</string>
-    <!-- From: file:/home/redoblue/Workspace/MTMap/library-ClusterMarker/src/main/res/values/styles.xml -->
+    <!-- From: file:/F:/liubsh/android/project/MTMap/MTMap/library-ClusterMarker/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppBaseTheme" parent="android:Theme.Light">
         <!--

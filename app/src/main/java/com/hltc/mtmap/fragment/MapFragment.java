@@ -45,6 +45,7 @@ import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.offlinemap.OfflineMapCity;
 import com.amap.api.maps.offlinemap.OfflineMapManager;
+import com.amap.api.maps.overlay.PoiOverlay;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiItemDetail;
 import com.amap.api.services.poisearch.PoiResult;
@@ -747,8 +748,8 @@ public class MapFragment extends Fragment implements AMapLocationListener,
      */
     protected void searchPoiByKeyword(String str) {
         mQuery = new PoiSearch.Query(str, "", mMapInfo.getCityCode());
-        mQuery.setPageSize(1);// 设置每页最多返回多少条poiitem
-        mQuery.setPageNum(10);// 设置查第一页
+        mQuery.setPageSize(10);// 设置每页最多返回多少条poiitem
+        mQuery.setPageNum(0);// 设置查第一页
         mQuery.setLimitDiscount(false);
         mQuery.setLimitGroupbuy(false);
 
@@ -759,6 +760,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
     @Override
     public void onPoiSearched(PoiResult poiResult, int i) {
+        //TODO to find the reason why can't show tha poi markers
         if (i == 0) {
             // 搜索POI的结果
             if (poiResult != null && poiResult.getQuery() != null) {
@@ -769,7 +771,12 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                     // 当搜索不到poiitem数据时，会返回含有搜索关键字的城市信息
 
                     if (poiItems != null && poiItems.size() > 0) {
-                        PoiItem item = null;
+                        mAmap.clear();// 清理之前的图标
+                        PoiOverlay poiOverlay = new PoiOverlay(mAmap, poiItems);
+                        poiOverlay.removeFromMap();
+                        poiOverlay.addToMap();
+                        poiOverlay.zoomToSpan();
+                        /*PoiItem item = null;
                         for (PoiItem pi : poiItems) {
                             if (pi != null) {
                                 item = pi;
@@ -781,7 +788,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                             return;
                         }
                         LatLng latLng = AMapUtils.convertToLatlng(item.getLatLonPoint());
-                        goSomewhereWithAnimation(latLng);//去那个地方
+                        goSomewhereWithAnimation(latLng);//去那个地方*/
                     } else {
 //                        Toast.makeText(getActivity(), "R.string.no_result:" + R.string.no_result, Toast.LENGTH_SHORT).show();
                     }

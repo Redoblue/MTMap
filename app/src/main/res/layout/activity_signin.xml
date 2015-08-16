@@ -69,7 +69,7 @@
             style="@style/WhiteBackground"
             android:layout_width="match_parent"
             android:layout_marginBottom="15dp"
-            android:inputType="text" />
+            android:inputType="textPassword" />
 
         <!--<com.dd.processbutton.iml.ActionProcessButton xmlns:custom="http://schemas.android.com/apk/res-auto"
             android:id="@+id/btn_process_signin"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/home/redoblue/Workspace/MTMap/library-PullToRefresh/build/intermediates/bundles/debug/res/values-ko/values.xml -->
+    <!-- From: file:/F:/liubsh/android/project/MTMap/MTMap/library-PullToRefresh/build/intermediates/bundles/debug/res/values-ko/values.xml -->
     <eat-comment/>
     <string name="pull_to_refresh_pull_label">당겨서 새로고침</string>
     <string name="pull_to_refresh_refreshing_label">불러오는 중…</string>
