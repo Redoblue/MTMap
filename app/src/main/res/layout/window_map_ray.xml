@@ -34,7 +34,7 @@
         android:id="@+id/textView3"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:background="@drawable/btn_map_rad_wanle" />
+        android:background="@drawable/btn_map_rad_all" />
 
     <TextView
         android:layout_width="match_parent"

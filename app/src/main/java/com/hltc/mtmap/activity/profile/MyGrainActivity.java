@@ -47,6 +47,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -76,7 +77,7 @@ public class MyGrainActivity extends Activity {
     };
     @InjectView(R.id.tv_hint)
     TextView tvHint;
-    private List<MTMyGrain> mList;
+    private List<MTMyGrain> mList=new ArrayList<>();
     private MyGrainAdapter mAdapter;
 
     @Override
@@ -226,6 +227,7 @@ public class MyGrainActivity extends Activity {
                                             DaoManager.getManager().daoSession.getMTMyGrainDao().insertOrReplace(f);
                                         }
                                         mList = DaoManager.getManager().getAllMyGrains();
+                                        mAdapter.update(mList);
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }

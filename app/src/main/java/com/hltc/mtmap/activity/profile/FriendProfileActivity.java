@@ -25,6 +25,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -37,6 +38,7 @@ public class FriendProfileActivity extends Activity {
 
     private FriendProfile mProfile;
 
+    private Button btn_back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +60,7 @@ public class FriendProfileActivity extends Activity {
         scrollView.setZoomView(zoomView);
         scrollView.setScrollContentView(contentView);
 
+
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         int mScreenHeight = localDisplayMetrics.heightPixels;
@@ -65,6 +68,15 @@ public class FriendProfileActivity extends Activity {
 //        LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenHeight / 16.0F)));
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, AMapUtils.dp2px(this, 270));
         scrollView.setHeaderLayoutParams(localObject);
+
+        btn_back = (Button) scrollView.getPullRootView().findViewById(R.id.btn_bar_left);
+        btn_back.setVisibility(View.VISIBLE);
+        btn_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AppManager.getAppManager().finishActivity(FriendProfileActivity.this);
+            }
+        });
 
         Button maitian = (Button) scrollView.getPullRootView().findViewById(R.id.btn_profile_maitian);
         maitian.setText("Ta的麦田");
@@ -104,4 +116,5 @@ public class FriendProfileActivity extends Activity {
         ((TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_other))
                 .setText(mProfile.grainStatistics.other + "");
     }
+
 }

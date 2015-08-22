@@ -11,6 +11,18 @@
         android:background="@drawable/pic_profile_cover" />
 
     <Button
+        android:id="@+id/btn_bar_left"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="10dp"
+        android:visibility="gone"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/ic_action_back" />
+    <Button
         android:id="@+id/btn_profile_settings"
         android:layout_width="25dp"
         android:layout_height="25dp"

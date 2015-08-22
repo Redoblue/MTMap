@@ -211,6 +211,8 @@ public class MyFavouritesActivity extends Activity {
                                             DaoManager.getManager().daoSession.getMTMyFavouriteDao().insertOrReplace(f);
                                         }
                                         mList = DaoManager.getManager().getAllMyFavourites();
+                                        mAdapter.update(mList);
+                                        dialog.dismiss();
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }
@@ -282,7 +284,8 @@ public class MyFavouritesActivity extends Activity {
         @Override
         public void convert(CommonViewHolder holder, MTMyFavourite mtMyGrain) {
             holder.setText(R.id.tv_item_my_maitian_comment, mtMyGrain.getText())
-                    .setText(R.id.tv_item_my_maitian_address, mtMyGrain.getAddress());
+                    .setText(R.id.tv_item_my_maitian_address, mtMyGrain.getAddress())
+                    .setText(R.id.tv_item_my_maitian_sitename,mtMyGrain.getSiteName());
             String image = mtMyGrain.getImage();
             if (image == null || StringUtils.isEmpty(image)) {
                 holder.getView(R.id.iv_item_my_maitian_image).setVisibility(View.GONE);

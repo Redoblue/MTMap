@@ -49,4 +49,9 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
     }
 
     public abstract void convert(CommonViewHolder holder, T t);
+    public void update(List<T> data){
+        this.mList = data;
+        this.notifyDataSetChanged();
+    }
+
 }

@@ -156,7 +156,7 @@ public class GrainDetailActivity extends FragmentActivity {
         refreshPraise();
         refreshComment();
 
-        if (grainDetail.images.size() > 0) {
+        if (grainDetail!=null && grainDetail.images!=null&&grainDetail.images.size() > 0) {
             for (final String s : grainDetail.images) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
