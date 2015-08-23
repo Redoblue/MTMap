@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -50,6 +51,7 @@ import butterknife.OnClick;
  */
 public class SignInActivity extends Activity {
 
+    private static final String TAG = "SignInActivity";
     @InjectView(R.id.btn_bar_left)
     Button btnBarLeft;
     @InjectView(R.id.btn_bar_right)
@@ -184,7 +186,7 @@ public class SignInActivity extends Activity {
                                 AppConfig.getAppConfig().setConfToken(data.getString(ApiUtils.KEY_TOKEN));
                                 //更新身份状态
                                 MyApplication.signInStatus = "11";
-                                dialog.dismiss();
+
 
                                 //同步数据
 //                                new SyncDataAsyncTask().execute();
@@ -205,7 +207,10 @@ public class SignInActivity extends Activity {
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            Log.e(TAG, e.getStackTrace().toString());
+                            ToastUtils.showShort(SignInActivity.this,"网络故障，请检查网络");
                         }
+                        dialog.dismiss();
                     }
 
                     @Override
