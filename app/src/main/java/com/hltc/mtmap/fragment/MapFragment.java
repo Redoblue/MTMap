@@ -130,6 +130,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     private static final String[] ITEM_TEXTS = {
             "附近所有", "", "附近玩乐", "", "附近吃喝"
     };
+    private static final String TAG = "Fragment";
     public static MapInfo mMapInfo;
     @InjectView(R.id.map)
     MapView mMapView;
@@ -387,10 +388,11 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                     new CameraPosition(latLng, DEFAULT_ZOOM, DEFAULT_TILT, DEFAULT_BEARING)));
             myLocation = latLng;//更新个人位置
         }
-        initOverlay();
 
+        initOverlay();
         //添加我的位置maker
         addPinToMap();
+
     }
 
     private void initOverlay() {
@@ -630,6 +632,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             return;
         }
         overlay.clearClusters();
+
         for (final ClusterGrain cg : objects) {
             try {
                 final String to = FileUtils.getAppCache(getActivity(), "portrait")
@@ -652,7 +655,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
                         @Override
                         public void onFailure(String s, OSSException e) {
-
+                                Log.e(TAG,e.getStackTrace().toString())  ;
                         }
                     });
                 } else {
@@ -748,7 +751,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
      */
     protected void searchPoiByKeyword(String str) {
         mQuery = new PoiSearch.Query(str, "", mMapInfo.getCityCode());
-        mQuery.setPageSize(10);// 设置每页最多返回多少条poiitem
+        mQuery.setPageSize(1);// 设置每页最多返回多少条poiitem
         mQuery.setPageNum(0);// 设置查第一页
         mQuery.setLimitDiscount(false);
         mQuery.setLimitGroupbuy(false);
@@ -772,11 +775,11 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
                     if (poiItems != null && poiItems.size() > 0) {
                         mAmap.clear();// 清理之前的图标
-                        PoiOverlay poiOverlay = new PoiOverlay(mAmap, poiItems);
+                      /*  PoiOverlay poiOverlay = new PoiOverlay(mAmap, poiItems);
                         poiOverlay.removeFromMap();
                         poiOverlay.addToMap();
-                        poiOverlay.zoomToSpan();
-                        /*PoiItem item = null;
+                        poiOverlay.zoomToSpan();*/
+                        PoiItem item = null;
                         for (PoiItem pi : poiItems) {
                             if (pi != null) {
                                 item = pi;
@@ -788,7 +791,10 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                             return;
                         }
                         LatLng latLng = AMapUtils.convertToLatlng(item.getLatLonPoint());
-                        goSomewhereWithAnimation(latLng);//去那个地方*/
+                        goSomewhereWithAnimation(latLng);//去那个地方
+                        myLocation = latLng;
+                        addPinToMap();
+
                     } else {
 //                        Toast.makeText(getActivity(), "R.string.no_result:" + R.string.no_result, Toast.LENGTH_SHORT).show();
                     }
