@@ -508,12 +508,23 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             mMapInfo.setCity(aMapLocation.getCity());
 
             // if network is available, we load data from internet, otherwise, we load data from db
-            if (AppUtils.isNetworkConnected(getActivity())) {
-                new AddClusterAsyncTask().execute(0);
-            } else {
-                mGrains = getGrainsFromDb(TYPE_ALL);
-                addGrainToOverlay(mGrains);
-            }
+           /* if (AppUtils.isNetworkConnected(getActivity())) {*/
+           /*     new AddClusterAsyncTask().execute(0);*/
+           /* } else {*/
+           /*     mGrains = getGrainsFromDb(TYPE_ALL);*/
+           /*     addGrainToOverlay(mGrains);*/
+           /* }*/
+            obtainAndShowGrainsOnMap();
+        }
+    }
+
+    protected void obtainAndShowGrainsOnMap() {
+        if (AppUtils.isNetworkConnected(getActivity())) {
+            new AddClusterAsyncTask().execute(0);
+
+        } else {
+            mGrains = getGrainsFromDb(TYPE_ALL);
+            addGrainToOverlay(mGrains);
         }
     }
 
@@ -655,7 +666,9 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
                         @Override
                         public void onFailure(String s, OSSException e) {
-                                Log.e(TAG,e.getStackTrace().toString())  ;
+                            Log.e(TAG, e.getStackTrace().toString());
+                            cg.userPortrait = "";
+                            overlay.addClusterItem(cg);
                         }
                     });
                 } else {
@@ -793,7 +806,12 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                         LatLng latLng = AMapUtils.convertToLatlng(item.getLatLonPoint());
                         goSomewhereWithAnimation(latLng);//去那个地方
                         myLocation = latLng;
+                        mMapInfo.setCityCode(item.getCityCode());
+                        mMapInfo.setLatitude(String.valueOf(latLng.latitude));
+                        mMapInfo.setLongitude(String.valueOf(latLng.longitude));
                         addPinToMap();
+                        obtainAndShowGrainsOnMap();
+
 
                     } else {
 //                        Toast.makeText(getActivity(), "R.string.no_result:" + R.string.no_result, Toast.LENGTH_SHORT).show();
