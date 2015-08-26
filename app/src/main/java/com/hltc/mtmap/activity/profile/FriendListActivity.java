@@ -25,6 +25,7 @@ import com.hltc.mtmap.bean.PhoneContact;
 import com.hltc.mtmap.gmodel.Friend;
 import com.hltc.mtmap.gmodel.FriendProfile;
 import com.hltc.mtmap.gmodel.FriendStatus;
+import com.hltc.mtmap.helper.ApiHelper;
 import com.hltc.mtmap.helper.PinyinComparator;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.CharacterParser;
@@ -108,7 +109,7 @@ public class FriendListActivity extends Activity {
                     startActivity(intent);
                 } else {//点击了联系人
                     int index = position - 1;
-                    httpGetFriendProfile(adapterList.get(index).getUserId());
+                    ApiHelper.httpGetFriendProfile(FriendListActivity.this,adapterList.get(index).getUserId());
                 }
             }
         });
@@ -168,56 +169,5 @@ public class FriendListActivity extends Activity {
         refreshList();
     }
 
-    private void httpGetFriendProfile(long id) {
-        final ProgressDialog dialog = DialogManager.buildProgressDialog(this, "加载中...");
-        dialog.show();
-
-        RequestParams params = new RequestParams();
-        params.addHeader("Content-Type", "application/json");
-        JSONObject json = new JSONObject();
-        try {
-            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
-            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
-            json.put("fuserId", id);
-            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
-        HttpUtils http = new HttpUtils();
-        http.send(HttpRequest.HttpMethod.POST,
-                ApiUtils.URL_ROOT + "friend/personal/mainInfo.json",
-                params,
-                new RequestCallBack<String>() {
-                    @Override
-                    public void onSuccess(ResponseInfo<String> responseInfo) {
-                        String result = responseInfo.result;
-                        if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                            try {
-                                JSONObject json = new JSONObject(result).getJSONObject("data");
-                                Gson gson = new Gson();
-                                FriendProfile fp = gson.fromJson(json.toString(), FriendProfile.class);
-
-                                //TODO
-                                dialog.dismiss();
-                                Intent intent = new Intent(FriendListActivity.this, FriendProfileActivity.class);
-                                intent.putExtra("friend", fp);
-                                startActivity(intent);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(HttpException e, String s) {
-                        dialog.dismiss();
-                        Toast.makeText(FriendListActivity.this, "获取失败", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
-    }
 
 }

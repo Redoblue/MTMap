@@ -31,6 +31,7 @@ import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.event.CommentEvent;
 import com.hltc.mtmap.gmodel.GrainDetail;
+import com.hltc.mtmap.helper.ApiHelper;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.DateUtils;
@@ -135,6 +136,7 @@ public class GrainDetailActivity extends FragmentActivity {
                 break;
             case R.id.civ_grain_detail_portrait:
                 //TODO go to FriendDetail
+                ApiHelper.httpGetFriendProfile(GrainDetailActivity.this,grainDetail.publisher.userId);
                 break;
             default:
                 break;

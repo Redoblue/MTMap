@@ -92,6 +92,7 @@ public class GrainInfoDialog extends Activity {
     @OnClick({
             R.id.iv_grain_info_exit,
             R.id.iv_grain_info_ignore,
+            R.id.civ_grain_info_portrait,
             R.id.tv_grain_info_detail
     })
     public void onClick(View v) {
@@ -104,6 +105,11 @@ public class GrainInfoDialog extends Activity {
                 break;
             case R.id.tv_grain_info_detail:
                 ApiHelper.httpGetGrainDetail(GrainInfoDialog.this, mGrainItem.grainId);
+                break;
+            case R.id.civ_grain_info_portrait:
+                ApiHelper.httpGetFriendProfile(this, mGrainItem.userId);
+                break;
+            default:
                 break;
         }
     }

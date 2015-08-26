@@ -12,11 +12,13 @@ import com.hltc.mtmap.MTMyFavourite;
 import com.hltc.mtmap.MTMyGrain;
 import com.hltc.mtmap.activity.map.GrainDetailActivity;
 import com.hltc.mtmap.activity.map.GrainInfoDialog;
+import com.hltc.mtmap.activity.profile.FriendProfileActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.DialogManager;
 import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.gmodel.FriendProfile;
 import com.hltc.mtmap.gmodel.GrainDetail;
 import com.hltc.mtmap.util.ApiUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -142,6 +144,58 @@ public class ApiHelper {
                         Toast.makeText(context, "加载失败", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    public static void httpGetFriendProfile( final Context context,long id) {
+        final ProgressDialog dialog = DialogManager.buildProgressDialog(context, "加载中...");
+        dialog.show();
+
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+        try {
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
+            json.put("fuserId", id);
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        HttpUtils http = new HttpUtils();
+        http.send(HttpRequest.HttpMethod.POST,
+                ApiUtils.URL_ROOT + "friend/personal/mainInfo.json",
+                params,
+                new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+                        if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                            try {
+                                JSONObject json = new JSONObject(result).getJSONObject("data");
+                                Gson gson = new Gson();
+                                FriendProfile fp = gson.fromJson(json.toString(), FriendProfile.class);
+
+                                //TODO
+                                dialog.dismiss();
+                                Intent intent = new Intent(context, FriendProfileActivity.class);
+                                intent.putExtra("friend", fp);
+                                context.startActivity(intent);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        dialog.dismiss();
+                        Toast.makeText(context, "获取失败", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
     }
 
 
