@@ -19,6 +19,7 @@ import com.hltc.mtmap.util.StringUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
 /**
@@ -30,6 +31,10 @@ public class SingleEditActivity extends Activity implements TextView.OnEditorAct
     EditText etEdit;
     @InjectView(R.id.btn_cancel)
     Button btnCancel;
+    @InjectView(R.id.btn_bar_left)
+    Button btnBack;
+    @InjectView(R.id.btn_bar_right)
+    Button btnOk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,23 +63,43 @@ public class SingleEditActivity extends Activity implements TextView.OnEditorAct
         });
     }
 
+    @OnClick({
+            R.id.btn_bar_right,
+            R.id.btn_bar_left
+    })
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.btn_bar_left:
+                AppManager.getAppManager().finishActivity(this);
+                break;
+            case R.id.btn_bar_right:
+                doAction();
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void doAction() {
+        String newString = etEdit.getText().toString();
+        if (StringUtils.isEmpty(newString)) {
+            Toast.makeText(this, "写点儿什么吧", Toast.LENGTH_SHORT).show();
+        } else {
+            Intent intent = new Intent();
+            intent.putExtra("new", newString);
+            setResult(RESULT_OK, intent);
+
+            CommentEvent ce = new CommentEvent();
+            ce.setComment(newString);
+            EventBus.getDefault().post(ce);
+            AppManager.getAppManager().finishActivity(this);
+        }
+    }
+
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
-            String newString = etEdit.getText().toString();
-            if (StringUtils.isEmpty(newString)) {
-                Toast.makeText(this, "写点儿什么吧", Toast.LENGTH_SHORT).show();
-            } else {
-                Intent intent = new Intent();
-                intent.putExtra("new", newString);
-                setResult(RESULT_OK, intent);
-
-                CommentEvent ce = new CommentEvent();
-                ce.setComment(newString);
-                EventBus.getDefault().post(ce);
-
-                finish();
-            }
+            doAction();
         }
         return true;
     }
