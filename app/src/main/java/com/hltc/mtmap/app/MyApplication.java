@@ -62,6 +62,8 @@ public class MyApplication extends Application {
     private static Context mContext;
     private PushAgent mPushAgent;
 
+    private Handler shareHandler;
+
     public static Context getContext() {
         return mContext;
     }
@@ -359,4 +361,11 @@ public class MyApplication extends Application {
                 });
     }
 
+    public Handler getShareHandler() {
+        return shareHandler;
+    }
+
+    public void setShareHandler(Handler shareHandler) {
+        this.shareHandler = shareHandler;
+    }
 }

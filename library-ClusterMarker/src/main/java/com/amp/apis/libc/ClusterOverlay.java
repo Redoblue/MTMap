@@ -103,11 +103,13 @@ public class ClusterOverlay implements OnCameraChangeListener,
 
     //redoblue
     public void removeClusterItem(ClusterItem item) {
+        List<ClusterItem> removeItemList = new ArrayList<>();
         for (ClusterItem ci : mPoints) {
             if (ci.getItemId() == item.getItemId()) {
-                mPoints.remove(ci);
+                removeItemList.add(ci);
             }
         }
+        mPoints.removeAll(removeItemList);
         assignClusters();
     }
 

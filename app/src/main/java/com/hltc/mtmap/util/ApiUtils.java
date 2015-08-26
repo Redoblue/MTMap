@@ -55,6 +55,7 @@ public class ApiUtils {
     public static final String URL_DELETE_GRAIN = "grain/delete.json";
     public static final String URL_COMMENT_GRAIN = "grain/comment.json";
     public static final String URL_PRAISE_GRAIN = "grain/praise.json";
+    private static final  String URL_IGNORE_GRAIN = "grain/neglect.json";
     // 登录
     public static final String URL_LOGIN_BY_TOKEN = "user/login/login_by_token.json";
     // 朋友
@@ -113,6 +114,8 @@ public class ApiUtils {
     public static final String KEY_FIRST_CHARACTER = "firstCharacter";
     public static final String KEY_FROM_ID = "fromId";
     public static final String KEY_KEYWORD = "keyword";
+    public static final String KEY_GRAIN_ID ="gid" ;
+
 
     public static String getRequestVCodeUrl(int source) {
         return source == 0 ?
@@ -182,6 +185,7 @@ public class ApiUtils {
         return URL_ROOT + URL_FRIEND_ADD_FRIEND;
     }
 
+    public static String getIgnoreGrainURL(){return  URL_ROOT+URL_IGNORE_GRAIN;};
     public static void httpAddFriend(ContactItem contact) {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");

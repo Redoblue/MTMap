@@ -116,7 +116,8 @@ public class GrainDetailActivity extends FragmentActivity {
             R.id.btn_grain_detail_actions,
             R.id.btn_bar_back,
             R.id.btn_bar_favor,
-            R.id.btn_bar_share
+            R.id.btn_bar_share,
+            R.id.civ_grain_detail_portrait
     })
     public void onClick(View v) {
         switch (v.getId()) {
@@ -131,6 +132,11 @@ public class GrainDetailActivity extends FragmentActivity {
                 break;
             case R.id.btn_bar_share:
                 Toast.makeText(this, "分享", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.civ_grain_detail_portrait:
+                //TODO go to FriendDetail
+                break;
+            default:
                 break;
         }
     }
@@ -156,7 +162,7 @@ public class GrainDetailActivity extends FragmentActivity {
         refreshPraise();
         refreshComment();
 
-        if (grainDetail!=null && grainDetail.images!=null&&grainDetail.images.size() > 0) {
+        if (grainDetail != null && grainDetail.images != null && grainDetail.images.size() > 0) {
             for (final String s : grainDetail.images) {
                 LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

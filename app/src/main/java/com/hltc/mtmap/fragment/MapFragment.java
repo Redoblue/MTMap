@@ -8,6 +8,8 @@ import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -67,6 +69,7 @@ import com.hltc.mtmap.activity.publish.CreateGrainActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.DaoManager;
+import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.bean.MapInfo;
 import com.hltc.mtmap.gmodel.ClusterGrain;
@@ -131,6 +134,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             "附近所有", "", "附近玩乐", "", "附近吃喝"
     };
     private static final String TAG = "Fragment";
+    public static final int MSG_IGNORE_GRAIN =1 ;
     public static MapInfo mMapInfo;
     @InjectView(R.id.map)
     MapView mMapView;
@@ -182,6 +186,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             initView();
             initGuide();
             initAmap();
+
 //            initArcMenu();
             Log.d("MT", "MapFragment Finished");
             return view;
@@ -189,6 +194,8 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     }
 
     private void initData() {
+        MyApplication app = (MyApplication) getActivity().getApplication();
+        app.setShareHandler(mHandler);
         mMapInfo = AppConfig.getAppConfig().getMapInfo();
     }
 
@@ -443,6 +450,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                 }
             }
         });
+
     }
 
     private void updateOfflineMap() {
@@ -643,6 +651,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             return;
         }
         overlay.clearClusters();
+
 
         for (final ClusterGrain cg : objects) {
             try {
@@ -890,5 +899,24 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             httpQueryGrain(params[params[0]]);
             return null;
         }
+    }
+    private Handler mHandler = new Handler(){
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case MSG_IGNORE_GRAIN:
+                    ClusterGrain grainItem = (ClusterGrain) msg.obj;
+                    ignoreGrainShowOnMap(grainItem);
+                    break;
+                default:break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
+    private void ignoreGrainShowOnMap(ClusterGrain grainItem) {
+        if(overlay==null)return;
+        overlay.removeClusterItem(grainItem);
     }
 }
