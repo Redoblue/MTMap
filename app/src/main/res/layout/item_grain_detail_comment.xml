@@ -31,14 +31,36 @@
                 android:layout_marginBottom="5dp"
                 android:gravity="center_vertical">
 
-                <TextView
-                    android:id="@+id/tv_item_grain_detail_nickname"
+                <LinearLayout
+                    android:id="@+id/ll_comment_users"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:text="曹安然"
-                    android:textColor="@color/green_main"
-                    android:textSize="14sp" />
+                    android:orientation="horizontal"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/tv_item_grain_detail_nickname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="曹安然"
+                        android:textColor="@color/green_main"
+                        android:textSize="14sp" />
+                    <TextView
+                        android:id="@+id/tv_cmt_value"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:text=" 回复 "/>
+                    <TextView
+                        android:id="@+id/tv_comment2userId"
+                        android:gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:text="曹安然"
+                        android:textColor="@color/green_main"/>
+                </LinearLayout>
+
 
                 <TextView
                     android:id="@+id/tv_item_grain_detail_time"

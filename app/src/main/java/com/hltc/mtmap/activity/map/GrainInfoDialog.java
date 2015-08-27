@@ -154,13 +154,13 @@ public class GrainInfoDialog extends Activity {
                                 AppManager.getAppManager().finishActivity(GrainInfoDialog.this);
                             }
                         } else {
-                            ToastUtils.showShort(GrainInfoDialog.this, "мЬбГЁЖожнйлБё╛гКит╨Стыйт");
+                            ToastUtils.showShort(GrainInfoDialog.this, "bn О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫Бё╛О©╫О©╫О©╫т╨О©╫О©╫О©╫О©╫О©╫");
                         }
                     }
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-                        ToastUtils.showShort(GrainInfoDialog.this, "мЬбГЁЖожнйлБё╛гКит╨Стыйт");
+                        ToastUtils.showShort(GrainInfoDialog.this, "О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫О©╫Бё╛О©╫О©╫О©╫т╨О©╫О©╫О©╫О©╫О©╫");
                     }
                 });
     }

@@ -95,6 +95,9 @@ public class GrainDetailActivity extends FragmentActivity {
     private PopupWindow popWindow;
     private boolean isFavored = false;
 
+    //被评论者ID
+    private long toUserId = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -135,8 +138,7 @@ public class GrainDetailActivity extends FragmentActivity {
                 Toast.makeText(this, "分享", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.civ_grain_detail_portrait:
-                //TODO go to FriendDetail
-                ApiHelper.httpGetFriendProfile(GrainDetailActivity.this,grainDetail.publisher.userId);
+                ApiHelper.httpGetFriendProfile(GrainDetailActivity.this, grainDetail.publisher.userId);
                 break;
             default:
                 break;
@@ -242,6 +244,9 @@ public class GrainDetailActivity extends FragmentActivity {
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             json.put("gid", grainDetail.grainId);
             json.put("text", s);
+            if(toUserId!=-1){
+                json.put("tocid",toUserId);
+            }
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -312,15 +317,39 @@ public class GrainDetailActivity extends FragmentActivity {
         if (grainDetail.comment.size() > 0) {
             ViewHolder holder = new ViewHolder();
             for (int i = grainDetail.comment.size() - 1; i >= 0; i--) {
-                GrainDetail.Comment c = grainDetail.comment.get(i);
+                final GrainDetail.Comment comment = grainDetail.comment.get(i);
                 View commentView = LayoutInflater.from(this).inflate(R.layout.item_grain_detail_comment, null);
                 holder.portrait = (CircleImageView) commentView.findViewById(R.id.civ_item_grain_detail_portrait);
                 holder.name = (TextView) commentView.findViewById(R.id.tv_item_grain_detail_nickname);
                 holder.time = (TextView) commentView.findViewById(R.id.tv_item_grain_detail_time);
                 holder.comment = (TextView) commentView.findViewById(R.id.tv_item_grain_detail_comment);
-                holder.name.setText(StringUtils.isEmpty(c.remark) ? c.nickName : c.remark);
-                holder.time.setText(DateUtils.getFriendlyTime(c.createTime));
-                holder.comment.setText(c.text);
+                holder.cmtValue = (TextView) commentView.findViewById(R.id.tv_cmt_value);
+                holder.comment2User = (TextView)commentView.findViewById(R.id.tv_comment2userId);
+                holder.cmtValue.setVisibility(View.INVISIBLE);
+                holder.comment2User.setVisibility(View.INVISIBLE);
+                //TODO 需要在comment中添加被评论者nickName,然后显示在评论列表中
+               // if(comment.)
+                holder.name.setText(StringUtils.isEmpty(comment.remark) ? comment.nickName : comment.remark);
+                holder.time.setText(DateUtils.getFriendlyTime(comment.createTime));
+                holder.comment.setText(comment.text);
+
+                try {
+                    ImageLoader.getInstance().displayImage(OssManager.getGrainThumbnailUrl(comment.portrait),
+                             holder.portrait, MyApplication.displayImageOptions
+                    );
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                commentView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        Intent intent = new Intent(GrainDetailActivity.this, SingleEditActivity.class);
+                        toUserId = comment.userId;
+                        GrainDetailActivity.this.startActivity(intent);
+                        return true;
+                    }
+                });
+
                 layoutGrainDetailComment.addView(commentView);
             }
         }
@@ -356,6 +385,7 @@ public class GrainDetailActivity extends FragmentActivity {
             public void onClick(View v) {
                 popWindow.dismiss();
                 Intent intent = new Intent(GrainDetailActivity.this, SingleEditActivity.class);
+                toUserId = -1;
                 intent.putExtra("old", "");
                 startActivity(intent);
             }
@@ -420,6 +450,8 @@ public class GrainDetailActivity extends FragmentActivity {
         TextView name;
         TextView time;
         TextView comment;
+        TextView cmtValue;
+        TextView comment2User;
     }
 
 
