@@ -150,6 +150,7 @@
                         android:orientation="horizontal" />
                 </HorizontalScrollView>
 
+
                 <TextView style="@style/separator" />
 
                 <LinearLayout

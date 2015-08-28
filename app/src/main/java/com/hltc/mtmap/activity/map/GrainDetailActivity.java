@@ -24,6 +24,7 @@ import android.widget.ToggleButton;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.SingleEditActivity;
+import com.hltc.mtmap.activity.common.ImageViewerActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DialogManager;
@@ -89,8 +90,6 @@ public class GrainDetailActivity extends FragmentActivity {
     @InjectView(R.id.layout_grain_detail_image)
     LinearLayout layoutGrainDetailImage;
 
-    private RelativeLayout viewPagerContainer;
-    private ViewPager photoViewPager;
     private GrainDetail grainDetail;
     private PopupWindow popWindow;
     private boolean isFavored = false;
@@ -178,9 +177,7 @@ public class GrainDetailActivity extends FragmentActivity {
                 iv.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Intent intent = new Intent(GrainDetailActivity.this, LargeImageActivity.class);
-                        intent.putExtra("image", s);
-                        startActivity(intent);
+                        ImageViewerActivity.start(GrainDetailActivity.this, grainDetail.images);
                     }
                 });
                 layoutGrainDetailImage.addView(iv);
@@ -244,8 +241,8 @@ public class GrainDetailActivity extends FragmentActivity {
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
             json.put("gid", grainDetail.grainId);
             json.put("text", s);
-            if(toUserId!=-1){
-                json.put("tocid",toUserId);
+            if (toUserId != -1) {
+                json.put("tocid", toUserId);
             }
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
@@ -324,18 +321,18 @@ public class GrainDetailActivity extends FragmentActivity {
                 holder.time = (TextView) commentView.findViewById(R.id.tv_item_grain_detail_time);
                 holder.comment = (TextView) commentView.findViewById(R.id.tv_item_grain_detail_comment);
                 holder.cmtValue = (TextView) commentView.findViewById(R.id.tv_cmt_value);
-                holder.comment2User = (TextView)commentView.findViewById(R.id.tv_comment2userId);
+                holder.comment2User = (TextView) commentView.findViewById(R.id.tv_comment2userId);
                 holder.cmtValue.setVisibility(View.INVISIBLE);
                 holder.comment2User.setVisibility(View.INVISIBLE);
                 //TODO 需要在comment中添加被评论者nickName,然后显示在评论列表中
-               // if(comment.)
+                // if(comment.)
                 holder.name.setText(StringUtils.isEmpty(comment.remark) ? comment.nickName : comment.remark);
                 holder.time.setText(DateUtils.getFriendlyTime(comment.createTime));
                 holder.comment.setText(comment.text);
 
                 try {
                     ImageLoader.getInstance().displayImage(OssManager.getGrainThumbnailUrl(comment.portrait),
-                             holder.portrait, MyApplication.displayImageOptions
+                            holder.portrait, MyApplication.displayImageOptions
                     );
                 } catch (Exception e) {
                     e.printStackTrace();
