@@ -81,7 +81,7 @@ public class FriendStatusActivity extends Activity {
                 if (status.equals(STATUS_ADDABLE)) {
                     httpAddFriend(position);
                 } else if (status.equals(STATUS_UNACCEPTED)) {
-                    httpAgreeRequest(position);
+                    httpAcceptRequest(position);
                 }
             }
         });
@@ -96,7 +96,7 @@ public class FriendStatusActivity extends Activity {
         AppManager.getAppManager().finishActivity(this);
     }
 
-    private void httpAgreeRequest(final int index) {
+    private void httpAcceptRequest(final int index) {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
@@ -202,7 +202,7 @@ public class FriendStatusActivity extends Activity {
         super.onResume();
         try {
             adapterList = DaoManager.getManager().daoSession.getMFriendStatusDao().loadAll();
-            adapter.notifyDataSetChanged();
+            adapter.update(adapterList);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -234,6 +234,11 @@ public class FriendStatusActivity extends Activity {
             this.mContext = mContext;
             this.list = list;
         }
+        public void update(List<MFriendStatus> mFriendStatusList) {
+            this.list = mFriendStatusList;
+            notifyDataSetChanged();
+        }
+
 
         @Override
         public int getCount() {
@@ -295,7 +300,7 @@ public class FriendStatusActivity extends Activity {
                             mContext.startActivity(intent);
                             break;
                         case FriendStatusActivity.STATUS_UNACCEPTED:
-                            httpAgreeRequest(position);
+                            httpAcceptRequest(position);
                             break;
                     }
                     SyncDataAsyncTask.httpSyncFriendStatusData();

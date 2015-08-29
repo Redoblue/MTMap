@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -50,6 +51,9 @@ public class FriendRequestActivity extends Activity implements EditText.OnEditor
     @InjectView(R.id.btn_cancel)
     Button btnCancel;
 
+    @InjectView(R.id.btn_bar_right)
+    Button btnRight;
+
     private MTUser user = new MTUser();
     private int position;
 
@@ -90,15 +94,34 @@ public class FriendRequestActivity extends Activity implements EditText.OnEditor
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         if (actionId == EditorInfo.IME_ACTION_DONE) {
-            String s = etEdit.getText().toString().trim();
-            httpAddFriend(s);
+            doAction();
         }
         return true;
     }
 
-    @OnClick(R.id.btn_cancel)
-    public void onClick() {
-        AppManager.getAppManager().finishActivity(this);
+    @OnClick({R.id.btn_cancel,
+            R.id.btn_bar_right,
+            R.id.btn_bar_left})
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.btn_bar_left:
+            case R.id.btn_cancel:
+                AppManager.getAppManager().finishActivity(this);
+                break;
+            case R.id.btn_bar_right:
+                doAction();
+                break;
+            default:
+                break;
+
+        }
+
+    }
+
+    private void doAction() {
+        String s = etEdit.getText().toString().trim();
+        httpAddFriend(s);
     }
 
     public void httpAddFriend(String s) {

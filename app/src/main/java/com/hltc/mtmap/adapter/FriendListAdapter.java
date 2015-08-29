@@ -10,8 +10,11 @@ import android.widget.SectionIndexer;
 import android.widget.TextView;
 
 import com.hltc.mtmap.MFriend;
+import com.hltc.mtmap.MFriendStatus;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.profile.FriendListActivity;
+import com.hltc.mtmap.activity.profile.FriendStatusActivity;
+import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.gmodel.Friend;
 import com.hltc.mtmap.util.StringUtils;
@@ -26,10 +29,19 @@ public class FriendListAdapter extends BaseAdapter implements SectionIndexer {
     private List<MFriend> list = new ArrayList<>();
     private Context mContext;
 
+    public void update(List<MFriend> mFriendList){
+        list = mFriendList;
+        addNewFriendFolder();
+        notifyDataSetChanged();
+    }
+
     public FriendListAdapter(Context mContext, List<MFriend> objects) {
         this.mContext = mContext;
         this.list = objects;
+        addNewFriendFolder();
+    }
 
+    private void addNewFriendFolder() {
         //添加最前面的文件夹
         MFriend folder = new Friend();
         folder.setRemark("新的朋友");
@@ -37,6 +49,7 @@ public class FriendListAdapter extends BaseAdapter implements SectionIndexer {
         folder.setFirstCharacter("@");
         this.list.add(FriendListActivity.FOLDER_NEW_FRIEND, folder);
     }
+
 
     public int getCount() {
         return this.list.size();
@@ -50,9 +63,27 @@ public class FriendListAdapter extends BaseAdapter implements SectionIndexer {
         return position;
     }
 
+    private boolean isShowTheRedTip(List<MFriendStatus> mFriendStatusList){
+
+        if(mFriendStatusList==null || mFriendStatusList.size()==0)return false;
+
+        for(MFriendStatus status : mFriendStatusList){
+            if(status.getStatus().equals(FriendStatusActivity.STATUS_UNACCEPTED)||status.getStatus().equals(FriendStatusActivity.STATUS_ADDABLE))
+                return true;
+        }
+        return false;
+    }
     public View getView(final int position, View view, ViewGroup parent) {
         if (getItem(position).getIsFolder()) {
+
             view = LayoutInflater.from(mContext).inflate(R.layout.item_friend_list_folder, null);
+            List friendList = DaoManager.getManager().getAllFriendStarus();
+            View redTipView = view.findViewById(R.id.iv_red_tip);
+            if (isShowTheRedTip(friendList)) {
+                redTipView.setVisibility(View.VISIBLE);
+            } else {
+                redTipView.setVisibility(View.GONE);
+            }
             ImageView portrait = (ImageView) view.findViewById(R.id.civ_item_friend_list_portrait);
             portrait.setImageResource(R.drawable.icon_new_friend);
         } else {

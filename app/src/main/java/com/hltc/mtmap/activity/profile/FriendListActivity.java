@@ -105,11 +105,12 @@ public class FriendListActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == FOLDER_NEW_FRIEND) {
+                    view.findViewById(R.id.iv_red_tip).setVisibility(View.GONE);
                     Intent intent = new Intent(FriendListActivity.this, FriendStatusActivity.class);
                     startActivity(intent);
                 } else {//点击了联系人
                     int index = position - 1;
-                    ApiHelper.httpGetFriendProfile(FriendListActivity.this,adapterList.get(index).getUserId());
+                    ApiHelper.httpGetFriendProfile(FriendListActivity.this, adapterList.get(index).getUserId());
                 }
             }
         });
@@ -120,7 +121,6 @@ public class FriendListActivity extends Activity {
 //        Collections.sort(adapterList, pinyinComparator);
         adapter = new FriendListAdapter(this, adapterList);
         sortListView.setAdapter(adapter);
-//        adapter.updateListView(adapterList);
     }
 
     @OnClick({R.id.btn_bar_left,
@@ -139,7 +139,7 @@ public class FriendListActivity extends Activity {
 
     private void refreshList() {
         adapterList = DaoManager.getManager().getAllFriend();
-        adapter.notifyDataSetChanged();
+        adapter.update(adapterList);
     }
 
     private List<Friend> filledData(String[] date) {

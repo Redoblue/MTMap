@@ -101,4 +101,9 @@ public class ImageViewerActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        AppManager.getAppManager().finishActivity(this);
+        super.onDestroy();
+    }
 }
