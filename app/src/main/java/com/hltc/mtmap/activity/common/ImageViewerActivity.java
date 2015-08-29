@@ -11,6 +11,7 @@ import android.view.Window;
 import android.widget.ImageView;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -25,7 +26,7 @@ import butterknife.InjectView;
 public class ImageViewerActivity extends Activity {
 
     @InjectView(R.id.vp_image_show)
-     ViewPager mViewPagerImageShow;
+    ViewPager mViewPagerImageShow;
     private String[] imageurlList;
     private ImageView[] imageViews;
     private ImageAdapter mAdapter;
@@ -37,6 +38,7 @@ public class ImageViewerActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_imagepager);
         ButterKnife.inject(this);
+        AppManager.getAppManager().addActivity(this);
         initData();
         initView();
     }
@@ -55,15 +57,21 @@ public class ImageViewerActivity extends Activity {
         for (int i = 0; i < imageurlList.length; i++) {
             imageViews[i] = new ImageView(this);
             imageViews[i].setLayoutParams(lp);
+            imageViews[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AppManager.getAppManager().finishActivity(ImageViewerActivity.this);
+                }
+            });
             ImageLoader.getInstance().displayImage(imageurlList[i], imageViews[i], MyApplication.displayImageOptions);
         }
     }
 
     public static void start(Activity fromActivity, List<String> imageurlList) {
-        if(imageurlList==null || imageurlList.size()==0)return;
+        if (imageurlList == null || imageurlList.size() == 0) return;
         String[] imagesArray = new String[imageurlList.size()];
-        for(int i = 0;i < imageurlList.size();i++)
-        imagesArray[i] = imageurlList.get(i);
+        for (int i = 0; i < imageurlList.size(); i++)
+            imagesArray[i] = imageurlList.get(i);
         Intent intent = new Intent(fromActivity, ImageViewerActivity.class);
         intent.putExtra("imageUrllist", imagesArray);
         fromActivity.startActivity(intent);
