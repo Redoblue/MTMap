@@ -61,6 +61,11 @@ public class FriendProfileActivity extends Activity {
         scrollView.setScrollContentView(contentView);
 
 
+        // 我的朋友的页面忽略收藏和朋友两个Tab
+        View  viewFavourite = scrollView.getPullRootView().findViewById(R.id.btn_profile_favourite);
+        View  viewFriends = scrollView.getPullRootView().findViewById(R.id.btn_profile_friend);
+        viewFavourite.setVisibility(View.GONE);
+        viewFriends.setVisibility(View.GONE);
 
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);

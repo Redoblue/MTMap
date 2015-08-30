@@ -61,12 +61,6 @@ public class FriendListActivity extends Activity {
     TextView dialog;
     @InjectView(R.id.sb_friend_list_sidebar)
     CharacterBar characterBar;
-    @InjectView(R.id.btn_bar_left)
-    Button btnBarLeft;
-    @InjectView(R.id.tv_bar_title)
-    TextView tvBarTitle;
-    @InjectView(R.id.btn_bar_right)
-    Button btnBarRight;
     private List<PhoneContact> contacts = new ArrayList<>();
 
     private FriendListAdapter adapter;
@@ -115,10 +109,7 @@ public class FriendListActivity extends Activity {
             }
         });
 
-//        adapterList = filledData(getResources().getStringArray(R.array.date));
-//        Collections.sort(adapterList, pinyinComparator);
         adapterList = DaoManager.getManager().getAllFriend();
-//        Collections.sort(adapterList, pinyinComparator);
         adapter = new FriendListAdapter(this, adapterList);
         sortListView.setAdapter(adapter);
     }

@@ -44,13 +44,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-/**
- * Created by X-MH on 2015/8/29.
- */
 public class FriendGrainActivity extends Activity {
     private static final String TAG ="FriendGrainActivity" ;
-    @InjectView(R.id.btn_bar_left)
-    Button btnLeft;
     @InjectView(R.id.btn_bar_right)
     Button btnRight;
     @InjectView(R.id.tv_bar_title)
@@ -79,10 +74,10 @@ public class FriendGrainActivity extends Activity {
 
 
     }
-
     private void initView() {
         btnRight.setVisibility(View.GONE);
-        tvTitle.setText(mFriendProfile.user.nickName+"的麦田");
+
+        tvTitle.setText((mFriendProfile.user.remark==null?mFriendProfile.user.nickName:mFriendProfile.user.remark)+"的麦田");
         mAdapter = new GrainAdapter(this,friendGrainList,R.layout.item_my_maitian);
         lvFriendGrain.setAdapter(mAdapter);
         lvFriendGrain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -92,7 +87,6 @@ public class FriendGrainActivity extends Activity {
             }
         });
     }
-
     private void initData() {
         httpFriendGrain();
     }
