@@ -24,6 +24,7 @@ import com.hltc.mtmap.MTMyGrain;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.CommonAdapter;
 import com.hltc.mtmap.adapter.CommonViewHolder;
+import com.hltc.mtmap.adapter.GrainAdapter;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
@@ -79,7 +80,7 @@ public class MyGrainActivity extends Activity {
     @InjectView(R.id.tv_hint)
     TextView tvHint;
     private List<MTMyGrain> mList=new ArrayList<>();
-    private MyGrainAdapter mAdapter;
+    private GrainAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +109,7 @@ public class MyGrainActivity extends Activity {
             mList = DaoManager.getManager().getAllMyGrains();
         }
         refreshHint();
-        mAdapter = new MyGrainAdapter(this, mList, R.layout.item_my_maitian);
+        mAdapter = new GrainAdapter(this, mList, R.layout.item_my_maitian);
         listView.setAdapter(mAdapter);
         listView.setMenuCreator(creator);
         listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
@@ -238,9 +239,6 @@ public class MyGrainActivity extends Activity {
                                 if (errorMsg != null) {
                                     dialog.dismiss();
                                     Toast.makeText(context, "加载失败", Toast.LENGTH_SHORT).show();
-                                    // 登录失败
-                                    // TODO 没有验证错误码
-//                                    ToastUtils.showShort(FriendListActivity.this, errorMsg);
                                 }
                             }
                         } catch (JSONException e) {
@@ -255,31 +253,4 @@ public class MyGrainActivity extends Activity {
                     }
                 });
     }
-
-    class MyGrainAdapter extends CommonAdapter<MTMyGrain> {
-
-        public MyGrainAdapter(Context context, List<MTMyGrain> data, int viewId) {
-            super(context, data, viewId);
-        }
-
-        @Override
-        public void convert(CommonViewHolder holder, MTMyGrain mtMyGrain) {
-            holder.setText(R.id.tv_item_my_maitian_comment, mtMyGrain.getText())
-                    .setText(R.id.tv_item_my_maitian_address, mtMyGrain.getAddress())
-                    .setText(R.id.tv_item_my_maitian_sitename,mtMyGrain.getSiteName());
-            String image = mtMyGrain.getImage();
-            if (image == null || StringUtils.isEmpty(image)) {
-                holder.getView(R.id.iv_item_my_maitian_image).setVisibility(View.GONE);
-            } else {
-                holder.getView(R.id.iv_item_my_maitian_image).setVisibility(View.VISIBLE);
-                holder.setGrainThumbnail(R.id.iv_item_my_maitian_image, mtMyGrain.getImage());
-            }
-
-            TextView time = holder.getView(R.id.tv_item_my_maitian_time);
-            String date = DateUtils.getFriendlyTime(mtMyGrain.getCreateTime());
-            time.setText(date);
-            time.setTextSize(AMapUtils.dp2px(MyApplication.getContext(), 30 / date.length()));
-        }
-    }
-
 }

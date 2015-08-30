@@ -109,7 +109,7 @@ public class FriendListActivity extends Activity {
                     Intent intent = new Intent(FriendListActivity.this, FriendStatusActivity.class);
                     startActivity(intent);
                 } else {//点击了联系人
-                    int index = position - 1;
+                    int index = position;
                     ApiHelper.httpGetFriendProfile(FriendListActivity.this, adapterList.get(index).getUserId());
                 }
             }

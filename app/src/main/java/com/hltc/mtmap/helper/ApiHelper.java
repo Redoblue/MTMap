@@ -21,6 +21,7 @@ import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.gmodel.FriendProfile;
 import com.hltc.mtmap.gmodel.GrainDetail;
 import com.hltc.mtmap.util.ApiUtils;
+import com.hltc.mtmap.util.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -44,6 +45,7 @@ public class ApiHelper {
 
     public static final int ACTION_FAVOR = 0;
     public static final int ACTION_DELETE = 1;
+    private static final  String TAG ="ApiHelper" ;
 
     public static void httpActOnGrain(int action, long grainId) {
         RequestParams params = new RequestParams();
@@ -122,7 +124,6 @@ public class ApiHelper {
 
                                 dialog.dismiss();
                                 if (grainDetail != null) {
-                                    //TODO 进入详情界面
                                     Intent intent = new Intent(MyApplication.getContext(), GrainDetailActivity.class);
                                     intent.setExtrasClassLoader(GrainDetail.Praise.class.getClassLoader());
                                     intent.putExtra("grain", grainDetail);
@@ -177,15 +178,18 @@ public class ApiHelper {
                                 JSONObject json = new JSONObject(result).getJSONObject("data");
                                 Gson gson = new Gson();
                                 FriendProfile fp = gson.fromJson(json.toString(), FriendProfile.class);
-
-                                //TODO
                                 dialog.dismiss();
                                 Intent intent = new Intent(context, FriendProfileActivity.class);
                                 intent.putExtra("friend", fp);
                                 context.startActivity(intent);
                             } catch (JSONException e) {
-                                e.printStackTrace();
+                                Log.e(TAG, e.getStackTrace().toString());
+                                dialog.dismiss();
+                                ToastUtils.showShort(context,"数据加载失败");
                             }
+                        }else{
+                            dialog.dismiss();
+                            ToastUtils.showShort(context, "数据加载失败");
                         }
                     }
 

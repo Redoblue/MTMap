@@ -178,6 +178,7 @@
             android:name=".activity.profile.FriendProfileActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".activity.common.ImageViewerActivity"></activity>
+        <activity android:name=".activity.profile.FriendGrainActivity"/>
 
         <service android:name=".service.DownloadService" />
 

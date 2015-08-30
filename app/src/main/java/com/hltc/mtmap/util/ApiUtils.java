@@ -115,6 +115,9 @@ public class ApiUtils {
     public static final String KEY_FROM_ID = "fromId";
     public static final String KEY_KEYWORD = "keyword";
     public static final String KEY_GRAIN_ID ="gid" ;
+    public static final String TIP_LOAD_DATA_FAIL="加载数据失败...";
+    public static final String TIP_LOAD_DATA="加载数据...";
+    public static final String API_OBTAIN_FRIEND_GRAIN = URL_ROOT+"friend/personal/maitian.json";
 
 
     public static String getRequestVCodeUrl(int source) {

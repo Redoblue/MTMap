@@ -61,11 +61,11 @@ public class FriendProfileActivity extends Activity {
         scrollView.setScrollContentView(contentView);
 
 
+
         DisplayMetrics localDisplayMetrics = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
         int mScreenHeight = localDisplayMetrics.heightPixels;
         int mScreenWidth = localDisplayMetrics.widthPixels;
-//        LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, (int) (9.0F * (mScreenHeight / 16.0F)));
         LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, AMapUtils.dp2px(this, 270));
         scrollView.setHeaderLayoutParams(localObject);
 
@@ -83,9 +83,7 @@ public class FriendProfileActivity extends Activity {
         maitian.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(FriendProfileActivity.this, FriendGrainActivity.class);
-//                intent.putExtra("friendId", mProfile.user.userId);
-//                startActivity(intent);
+                 FriendGrainActivity.start(FriendProfileActivity.this,mProfile);
             }
         });
 

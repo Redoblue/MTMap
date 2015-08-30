@@ -25,6 +25,8 @@ public abstract class CommonAdapter<T> extends BaseAdapter {
         this.inflater = LayoutInflater.from(context);
     }
 
+
+
     @Override
     public int getCount() {
         return mList.size();
