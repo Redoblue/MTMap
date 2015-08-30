@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.ecloud.pulltozoomview.PullToZoomScrollViewEx;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.map.LargeImageActivity;
+import com.hltc.mtmap.activity.profile.setting.FriendSettingActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
@@ -25,7 +26,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -33,12 +33,16 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FriendProfileActivity extends Activity {
 
+    public static final String TAG ="FriendProfileActivity" ;
     @InjectView(R.id.sv_profile)
     PullToZoomScrollViewEx scrollView;
 
     private FriendProfile mProfile;
 
-    private Button btn_back;
+    private Button btnSetting;
+
+    private Button btnBack;
+    private TextView nickName;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +64,11 @@ public class FriendProfileActivity extends Activity {
         scrollView.setZoomView(zoomView);
         scrollView.setScrollContentView(contentView);
 
+        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
+        this.getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
+        int mScreenWidth = localDisplayMetrics.widthPixels;
+        LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, AMapUtils.dp2px(this, 270));
+        scrollView.setHeaderLayoutParams(localObject);
 
         // 我的朋友的页面忽略收藏和朋友两个Tab
         View  viewFavourite = scrollView.getPullRootView().findViewById(R.id.btn_profile_favourite);
@@ -67,16 +76,16 @@ public class FriendProfileActivity extends Activity {
         viewFavourite.setVisibility(View.GONE);
         viewFriends.setVisibility(View.GONE);
 
-        DisplayMetrics localDisplayMetrics = new DisplayMetrics();
-        this.getWindowManager().getDefaultDisplay().getMetrics(localDisplayMetrics);
-        int mScreenHeight = localDisplayMetrics.heightPixels;
-        int mScreenWidth = localDisplayMetrics.widthPixels;
-        LinearLayout.LayoutParams localObject = new LinearLayout.LayoutParams(mScreenWidth, AMapUtils.dp2px(this, 270));
-        scrollView.setHeaderLayoutParams(localObject);
-
-        btn_back = (Button) scrollView.getPullRootView().findViewById(R.id.btn_bar_left);
-        btn_back.setVisibility(View.VISIBLE);
-        btn_back.setOnClickListener(new View.OnClickListener() {
+        btnSetting = (Button) scrollView.getPullRootView().findViewById(R.id.btn_profile_settings);
+        btnSetting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FriendSettingActivity.startForResult(FriendProfileActivity.this,mProfile);
+            }
+        });
+        btnBack = (Button) scrollView.getPullRootView().findViewById(R.id.btn_bar_left);
+        btnBack.setVisibility(View.VISIBLE);
+        btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AppManager.getAppManager().finishActivity(FriendProfileActivity.this);
@@ -108,7 +117,7 @@ public class FriendProfileActivity extends Activity {
         ImageLoader.getInstance().displayImage(mProfile.user.coverImg, cover, MyApplication.displayImageOptions);
 
         //昵称和签名
-        TextView nickName = (TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_header_nickname);
+        nickName = (TextView) scrollView.getPullRootView().findViewById(R.id.tv_profile_header_nickname);
         nickName.setText(StringUtils.isEmpty(mProfile.user.remark) ? mProfile.user.nickName : mProfile.user.remark);
 
         //更新麦粒数量
@@ -120,4 +129,12 @@ public class FriendProfileActivity extends Activity {
                 .setText(mProfile.grainStatistics.other + "");
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==FriendSettingActivity.RESULT_CODE_FROM_FRIENDSETTING){
+            mProfile.user.remark= data.getStringExtra(TAG);
+            nickName.setText(mProfile.user.remark);
+        }
+    }
 }

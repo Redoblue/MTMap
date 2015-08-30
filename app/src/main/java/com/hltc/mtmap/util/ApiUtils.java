@@ -118,6 +118,8 @@ public class ApiUtils {
     public static final String TIP_LOAD_DATA_FAIL="加载数据失败...";
     public static final String TIP_LOAD_DATA="加载数据...";
     public static final String API_OBTAIN_FRIEND_GRAIN = URL_ROOT+"friend/personal/maitian.json";
+    public static final String API_FRIEND_REMARK = URL_ROOT +"friend/remark.json";
+    public static final String TIP_NET_EXCEPTION = "网络异常";
 
 
     public static String getRequestVCodeUrl(int source) {

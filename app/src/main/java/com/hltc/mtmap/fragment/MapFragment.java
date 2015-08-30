@@ -163,6 +163,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     private LatLng lastLocation;
     private LocationManagerProxy locationManagerProxy;
 
+    private float defaultZoom=12;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -241,7 +242,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
     private void goSomewhereWithAnimation(LatLng latLng) {
         mAmap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                new CameraPosition(latLng, mAmap.getCameraPosition().zoom,
+                new CameraPosition(latLng, defaultZoom,
                         DEFAULT_TILT, mAmap.getCameraPosition().bearing)), DEFAULT_DURATION, null);
     }
 
@@ -386,7 +387,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     @Override
     public void onMapLoaded() {
         Log.d("MT", "MapFragment onMapLoaded");
-
+        defaultZoom = mAmap.getCameraPosition().zoom;
         //加载完地图进入上次最后地点
         if (!StringUtils.isEmpty(mMapInfo.getLatitude())) {
             LatLng latLng = new LatLng(StringUtils.toDouble(

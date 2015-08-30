@@ -77,7 +77,8 @@ public class FriendGrainActivity extends Activity {
     private void initView() {
         btnRight.setVisibility(View.GONE);
 
-        tvTitle.setText((mFriendProfile.user.remark==null?mFriendProfile.user.nickName:mFriendProfile.user.remark)+"的麦田");
+        boolean showRemark = mFriendProfile.user.remark!=null && mFriendProfile.user.remark.length()>0;
+        tvTitle.setText((showRemark?mFriendProfile.user.remark:mFriendProfile.user.nickName)+"的麦田");
         mAdapter = new GrainAdapter(this,friendGrainList,R.layout.item_my_maitian);
         lvFriendGrain.setAdapter(mAdapter);
         lvFriendGrain.setOnItemClickListener(new AdapterView.OnItemClickListener() {
