@@ -3,6 +3,8 @@ package com.hltc.mtmap.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
@@ -42,6 +44,8 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
+import com.amap.api.maps.model.GroundOverlay;
+import com.amap.api.maps.model.GroundOverlayOptions;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
 import com.amap.api.maps.model.MarkerOptions;
@@ -164,6 +168,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     private LocationManagerProxy locationManagerProxy;
 
     private float defaultZoom=12;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -263,7 +268,6 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             mAmap.setOnMapTouchListener(this);
             mAmap.setOnCameraChangeListener(this);
 
-            addPinToMap();
         }
     }
 
@@ -563,19 +567,21 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     }
 
     private void addPinToMap() {
-        MarkerOptions markerOptions = new MarkerOptions();
+
+        GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions();
+        groundOverlayOptions.image(BitmapDescriptorFactory.fromResource(R.drawable.pic_location));
+        GroundOverlay groundOverlay = mAmap.addGroundOverlay(groundOverlayOptions);
+        groundOverlay.setPosition(myLocation);
+
+     /*   MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location));
 //        markerOptions.draggable(true);
         Marker marker = mAmap.addMarker(markerOptions);
 //        marker.setPositionByPixels(400, 300);
-        marker.setPosition(myLocation);
+        marker.setPosition(myLocation);*/
     }
 
     private void httpQueryGrain(int cateId) {
-        /*VisibleRegion visibleRegion = mAmap.getProjection().getVisibleRegion(); // 获取可视区域、
-            LatLngBounds latLngBounds = visibleRegion.latLngBounds;// 获取可视区域的Bounds
-            float radius = com.amap.api.maps.AMapUtils.calculateLineDistance(
-                    latLngBounds.northeast, latLngBounds.southwest) / 2;*/
 
         RequestParams params1 = new RequestParams();
         params1.addHeader("Content-Type", "application/json");
@@ -583,9 +589,6 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         try {
             json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
-//            if (currentCategory != 0) {
-//                json.put(ApiUtils.KEY_GRAIN_MCATEID, CreateGrainActivity.M_CATE_ID[cateId]);
-//            }
             json.put(ApiUtils.KEY_GRAIN_CITYCODE, mMapInfo.getCityCode());
             json.put(ApiUtils.KEY_GRAIN_LON, mMapInfo.getLongitude());
             json.put(ApiUtils.KEY_GRAIN_LAT, mMapInfo.getLatitude());
@@ -653,6 +656,13 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         }
         overlay.clearClusters();
 
+   /*     String myloactionShowImgUrl = getLocationUrl();
+        if(myloactionShowImgUrl!=null){
+            ClusterGrain markrtForLocation = new ClusterGrain();
+            markrtForLocation.userPortrait = myloactionShowImgUrl;
+            markrtForLocation.userId=-1;
+            overlay.addClusterItem(markrtForLocation);
+        }*/
 
         for (final ClusterGrain cg : objects) {
             try {
@@ -786,7 +796,6 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
     @Override
     public void onPoiSearched(PoiResult poiResult, int i) {
-        //TODO to find the reason why can't show tha poi markers
         if (i == 0) {
             // 搜索POI的结果
             if (poiResult != null && poiResult.getQuery() != null) {
@@ -794,14 +803,9 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                 if (poiResult.getQuery().equals(mQuery)) {
                     // 取得第一页的poiitem数据，页数从数字0开始
                     List<PoiItem> poiItems = poiResult.getPois();
-                    // 当搜索不到poiitem数据时，会返回含有搜索关键字的城市信息
 
                     if (poiItems != null && poiItems.size() > 0) {
                         mAmap.clear();// 清理之前的图标
-                      /*  PoiOverlay poiOverlay = new PoiOverlay(mAmap, poiItems);
-                        poiOverlay.removeFromMap();
-                        poiOverlay.addToMap();
-                        poiOverlay.zoomToSpan();*/
                         PoiItem item = null;
                         for (PoiItem pi : poiItems) {
                             if (pi != null) {
@@ -891,6 +895,28 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public String getLocationUrl() {
+        String imageName = "my_location_marker_icon";
+        final String imageFilePath = FileUtils.getImageFilepath(imageName);
+        try{
+            if(!FileUtils.fileIsExists(imageFilePath))
+            {
+                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.pic_location);
+                FileUtils.saveBitmap(bitmap,imageFilePath);
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        OssManager.getOssManager().uploadImage(imageFilePath, OssManager.getFileKeyByLocalUrl(imageFilePath));
+                    }
+                }).start();
+            }
+        }catch (Exception e){
+            Log.e(TAG,e.getMessage());
+            return null;
+        }
+        return OssManager.getRemoteFileUrl(imageFilePath);
     }
 
     class AddClusterAsyncTask extends AsyncTask<Integer, Void, Void> {

@@ -224,6 +224,10 @@ public class FileUtils {
         return new File(path).exists();
     }
 
+    public static String getImageFilepath(String fileName){
+         String folder = AppConfig.DEFAULT_APP_ROOT_PATH + "photo/";
+        return folder + fileName + ".jpg";
+    }
 
     public static String saveBitmap(Bitmap bm, String picName) {
         Log.e("", "保存图片");
