@@ -126,7 +126,7 @@ public class SignInActivity extends Activity {
                 }
 //                btnSignin.setEnabled(false);
 //                btnProcessSignin.setClickable(true);
-                etSigninPasswd.setEnabled(false);
+                //etSigninPasswd.setEnabled(false);
                 httpSignIn();
                 break;
         }
