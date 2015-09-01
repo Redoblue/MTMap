@@ -1,12 +1,14 @@
 package com.hltc.mtmap.activity.map;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -101,7 +103,7 @@ public class GrainInfoDialog extends Activity {
                 AppManager.getAppManager().finishActivity(this);
                 break;
             case R.id.iv_grain_info_ignore:
-                ignoreTheGrain();
+                ignoreSelectDilogShow();
                 break;
             case R.id.tv_grain_info_detail:
                 ApiHelper.httpGetGrainDetail(GrainInfoDialog.this, mGrainItem.grainId);
@@ -114,6 +116,26 @@ public class GrainInfoDialog extends Activity {
         }
     }
 
+    private void ignoreSelectDilogShow(){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_ignore_grain,null);
+      final AlertDialog ignoreDilog=  builder.setView(view).show();
+        view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                ignoreDilog.dismiss();
+                ignoreTheGrain();
+            }
+        });
+        view.findViewById(R.id.btn_cancel).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ignoreDilog.dismiss();
+            }
+        });
+
+    }
     private void ignoreTheGrain() {
 
         final RequestParams requestParams = new RequestParams();
@@ -142,7 +164,6 @@ public class GrainInfoDialog extends Activity {
                         Log.i(TAG, result);
 
                         if (result.contains(ApiUtils.KEY_SUCCESS)) {
-                            //TODO to deal the #success# case
                             Handler mHandler = ((MyApplication) getApplication()).getShareHandler();
                             if (mHandler == null) {
                                 AppManager.getAppManager().finishActivity(GrainInfoDialog.this);
@@ -154,13 +175,13 @@ public class GrainInfoDialog extends Activity {
                                 AppManager.getAppManager().finishActivity(GrainInfoDialog.this);
                             }
                         } else {
-                            ToastUtils.showShort(GrainInfoDialog.this, "bn ����������⣬���Ժ�����");
+                            ToastUtils.showShort(GrainInfoDialog.this, ApiUtils.TIP_NET_EXCEPTION);
                         }
                     }
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-                        ToastUtils.showShort(GrainInfoDialog.this, "����������⣬���Ժ�����");
+                        ToastUtils.showShort(GrainInfoDialog.this, ApiUtils.TIP_NET_EXCEPTION);
                     }
                 });
     }

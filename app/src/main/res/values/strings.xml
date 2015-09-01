@@ -25,4 +25,6 @@
     <string name="signin_bar_right">忘记密码</string>
     <string name="signin_btn_process">登录中</string>
     <string name="signin_btn_complete">登录成功</string>
+    <string name="delete">删除</string>
+    <string name="tip_ignore_grain">确定删除此记录么?\n(删除的记录以后不会显示\n在附近的推荐中)</string>
 </resources>
