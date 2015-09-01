@@ -170,7 +170,7 @@ public class SignInActivity extends Activity {
                             return;
                         try {
                             JSONObject farther = new JSONObject(result);
-                            if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
+                            if (result.contains(ApiUtils.KEY_SUCCESS)) {
                                 JSONObject data = new JSONObject(result).getJSONObject(ApiUtils.KEY_DATA);
                                 LocalUserInfo userInfo = new LocalUserInfo();
                                 userInfo.setUserId(data.getLong(ApiUtils.KEY_USER_ID));
@@ -200,7 +200,6 @@ public class SignInActivity extends Activity {
                             } else {
                                 String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
                                 if (errorMsg != null) {
-                                    // 登录失败
                                     // TODO 没有验证错误码
                                     ToastUtils.showShort(SignInActivity.this, errorMsg);
                                 }
