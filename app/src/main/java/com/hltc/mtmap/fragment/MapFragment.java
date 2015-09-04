@@ -44,14 +44,10 @@ import com.amap.api.maps.MapView;
 import com.amap.api.maps.model.BitmapDescriptor;
 import com.amap.api.maps.model.BitmapDescriptorFactory;
 import com.amap.api.maps.model.CameraPosition;
-import com.amap.api.maps.model.GroundOverlay;
-import com.amap.api.maps.model.GroundOverlayOptions;
 import com.amap.api.maps.model.LatLng;
 import com.amap.api.maps.model.Marker;
-import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.offlinemap.OfflineMapCity;
 import com.amap.api.maps.offlinemap.OfflineMapManager;
-import com.amap.api.maps.overlay.PoiOverlay;
 import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.poisearch.PoiItemDetail;
 import com.amap.api.services.poisearch.PoiResult;
@@ -140,6 +136,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     private static final String TAG = "Fragment";
     public static final int MSG_IGNORE_GRAIN =1 ;
     public static MapInfo mMapInfo;
+    public static MapInfo currentMapInfo;
     @InjectView(R.id.map)
     MapView mMapView;
     //    @InjectView(R.id.arc_menu)
@@ -210,9 +207,8 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             @Override
             public void onClick(View v) {
                 try {
-                    LatLng latLng = new LatLng(StringUtils.toDouble(
-                            mMapInfo.getLatitude()), StringUtils.toDouble(mMapInfo.getLongitude()));
-                    goSomewhereWithAnimation(latLng);
+                    goSomewhereWithAnimation(myLocation);
+                    obtainAndShowGrainsOnMap(mMapInfo);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -247,7 +243,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
 
     private void goSomewhereWithAnimation(LatLng latLng) {
         mAmap.animateCamera(CameraUpdateFactory.newCameraPosition(
-                new CameraPosition(latLng, defaultZoom,
+                new CameraPosition(latLng, DEFAULT_ZOOM,
                         DEFAULT_TILT, mAmap.getCameraPosition().bearing)), DEFAULT_DURATION, null);
     }
 
@@ -527,13 +523,13 @@ public class MapFragment extends Fragment implements AMapLocationListener,
            /*     mGrains = getGrainsFromDb(TYPE_ALL);*/
            /*     addGrainToOverlay(mGrains);*/
            /* }*/
-            obtainAndShowGrainsOnMap();
+            obtainAndShowGrainsOnMap(mMapInfo);
         }
     }
 
-    protected void obtainAndShowGrainsOnMap() {
+    protected void obtainAndShowGrainsOnMap(MapInfo currentMapInfo) {
         if (AppUtils.isNetworkConnected(getActivity())) {
-            new AddClusterAsyncTask().execute(0);
+            new AddClusterAsyncTask().execute(currentMapInfo);
 
         } else {
             mGrains = getGrainsFromDb(TYPE_ALL);
@@ -567,21 +563,10 @@ public class MapFragment extends Fragment implements AMapLocationListener,
     }
 
     private void addPinToMap() {
-
-        GroundOverlayOptions groundOverlayOptions = new GroundOverlayOptions();
-        groundOverlayOptions.image(BitmapDescriptorFactory.fromResource(R.drawable.pic_location));
-        GroundOverlay groundOverlay = mAmap.addGroundOverlay(groundOverlayOptions);
-        groundOverlay.setPosition(myLocation);
-
-     /*   MarkerOptions markerOptions = new MarkerOptions();
-        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.pic_location));
-//        markerOptions.draggable(true);
-        Marker marker = mAmap.addMarker(markerOptions);
-//        marker.setPositionByPixels(400, 300);
-        marker.setPosition(myLocation);*/
+        //TODO 添加当前位置的图标
     }
 
-    private void httpQueryGrain(int cateId) {
+    private void httpQueryGrain(MapInfo mapInfo) {
 
         RequestParams params1 = new RequestParams();
         params1.addHeader("Content-Type", "application/json");
@@ -589,9 +574,9 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         try {
             json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
-            json.put(ApiUtils.KEY_GRAIN_CITYCODE, mMapInfo.getCityCode());
-            json.put(ApiUtils.KEY_GRAIN_LON, mMapInfo.getLongitude());
-            json.put(ApiUtils.KEY_GRAIN_LAT, mMapInfo.getLatitude());
+            json.put(ApiUtils.KEY_GRAIN_CITYCODE, mapInfo.getCityCode());
+            json.put(ApiUtils.KEY_GRAIN_LON, mapInfo.getLongitude());
+            json.put(ApiUtils.KEY_GRAIN_LAT, mapInfo.getLatitude());
             json.put(ApiUtils.KEY_GRAIN_RADIUS, "90000");
             params1.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
         } catch (JSONException e) {
@@ -819,13 +804,14 @@ public class MapFragment extends Fragment implements AMapLocationListener,
                         }
                         LatLng latLng = AMapUtils.convertToLatlng(item.getLatLonPoint());
                         goSomewhereWithAnimation(latLng);//去那个地方
-                        myLocation = latLng;
-                        mMapInfo.setCityCode(item.getCityCode());
-                        mMapInfo.setLatitude(String.valueOf(latLng.latitude));
-                        mMapInfo.setLongitude(String.valueOf(latLng.longitude));
-                        addPinToMap();
-                        obtainAndShowGrainsOnMap();
 
+                        currentMapInfo = new MapInfo();
+                        currentMapInfo.setCityCode(item.getCityCode());
+                        currentMapInfo.setLatitude(String.valueOf(latLng.latitude));
+                        currentMapInfo.setLongitude(String.valueOf(latLng.longitude));
+
+                        addPinToMap();
+                        obtainAndShowGrainsOnMap(currentMapInfo);
 
                     } else {
 //                        Toast.makeText(getActivity(), "R.string.no_result:" + R.string.no_result, Toast.LENGTH_SHORT).show();
@@ -919,11 +905,11 @@ public class MapFragment extends Fragment implements AMapLocationListener,
         return OssManager.getRemoteFileUrl(imageFilePath);
     }
 
-    class AddClusterAsyncTask extends AsyncTask<Integer, Void, Void> {
+    class AddClusterAsyncTask extends AsyncTask<MapInfo, Void, Void> {
 
         @Override
-        protected Void doInBackground(Integer... params) {
-            httpQueryGrain(params[params[0]]);
+        protected Void doInBackground(MapInfo... params) {
+            httpQueryGrain(params[0]);
             return null;
         }
     }
