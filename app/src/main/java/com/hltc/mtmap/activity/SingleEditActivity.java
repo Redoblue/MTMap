@@ -13,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.profile.SettingsActivity;
+import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.event.CommentEvent;
 import com.hltc.mtmap.util.StringUtils;
@@ -36,6 +38,8 @@ public class SingleEditActivity extends Activity implements TextView.OnEditorAct
     @InjectView(R.id.btn_bar_right)
     Button btnOk;
 
+    public   static  Source source;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +57,12 @@ public class SingleEditActivity extends Activity implements TextView.OnEditorAct
             etEdit.setText(oldString);
             etEdit.setSelection(oldString.length());
         }
+
+        if(source==Source.ModifyNickName){
+            ((TextView)findViewById(R.id.tv_bar_title)).setText("修改昵称");
+        }else if(source==Source.Comment){
+            ((TextView)findViewById(R.id.tv_bar_title)).setText("评论");
+        }
         etEdit.setOnEditorActionListener(this);
 
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -63,6 +73,17 @@ public class SingleEditActivity extends Activity implements TextView.OnEditorAct
         });
     }
 
+    public static void startFromSettingActivity(Activity activity){
+        Intent intent = new Intent(activity, SingleEditActivity.class);
+        intent.putExtra("old", AppConfig.getAppConfig().getConfUsrNickName());
+        activity.startActivityForResult(intent, SettingsActivity.UPDATE_NICKNAME_REQUEST_CODE);
+        SingleEditActivity.source = Source.ModifyNickName;
+    }
+    public static void startFromGrainDetailActivtiy(Activity activity){
+        Intent intent = new Intent(activity, SingleEditActivity.class);
+        activity.startActivity(intent);
+        SingleEditActivity.source=Source.Comment;
+    }
     @OnClick({
             R.id.btn_bar_right,
             R.id.btn_bar_left
@@ -108,5 +129,9 @@ public class SingleEditActivity extends Activity implements TextView.OnEditorAct
     public void onDestroy() {
         super.onDestroy();
         AppManager.getAppManager().finishActivity(this);
+    }
+    static enum  Source{
+        ModifyNickName,
+        Comment;
     }
 }

@@ -340,9 +340,8 @@ public class GrainDetailActivity extends FragmentActivity {
                 commentView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        Intent intent = new Intent(GrainDetailActivity.this, SingleEditActivity.class);
                         toUserId = comment.userId;
-                        GrainDetailActivity.this.startActivity(intent);
+                        SingleEditActivity.startFromGrainDetailActivtiy(GrainDetailActivity.this);
                         return true;
                     }
                 });
@@ -381,10 +380,8 @@ public class GrainDetailActivity extends FragmentActivity {
             @Override
             public void onClick(View v) {
                 popWindow.dismiss();
-                Intent intent = new Intent(GrainDetailActivity.this, SingleEditActivity.class);
                 toUserId = -1;
-                intent.putExtra("old", "");
-                startActivity(intent);
+                SingleEditActivity.startFromGrainDetailActivtiy(GrainDetailActivity.this);
             }
         });
     }

@@ -115,7 +115,6 @@ public class MyFavouritesActivity extends Activity {
         } else {
             mList = DaoManager.getManager().getAllMyFavourites();
         }
-        refreshHint();
         mAdapter = new MyFavouriteAdapter(this, mList, R.layout.item_my_maitian);
         listView.setAdapter(mAdapter);
         listView.setMenuCreator(creator);
@@ -212,7 +211,7 @@ public class MyFavouritesActivity extends Activity {
                                         }
                                         mList = DaoManager.getManager().getAllMyFavourites();
                                         mAdapter.update(mList);
-                                        dialog.dismiss();
+                                        refreshHint();
                                     } catch (Exception e) {
                                         e.printStackTrace();
                                     }

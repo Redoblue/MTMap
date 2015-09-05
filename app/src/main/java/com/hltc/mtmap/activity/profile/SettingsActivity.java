@@ -100,9 +100,7 @@ public class SettingsActivity extends Activity {
                 AppManager.getAppManager().finishActivity(this);
                 break;
             case R.id.btn_settings_set_nickname:
-                Intent i1 = new Intent(this, SingleEditActivity.class);
-                i1.putExtra("old", AppConfig.getAppConfig().getConfUsrNickName());
-                startActivityForResult(i1, UPDATE_NICKNAME_REQUEST_CODE);
+                SingleEditActivity.startFromSettingActivity(this);
                 break;
             case R.id.btn_settings_change_passwd:
                 Intent i2 = new Intent(this, SignUpActivity.class);
