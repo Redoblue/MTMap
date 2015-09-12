@@ -8,14 +8,11 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.hltc.mtmap.MTMyFavourite;
-import com.hltc.mtmap.MTMyGrain;
 import com.hltc.mtmap.activity.map.GrainDetailActivity;
-import com.hltc.mtmap.activity.map.GrainInfoDialog;
+import com.hltc.mtmap.activity.map.GrainInfoDialogActivity;
 import com.hltc.mtmap.activity.profile.FriendProfileActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
-import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.DialogManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.gmodel.FriendProfile;
@@ -31,12 +28,10 @@ import com.lidroid.xutils.http.client.HttpRequest;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 /**
  * Created by redoblue on 15-7-9.
@@ -129,7 +124,7 @@ public class ApiHelper {
                                     intent.putExtra("grain", grainDetail);
                                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     MyApplication.getContext().startActivity(intent);
-                                    AppManager.getAppManager().finishActivity(GrainInfoDialog.class);
+                                    AppManager.getAppManager().finishActivity(GrainInfoDialogActivity.class);
                                 } else {
                                     Toast.makeText(MyApplication.getContext(), "检索详情失败", Toast.LENGTH_SHORT).show();
                                 }

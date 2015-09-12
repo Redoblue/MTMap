@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
-import com.hltc.mtmap.activity.map.GrainInfoDialog;
+import com.hltc.mtmap.activity.map.GrainInfoDialogActivity;
 import com.hltc.mtmap.activity.map.ManyGrainInfoDialog;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.gmodel.ClusterGrain;
@@ -96,7 +96,7 @@ public class ManyGrainInfoFragment extends Fragment {
             holder.portrait.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(getActivity(), GrainInfoDialog.class);
+                    Intent intent = new Intent(getActivity(), GrainInfoDialogActivity.class);
                     intent.putExtra("grain", getItem(position));
                     startActivity(intent);
                     AppManager.getAppManager().finishActivity(ManyGrainInfoDialog.class);

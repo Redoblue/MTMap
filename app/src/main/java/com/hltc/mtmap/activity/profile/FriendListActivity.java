@@ -22,6 +22,7 @@ import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.DialogManager;
 import com.hltc.mtmap.bean.PhoneContact;
+import com.hltc.mtmap.event.DeleteFrientEvent;
 import com.hltc.mtmap.gmodel.Friend;
 import com.hltc.mtmap.gmodel.FriendProfile;
 import com.hltc.mtmap.gmodel.FriendStatus;
@@ -50,6 +51,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 public class FriendListActivity extends Activity {
 
@@ -68,6 +70,8 @@ public class FriendListActivity extends Activity {
     private List<MFriend> adapterList;
     private PinyinComparator pinyinComparator;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,8 +80,19 @@ public class FriendListActivity extends Activity {
         AppManager.getAppManager().addActivity(this);
         ButterKnife.inject(this);
         initView();
+        EventBus.getDefault().register(this);
     }
 
+    public void onEvent(DeleteFrientEvent event) {
+        if(event==null)return;
+        for(MFriend friend : adapterList){
+            if(friend.getUserId()==event.getUserId()){
+                friend.delete();
+                adapterList.remove(friend);
+            }
+        }
+        adapter.update(adapterList);
+    }
     private void initView() {
         characterParser = CharacterParser.getInstance();
         pinyinComparator = new PinyinComparator();
@@ -160,5 +175,9 @@ public class FriendListActivity extends Activity {
         refreshList();
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }

@@ -146,7 +146,7 @@
             android:name=".activity.SingleEditActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activity.map.GrainInfoDialog"
+            android:name=".activity.map.GrainInfoDialogActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.NoActionBar" />
         <activity

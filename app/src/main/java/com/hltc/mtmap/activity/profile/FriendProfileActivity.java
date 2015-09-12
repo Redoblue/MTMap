@@ -19,6 +19,7 @@ import com.hltc.mtmap.activity.profile.setting.FriendSettingActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
+import com.hltc.mtmap.event.DeleteFrientEvent;
 import com.hltc.mtmap.gmodel.FriendProfile;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -26,6 +27,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import de.greenrobot.event.EventBus;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -51,11 +53,15 @@ public class FriendProfileActivity extends Activity {
         setContentView(R.layout.fragment_profile);
         ButterKnife.inject(this);
 
+        EventBus.getDefault().register(this);
         mProfile = getIntent().getParcelableExtra("friend");
 
         initView();
     }
 
+    public void onEvent(DeleteFrientEvent event) {
+        AppManager.getAppManager().finishActivity(this);
+    }
     private void initView() {
         View headerView = LayoutInflater.from(this).inflate(R.layout.fragment_profile_header_view, null, false);
         View zoomView = LayoutInflater.from(this).inflate(R.layout.fragment_profile_zoom_view, null, false);
@@ -136,5 +142,11 @@ public class FriendProfileActivity extends Activity {
             mProfile.user.remark= data.getStringExtra(TAG);
             nickName.setText(mProfile.user.remark);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

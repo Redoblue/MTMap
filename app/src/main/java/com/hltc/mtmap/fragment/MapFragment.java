@@ -62,7 +62,7 @@ import com.google.gson.reflect.TypeToken;
 import com.hltc.mtmap.MGrain;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.MainActivity;
-import com.hltc.mtmap.activity.map.GrainInfoDialog;
+import com.hltc.mtmap.activity.map.GrainInfoDialogActivity;
 import com.hltc.mtmap.activity.map.ManyGrainInfoDialog;
 import com.hltc.mtmap.activity.map.SearchPositionActivity;
 import com.hltc.mtmap.activity.publish.CreateGrainActivity;
@@ -430,7 +430,7 @@ public class MapFragment extends Fragment implements AMapLocationListener,
             @Override
             public void onClick(Marker marker, List<ClusterItem> clusterItems) {
                 if (clusterItems.size() == 1) {
-                    Intent intent = new Intent(getActivity(), GrainInfoDialog.class);
+                    Intent intent = new Intent(getActivity(), GrainInfoDialogActivity.class);
                     intent.putExtra("grain", (ClusterGrain) clusterItems.get(0));
                     startActivity(intent);
                 } else if (clusterItems.size() >= 2) {

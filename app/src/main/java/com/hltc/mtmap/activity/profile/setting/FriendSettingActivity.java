@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import com.hltc.mtmap.activity.profile.FriendProfileActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DialogManager;
+import com.hltc.mtmap.event.DeleteFrientEvent;
 import com.hltc.mtmap.gmodel.FriendProfile;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.ToastUtils;
@@ -40,6 +42,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.InjectViews;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by X-MH on 2015/8/30.
@@ -56,6 +59,7 @@ public class FriendSettingActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_friend_setting);
         ButterKnife.inject(this);
         AppManager.getAppManager().addActivity(this);
@@ -95,8 +99,36 @@ public class FriendSettingActivity extends Activity {
     }
 
     private void deleteUserById() {
-        //TODO 添加删除好友的逻辑
-        ToastUtils.showLong(this,"待完成");
+        RequestParams params = new RequestParams();
+        params.addHeader("Content-Type", "application/json");
+        JSONObject json = new JSONObject();
+
+        try{
+            json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
+            json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
+            json.put("fuserId",mFriendProfile.user.userId);
+            params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
+        }catch (Exception e){
+            Log.e(TAG, e.getMessage());
+        }
+        new HttpUtils().send(HttpRequest.HttpMethod.POST,
+                ApiUtils.API_FRIEND_DELETE, params, new RequestCallBack<String>() {
+                    @Override
+                    public void onSuccess(ResponseInfo<String> responseInfo) {
+                        String result = responseInfo.result;
+                        if (responseInfo.result.contains(ApiUtils.KEY_SUCCESS)) {
+                            DeleteFrientEvent event = new DeleteFrientEvent(mFriendProfile.user.userId);
+                            EventBus.getDefault().post(event);
+                            AppManager.getAppManager().finishActivity(FriendSettingActivity.this);
+                        } else {
+                            ToastUtils.showShort(FriendSettingActivity.this, ApiUtils.TIP_NET_EXCEPTION);
+                        }
+                    }
+                    @Override
+                    public void onFailure(HttpException e, String s) {
+                        ToastUtils.showShort(FriendSettingActivity.this, ApiUtils.TIP_NET_EXCEPTION);
+                    }
+                });
     }
 
     private void modifyAndBack() {

@@ -2,7 +2,6 @@ package com.hltc.mtmap.activity.map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,9 +44,9 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * Created by redoblue on 15-7-3.
  */
-public class GrainInfoDialog extends Activity {
+public class GrainInfoDialogActivity extends Activity {
 
-    private static final String TAG = "GrainInfoDialog";
+    private static final String TAG = "GrainInfoDialogActivity";
     @InjectView(R.id.iv_grain_info_blur)
     ImageView ivGrainInfoBlur;
     @InjectView(R.id.civ_grain_info_portrait)
@@ -106,7 +105,7 @@ public class GrainInfoDialog extends Activity {
                 ignoreSelectDilogShow();
                 break;
             case R.id.tv_grain_info_detail:
-                ApiHelper.httpGetGrainDetail(GrainInfoDialog.this, mGrainItem.grainId);
+                ApiHelper.httpGetGrainDetail(GrainInfoDialogActivity.this, mGrainItem.grainId);
                 break;
             case R.id.civ_grain_info_portrait:
                 ApiHelper.httpGetFriendProfile(this, mGrainItem.userId);
@@ -119,7 +118,7 @@ public class GrainInfoDialog extends Activity {
     private void ignoreSelectDilogShow(){
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_ignore_grain,null);
-      final AlertDialog ignoreDilog=  builder.setView(view).show();
+        final AlertDialog ignoreDilog=  builder.setView(view).show();
         view.findViewById(R.id.btn_ok).setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -166,22 +165,22 @@ public class GrainInfoDialog extends Activity {
                         if (result.contains(ApiUtils.KEY_SUCCESS)) {
                             Handler mHandler = ((MyApplication) getApplication()).getShareHandler();
                             if (mHandler == null) {
-                                AppManager.getAppManager().finishActivity(GrainInfoDialog.this);
+                                AppManager.getAppManager().finishActivity(GrainInfoDialogActivity.this);
                             } else {
                                 Message msg = mHandler.obtainMessage();
                                 msg.what = MapFragment.MSG_IGNORE_GRAIN;
                                 msg.obj = mGrainItem;
                                 mHandler.sendMessage(msg);
-                                AppManager.getAppManager().finishActivity(GrainInfoDialog.this);
+                                AppManager.getAppManager().finishActivity(GrainInfoDialogActivity.this);
                             }
                         } else {
-                            ToastUtils.showShort(GrainInfoDialog.this, ApiUtils.TIP_NET_EXCEPTION);
+                            ToastUtils.showShort(GrainInfoDialogActivity.this, ApiUtils.TIP_NET_EXCEPTION);
                         }
                     }
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-                        ToastUtils.showShort(GrainInfoDialog.this, ApiUtils.TIP_NET_EXCEPTION);
+                        ToastUtils.showShort(GrainInfoDialogActivity.this, ApiUtils.TIP_NET_EXCEPTION);
                     }
                 });
     }
