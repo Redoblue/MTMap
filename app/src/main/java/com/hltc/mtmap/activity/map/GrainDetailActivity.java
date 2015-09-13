@@ -2,10 +2,15 @@ package com.hltc.mtmap.activity.map;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,12 +49,18 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +73,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class GrainDetailActivity extends FragmentActivity {
 
+    private static final String TAG = "GrainDetailActivity";
     private static int TOTAL_COUNT = 5;
     @InjectView(R.id.btn_bar_back)
     Button btnBarBack;
@@ -97,6 +109,7 @@ public class GrainDetailActivity extends FragmentActivity {
     //被评论者ID
     private long toUserId = -1;
 
+    private IWXAPI iwxapi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,8 +118,23 @@ public class GrainDetailActivity extends FragmentActivity {
         setContentView(R.layout.activity_grain_detail);
         ButterKnife.inject(this);
         EventBus.getDefault().register(this);
-
+        registerWX();
         initView();
+    }
+
+    private void registerWX() {
+        ApplicationInfo appInfo=null;
+        try {
+             appInfo = this.getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if(appInfo==null){
+            return ;
+        }
+        String appId =appInfo.metaData.getString("com.hltc.mtmap.wx_id");
+        iwxapi = WXAPIFactory.createWXAPI(this, appId, true);
+        iwxapi.registerApp(appId);
     }
 
     @Override
@@ -135,6 +163,7 @@ public class GrainDetailActivity extends FragmentActivity {
                 break;
             case R.id.btn_bar_share:
                 Toast.makeText(this, "分享", Toast.LENGTH_SHORT).show();
+                share2WX();
                 break;
             case R.id.civ_grain_detail_portrait:
                 ApiHelper.httpGetFriendProfile(GrainDetailActivity.this, grainDetail.publisher.userId);
@@ -142,6 +171,37 @@ public class GrainDetailActivity extends FragmentActivity {
             default:
                 break;
         }
+    }
+    private void share2WX() {
+        if(iwxapi==null)return;
+        WXWebpageObject webpage = new WXWebpageObject();
+        webpage.webpageUrl = "http://www.maitianditu.com/maitian/v1/grain/share/"+String.valueOf(grainDetail.grainId);
+        WXMediaMessage msg = new WXMediaMessage(webpage);
+        msg.title = grainDetail.text;
+        Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
+        //msg.thumbData = bmpToByteArray(thumb, true);
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = String.valueOf(System.currentTimeMillis());
+        req.message = msg;
+        req.scene =  SendMessageToWX.Req.WXSceneTimeline;
+        Log.i(TAG,String.valueOf(iwxapi.sendReq(req)));
+
+    }
+
+    public static byte[] bmpToByteArray(final Bitmap bmp, final boolean needRecycle) {
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.PNG, 100, output);
+        if (needRecycle) {
+            bmp.recycle();
+        }
+        byte[] result = output.toByteArray();
+        try {
+            output.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     public void onEvent(CommentEvent ce) {

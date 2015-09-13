@@ -28,6 +28,7 @@ import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
+import com.tencent.mm.sdk.openapi.IWXAPI;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
@@ -73,7 +74,6 @@ public class GrainInfoDialogActivity extends Activity {
         AppManager.getAppManager().addActivity(this);
         setContentView(R.layout.dialog_grain_info);
         ButterKnife.inject(this);
-
         initData();
         initView();
     }

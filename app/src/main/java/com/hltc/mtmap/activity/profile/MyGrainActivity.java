@@ -108,7 +108,7 @@ public class MyGrainActivity extends Activity {
         } else {
             mList = DaoManager.getManager().getAllMyGrains();
         }
-        refreshHint();
+        //refreshHint();
         mAdapter = new GrainAdapter(this, mList, R.layout.item_my_maitian);
         listView.setAdapter(mAdapter);
         listView.setMenuCreator(creator);
