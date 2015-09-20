@@ -150,15 +150,20 @@ public class SignUpActivity extends Activity {
                 httpValidateVCode();
                 break;
             case R.id.btn_signup_create:
-                String passwd = etSignupPasswd.getText().toString();
-                if (!StringUtils.isPasswd(passwd)) {
-                    ToastUtils.showShort(this, "密码格式错误");
-                    break;
-                }
-                mPasswd = passwd;
-                    httpSignUp();
+                signUp();
                 break;
         }
+    }
+
+    private void signUp() {
+        String passwd = etSignupPasswd.getText().toString();
+        StringUtils.PassWordFormat format = StringUtils.isPasswd(passwd);
+        if(format != StringUtils.PassWordFormat.RIGHT){
+            ToastUtils.showShort(this, format.des);
+            return;
+        }
+        mPasswd = passwd;
+        httpSignUp();
     }
 
     private void httpSubmitPhone() {

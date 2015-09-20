@@ -178,10 +178,39 @@ public class StringUtils {
         return pattern.matcher(str).matches();
     }
 
-    public static boolean isPasswd(String str) {
-        Pattern pattern = Pattern
-                .compile(passwdRegexp);
-        return pattern.matcher(str).matches();
+    public static PassWordFormat isPasswd(String str) {
+        boolean hasSpace = false;
+        int numberCount = 0;
+        int charCount = 0;
+
+        if (str == null || str.length() < 6 || str.length() > 18) {
+            return PassWordFormat.LENGHT_OUT;
+        }
+
+        for (int i = 0; i < str.length(); i++) {
+            if ((i >= 'a' && i <= 'z') || (i >= 'A' && i <= 'Z'))
+                charCount++;
+            if (i >= '0' && i <= '9')
+                numberCount++;
+            if (i == ' ') hasSpace = true;
+        }
+
+        if (hasSpace) return PassWordFormat.HAS_SPACE;
+        if (numberCount == str.length() || charCount == str.length())
+            return PassWordFormat.ALL_NUMBER_OR_CHAR;
+        return PassWordFormat.RIGHT;
+    }
+
+    public static enum PassWordFormat {
+        HAS_SPACE("密码包含空格"),
+        LENGHT_OUT("密码长度为6-18位"),
+        ALL_NUMBER_OR_CHAR("不能全为数字或字母"),
+        RIGHT("");
+        public String des;
+
+        private PassWordFormat(String des) {
+            this.des = des;
+        }
     }
 
     public static boolean isEmail(String s) {

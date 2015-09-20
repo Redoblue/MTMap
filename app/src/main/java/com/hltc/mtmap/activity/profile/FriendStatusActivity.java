@@ -69,7 +69,7 @@ public class FriendStatusActivity extends Activity {
         setContentView(R.layout.activity_new_friend);
         ButterKnife.inject(this);
         AppManager.getAppManager().addActivity(this);
-
+        SyncDataAsyncTask.httpSyncFriendStatusData();
         initView();
     }
     private void initView() {
