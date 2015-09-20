@@ -33,6 +33,7 @@ import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.helper.ApiHelper;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
+import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.DateUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -103,11 +104,17 @@ public class MyGrainActivity extends Activity {
         });
 
         //如果没有数据或从创建麦粒而来则重新加载
-        if (DaoManager.getManager().daoSession.getMTMyGrainDao().count() < 1) {
+        if(AppUtils.isNetworkConnected(this)){
             httpSyncGrainData(this, "同步数据中...");
-        } else {
-            mList = DaoManager.getManager().getAllMyGrains();
         }
+        else{
+            loadLocalData();
+        }
+      /*  if (DaoManager.getManager().daoSession.getMTMyGrainDao().count() < 1) {
+
+        } else {
+            loadLocalData();
+        }*/
         //refreshHint();
         mAdapter = new GrainAdapter(this, mList, R.layout.item_my_maitian);
         listView.setAdapter(mAdapter);
@@ -141,6 +148,10 @@ public class MyGrainActivity extends Activity {
                 ApiHelper.httpGetGrainDetail(MyGrainActivity.this, mList.get(position).getGrainId());
             }
         });
+    }
+
+    private void loadLocalData() {
+        mList = DaoManager.getManager().getAllMyGrains();
     }
 
     private void refreshHint() {
@@ -228,7 +239,7 @@ public class MyGrainActivity extends Activity {
                                         for (MTMyGrain f : mgs) {
                                             DaoManager.getManager().daoSession.getMTMyGrainDao().insertOrReplace(f);
                                         }
-                                        mList = DaoManager.getManager().getAllMyGrains();
+                                        loadLocalData();
                                         mAdapter.update(mList);
                                     } catch (Exception e) {
                                         e.printStackTrace();

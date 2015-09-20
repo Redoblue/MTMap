@@ -57,11 +57,14 @@ public class SearchFriendListAdapter extends BaseAdapter {
             holder.name = (TextView) convertView.findViewById(R.id.tv_name);
             holder.signature = (TextView) convertView.findViewById(R.id.tv_signature);
             holder.select = (ToggleButton) convertView.findViewById(R.id.tb_select);
+            holder.tvIsFriends = (TextView) convertView.findViewById(R.id.tv_isfriend);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
+        //TODO
+        //getItem(position).getComments2User()
         ImageLoader.getInstance().displayImage(getItem(position).getPortrait(), holder.portrait);
         holder.name.setText(getItem(position).getNickName());
         holder.signature.setText(getItem(position).getSignature());
@@ -83,6 +86,13 @@ public class SearchFriendListAdapter extends BaseAdapter {
             }
         });
 
+        if(getItem(position).isFriend()){
+            holder.select.setVisibility(View.GONE);
+            holder.tvIsFriends.setVisibility(View.VISIBLE);
+        }else{
+            holder.select.setVisibility(View.VISIBLE);
+            holder.tvIsFriends.setVisibility(View.GONE);
+        }
         return convertView;
     }
 
@@ -91,5 +101,6 @@ public class SearchFriendListAdapter extends BaseAdapter {
         TextView name;
         TextView signature;
         ToggleButton select;
+        TextView tvIsFriends;
     }
 }

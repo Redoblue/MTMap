@@ -29,6 +29,7 @@ public class MTUser {
     private String remark;
     private String firstCharacter;
 
+    private boolean isFriend;
     /**
      * Used to resolve relations
      */
@@ -52,6 +53,19 @@ public class MTUser {
         this.userId = userId;
     }
 
+    public MTUser(long userId, String nickName, String createTime, String phone, String portrait, String coverImg, String signature, String remark, String firstCharacter,boolean isFriend) {
+        this.userId = userId;
+        this.nickName = nickName;
+        this.createTime = createTime;
+        this.phone = phone;
+        this.portrait = portrait;
+        this.coverImg = coverImg;
+        this.signature = signature;
+        this.remark = remark;
+        this.firstCharacter = firstCharacter;
+        this.isFriend = isFriend;
+    }
+
     public MTUser(long userId, String nickName, String createTime, String phone, String portrait, String coverImg, String signature, String remark, String firstCharacter) {
         this.userId = userId;
         this.nickName = nickName;
@@ -63,7 +77,6 @@ public class MTUser {
         this.remark = remark;
         this.firstCharacter = firstCharacter;
     }
-
     /** called by internal mechanisms, do not call yourself. */
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -252,6 +265,14 @@ public class MTUser {
             throw new DaoException("Entity is detached from DAO context");
         }    
         myDao.refresh(this);
+    }
+
+    public boolean isFriend() {
+        return isFriend;
+    }
+
+    public void setIsFriend(boolean isFriend) {
+        this.isFriend = isFriend;
     }
 
     // KEEP METHODS - put your custom methods here

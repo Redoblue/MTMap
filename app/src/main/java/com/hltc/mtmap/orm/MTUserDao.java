@@ -125,7 +125,8 @@ public class MTUserDao extends AbstractDao<MTUser, Long> {
                 cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // coverImg
                 cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // signature
                 cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // remark
-                cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8) // firstCharacter
+                cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8)// firstCharacter
+
         );
         return entity;
     }

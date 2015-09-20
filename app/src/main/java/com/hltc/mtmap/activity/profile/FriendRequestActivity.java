@@ -158,10 +158,10 @@ public class FriendRequestActivity extends Activity implements EditText.OnEditor
                             JSONObject farther = new JSONObject(result);
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
                                 Toast.makeText(MyApplication.getContext(), "发送请求成功", Toast.LENGTH_SHORT).show();
-                                FriendStatusActivity.adapterList.get(position).setStatus(FriendStatusActivity.STATUS_WAITING);
-                                AppManager.getAppManager().finishActivity(FriendRequestActivity.class);
+                               // FriendStatusActivity.adapterList.get(position).setStatus(FriendStatusActivity.STATUS_WAITING);
                                 SyncDataAsyncTask.httpSyncFriendStatusData();
                                 SyncDataAsyncTask.httpSyncContactStatusData();
+                                AppManager.getAppManager().finishActivity(FriendRequestActivity.class);
                             } else {
                                 String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
                                 if (errorMsg != null) {

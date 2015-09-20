@@ -58,6 +58,19 @@
             android:checked="false"
             android:textOff=""
             android:textOn="" />
+        <TextView
+            android:id="@+id/tv_isfriend"
+            android:textSize="18sp"
+            android:visibility="gone"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/grey"
+            android:text="@string/tip_added"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 
     <TextView style="@style/separator" />

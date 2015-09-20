@@ -75,9 +75,7 @@ public class FriendListActivity extends Activity {
                 handleModifyUserNameEvent(event);
                 break;
             default:break;
-
         }
-
     }
     private void handleModifyUserNameEvent(BaseMessageEvent event) {
         String newName = (String) event.tag;

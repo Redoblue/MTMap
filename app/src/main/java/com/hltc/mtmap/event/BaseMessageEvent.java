@@ -6,6 +6,7 @@ package com.hltc.mtmap.event;
 public class BaseMessageEvent {
     public static final int EVENT_MODIFY_USER_NAME  = 1;
     public static final int EVENT_DELETE_USER = EVENT_MODIFY_USER_NAME+1;
+    public static final int EVENT_KILL_SELF = EVENT_DELETE_USER + 1;
 
     public int action;
 

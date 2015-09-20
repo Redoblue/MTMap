@@ -24,6 +24,8 @@ import com.hltc.mtmap.adapter.SearchFriendListAdapter;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.bean.PhoneContact;
+import com.hltc.mtmap.event.BaseMessageEvent;
+import com.hltc.mtmap.helper.ApiHelper;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -48,6 +50,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by redoblue on 15-6-30.
@@ -73,7 +76,6 @@ public class SearchFriendActivity extends Activity implements EditText.OnEditorA
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_search_list);
         ButterKnife.inject(this);
-
         initData();
         initView();
     }
@@ -122,7 +124,14 @@ public class SearchFriendActivity extends Activity implements EditText.OnEditorA
         lvSearchFriend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                //TODO
+                if (list.get(position).isFriend()) {
+                    ApiHelper.httpGetFriendProfile(SearchFriendActivity.this, list.get(position).getUserId());
+
+                    BaseMessageEvent killEvent = new BaseMessageEvent();
+                    killEvent.action = BaseMessageEvent.EVENT_KILL_SELF;
+                    EventBus.getDefault().post(killEvent);
+                    AppManager.getAppManager().finishActivity(SearchFriendActivity.this);
+                }
             }
         });
     }

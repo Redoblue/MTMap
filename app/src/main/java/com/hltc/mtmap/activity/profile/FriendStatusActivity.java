@@ -72,7 +72,6 @@ public class FriendStatusActivity extends Activity {
 
         initView();
     }
-
     private void initView() {
         lvNewFriend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

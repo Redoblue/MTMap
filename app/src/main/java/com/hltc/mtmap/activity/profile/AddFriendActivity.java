@@ -11,10 +11,12 @@ import android.widget.TextView;
 
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.event.BaseMessageEvent;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import de.greenrobot.event.EventBus;
 
 /**
  * Created by redoblue on 15-6-29.
@@ -37,6 +39,17 @@ public class AddFriendActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_add_friend);
         ButterKnife.inject(this);
+        EventBus.getDefault().register(this);
+    }
+
+    public void onEvent(BaseMessageEvent event) {
+        switch (event.action) {
+            case BaseMessageEvent.EVENT_KILL_SELF:
+                AppManager.getAppManager().finishActivity(this);
+                break;
+            default:
+                break;
+        }
     }
 
     @OnClick({
