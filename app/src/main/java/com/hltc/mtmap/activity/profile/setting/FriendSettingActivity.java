@@ -7,19 +7,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.hltc.mtmap.MTMyGrain;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.activity.profile.FriendProfileActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DialogManager;
-import com.hltc.mtmap.event.DeleteFrientEvent;
+import com.hltc.mtmap.event.BaseMessageEvent;
 import com.hltc.mtmap.gmodel.FriendProfile;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.ToastUtils;
@@ -32,15 +28,10 @@ import com.lidroid.xutils.http.client.HttpRequest;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.InjectViews;
 import butterknife.OnClick;
 import de.greenrobot.event.EventBus;
 
@@ -48,14 +39,15 @@ import de.greenrobot.event.EventBus;
  * Created by X-MH on 2015/8/30.
  */
 public class FriendSettingActivity extends Activity {
-    public static final  int RESULT_CODE_FROM_FRIENDSETTING = 1;
-    private static final String TAG ="FriendSettingActivity" ;
+    public static final int RESULT_CODE_FROM_FRIENDSETTING = 1;
+    private static final String TAG = "FriendSettingActivity";
     @InjectView(R.id.tv_bar_title)
     TextView tvBarTile;
     @InjectView(R.id.et_edit)
     EditText evRemark;
 
     private FriendProfile mFriendProfile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,22 +61,22 @@ public class FriendSettingActivity extends Activity {
 
     private void initData() {
         mFriendProfile = getIntent().getParcelableExtra("friendprofile");
-        if(mFriendProfile==null)
+        if (mFriendProfile == null)
             AppManager.getAppManager().finishActivity(this);
     }
 
     private void initView() {
         tvBarTile.setText("设置");
-        boolean showRemark = mFriendProfile.user.remark!=null && mFriendProfile.user.remark.length()>0;
-        evRemark.setText(showRemark?mFriendProfile.user.remark:mFriendProfile.user.nickName);
+        boolean showRemark = mFriendProfile.user.remark != null && mFriendProfile.user.remark.length() > 0;
+        evRemark.setText(showRemark ? mFriendProfile.user.remark : mFriendProfile.user.nickName);
     }
 
     @OnClick({R.id.btn_bar_right,
-              R.id.btn_bar_left,
-              R.id.btn_delete_friend})
-    public void onClick(View view){
+            R.id.btn_bar_left,
+            R.id.btn_delete_friend})
+    public void onClick(View view) {
 
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_bar_left:
                 AppManager.getAppManager().finishActivity(this);
                 break;
@@ -94,7 +86,8 @@ public class FriendSettingActivity extends Activity {
             case R.id.btn_delete_friend:
                 deleteUserById();
                 break;
-            default:break;
+            default:
+                break;
         }
     }
 
@@ -103,12 +96,12 @@ public class FriendSettingActivity extends Activity {
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
 
-        try{
+        try {
             json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
-            json.put("fuserId",mFriendProfile.user.userId);
+            json.put("fuserId", mFriendProfile.user.userId);
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
         new HttpUtils().send(HttpRequest.HttpMethod.POST,
@@ -117,13 +110,17 @@ public class FriendSettingActivity extends Activity {
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result = responseInfo.result;
                         if (responseInfo.result.contains(ApiUtils.KEY_SUCCESS)) {
-                            DeleteFrientEvent event = new DeleteFrientEvent(mFriendProfile.user.userId);
+
+                            BaseMessageEvent event = new BaseMessageEvent();
+                            event.userId = mFriendProfile.user.userId;
+                            event.action = BaseMessageEvent.EVENT_DELETE_USER;
                             EventBus.getDefault().post(event);
                             AppManager.getAppManager().finishActivity(FriendSettingActivity.this);
                         } else {
                             ToastUtils.showShort(FriendSettingActivity.this, ApiUtils.TIP_NET_EXCEPTION);
                         }
                     }
+
                     @Override
                     public void onFailure(HttpException e, String s) {
                         ToastUtils.showShort(FriendSettingActivity.this, ApiUtils.TIP_NET_EXCEPTION);
@@ -134,8 +131,8 @@ public class FriendSettingActivity extends Activity {
     private void modifyAndBack() {
 
         final String remark = evRemark.getText().toString().trim();
-        if(remark.length() ==0 ||remark.equals(mFriendProfile.user.remark)) {
-            ToastUtils.showShort(this,"两次备注一样");
+        if (remark.length() == 0 || remark.equals(mFriendProfile.user.remark)) {
+            ToastUtils.showShort(this, "两次备注一样");
             return;
         }
         final ProgressDialog dialog = DialogManager.buildProgressDialog(this, ApiUtils.TIP_LOAD_DATA);
@@ -143,13 +140,13 @@ public class FriendSettingActivity extends Activity {
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();
-        try{
+        try {
             json.put(ApiUtils.KEY_USER_ID, AppConfig.getAppConfig().getConfUsrUserId());
             json.put(ApiUtils.KEY_TOKEN, AppConfig.getAppConfig().getConfToken());
-            json.put("fuserId",mFriendProfile.user.userId);
-            json.put("remark",evRemark.getText());
+            json.put("fuserId", mFriendProfile.user.userId);
+            json.put("remark", evRemark.getText());
             params.setBodyEntity(new StringEntity(json.toString(), HTTP.UTF_8));
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
         new HttpUtils().send(HttpRequest.HttpMethod.POST,
@@ -162,12 +159,19 @@ public class FriendSettingActivity extends Activity {
                             Intent intent = new Intent();
                             intent.putExtra(FriendProfileActivity.TAG, remark);
                             setResult(RESULT_CODE_FROM_FRIENDSETTING, intent);
+
+                            BaseMessageEvent modifyEvent = new BaseMessageEvent();
+                            modifyEvent.userId = mFriendProfile.user.userId;
+                            modifyEvent.action = BaseMessageEvent.EVENT_MODIFY_USER_NAME;
+                            modifyEvent.tag = remark;
+                            EventBus.getDefault().post(modifyEvent);
                             finish();
                         } else {
                             ToastUtils.showShort(FriendSettingActivity.this, ApiUtils.TIP_NET_EXCEPTION);
                         }
 
                     }
+
                     @Override
                     public void onFailure(HttpException e, String s) {
                         dialog.dismiss();
@@ -182,8 +186,9 @@ public class FriendSettingActivity extends Activity {
         super.onDestroy();
 
     }
-    public static  void startForResult(Activity activity,FriendProfile friendProfile){
-        Intent intent = new Intent(activity,FriendSettingActivity.class);
+
+    public static void startForResult(Activity activity, FriendProfile friendProfile) {
+        Intent intent = new Intent(activity, FriendSettingActivity.class);
         intent.putExtra("friendprofile", friendProfile);
         activity.startActivityForResult(intent, RESULT_CODE_FROM_FRIENDSETTING);
     }

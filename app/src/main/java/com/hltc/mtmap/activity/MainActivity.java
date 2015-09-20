@@ -1,5 +1,6 @@
 package com.hltc.mtmap.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -57,6 +58,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private static final int TAB_PUBLISH = 2;
     private static final int TAB_MESSAGE = 3;
     private static final int TAB_PRIVATE = 4;
+    private static final String IS_FROM_GARINDETAIL_ACTIVITY = "is_from_gradindetail_activity";
     public static boolean isVisitor;
     public MyApplication application;
     @InjectView(R.id.tab_item_map)
@@ -101,6 +103,13 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         //同步数据
         new SyncDataAsyncTask().execute();
+    }
+
+
+    public static void startFromGrainDetailActivity(Activity activity){
+        Intent intent = new Intent(activity,MainActivity.class);
+        intent.putExtra(IS_FROM_GARINDETAIL_ACTIVITY,true);
+        activity.startActivity(intent);
     }
 
     public void onEvent(MessageEvent event) {
@@ -243,6 +252,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
+        Intent intent = getIntent();
+        if(intent.getBooleanExtra(IS_FROM_GARINDETAIL_ACTIVITY,false)){
+            setChioceItem(4);
+        }
         if (isVisitor)
             setChioceItem(1);
         else

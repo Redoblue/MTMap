@@ -125,6 +125,7 @@ public class FriendRequestActivity extends Activity implements EditText.OnEditor
     }
 
     public void httpAddFriend(String s) {
+        if(s==null)s="";
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();

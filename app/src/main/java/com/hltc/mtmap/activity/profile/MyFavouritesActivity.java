@@ -9,6 +9,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,8 +31,10 @@ import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.DialogManager;
 import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.helper.ApiHelper;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
+import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.DateUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.lidroid.xutils.HttpUtils;
@@ -109,12 +112,19 @@ public class MyFavouritesActivity extends Activity {
             }
         });
 
-        //如果没有数据或从创建麦粒而来则重新加载
+
+        if(AppUtils.isNetworkConnected(this)){
+            httpSyncMyFavourite(this, "同步数据中...");
+        }else{
+            loadFromLocalDB();
+        }
+
+       /* //如果没有数据或从创建麦粒而来则重新加载
         if (DaoManager.getManager().daoSession.getMTMyFavouriteDao().count() < 1) {
             httpSyncMyFavourite(this, "同步数据中...");
         } else {
             mList = DaoManager.getManager().getAllMyFavourites();
-        }
+        }*/
         mAdapter = new MyFavouriteAdapter(this, mList, R.layout.item_my_maitian);
         listView.setAdapter(mAdapter);
         listView.setMenuCreator(creator);
@@ -137,6 +147,12 @@ public class MyFavouritesActivity extends Activity {
                 }
             }
         });
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ApiHelper.httpGetGrainDetail(MyFavouritesActivity.this,mList.get(position).getGrainId());
+            }
+        });
         listView.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
 
             @Override
@@ -149,6 +165,10 @@ public class MyFavouritesActivity extends Activity {
                 // swipe end
             }
         });
+    }
+
+    private void loadFromLocalDB() {
+        mList = DaoManager.getManager().getAllMyFavourites();
     }
 
     private void refreshHint() {
@@ -209,7 +229,7 @@ public class MyFavouritesActivity extends Activity {
                                         for (MTMyFavourite f : mgs) {
                                             DaoManager.getManager().daoSession.getMTMyFavouriteDao().insertOrReplace(f);
                                         }
-                                        mList = DaoManager.getManager().getAllMyFavourites();
+                                        loadFromLocalDB();
                                         mAdapter.update(mList);
                                         refreshHint();
                                     } catch (Exception e) {

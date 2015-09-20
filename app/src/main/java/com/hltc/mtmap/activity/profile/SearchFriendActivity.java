@@ -244,9 +244,16 @@ public class SearchFriendActivity extends Activity implements EditText.OnEditorA
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
                                 Gson gson = new Gson();
                                 JSONArray data = new JSONObject(result).getJSONArray(ApiUtils.KEY_DATA);
-                                list = gson.fromJson(data.toString(), new TypeToken<List<MTUser>>() {
+                                List<MTUser> searchResultList = gson.fromJson(data.toString(), new TypeToken<List<MTUser>>() {
                                 }.getType());
-                                adapter.notifyDataSetChanged();
+                                if(searchResultList==null || searchResultList.size()==0)
+                                    ToastUtils.showLong(SearchFriendActivity.this,"该好友还未注册");
+                                else{
+                                    list.clear();
+                                    list.addAll(searchResultList);
+                                    adapter.notifyDataSetChanged();
+                                }
+
                             } else {
                                 String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
                                 if (errorMsg != null) {

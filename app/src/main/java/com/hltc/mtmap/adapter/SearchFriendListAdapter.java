@@ -32,6 +32,7 @@ public class SearchFriendListAdapter extends BaseAdapter {
         mList = objects;
     }
 
+
     @Override
     public int getCount() {
         return mList.size();

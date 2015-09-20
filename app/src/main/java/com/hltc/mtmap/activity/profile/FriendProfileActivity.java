@@ -19,7 +19,7 @@ import com.hltc.mtmap.activity.profile.setting.FriendSettingActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
-import com.hltc.mtmap.event.DeleteFrientEvent;
+import com.hltc.mtmap.event.BaseMessageEvent;
 import com.hltc.mtmap.gmodel.FriendProfile;
 import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.StringUtils;
@@ -35,7 +35,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class FriendProfileActivity extends Activity {
 
-    public static final String TAG ="FriendProfileActivity" ;
+    public static final String TAG = "FriendProfileActivity";
     @InjectView(R.id.sv_profile)
     PullToZoomScrollViewEx scrollView;
 
@@ -45,6 +45,7 @@ public class FriendProfileActivity extends Activity {
 
     private Button btnBack;
     private TextView nickName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,9 +60,17 @@ public class FriendProfileActivity extends Activity {
         initView();
     }
 
-    public void onEvent(DeleteFrientEvent event) {
-        AppManager.getAppManager().finishActivity(this);
+    public void onEvent(BaseMessageEvent event) {
+        switch (event.action) {
+            case BaseMessageEvent.EVENT_DELETE_USER:
+                AppManager.getAppManager().finishActivity(this);
+                break;
+            default:
+                break;
+        }
+
     }
+
     private void initView() {
         View headerView = LayoutInflater.from(this).inflate(R.layout.fragment_profile_header_view, null, false);
         View zoomView = LayoutInflater.from(this).inflate(R.layout.fragment_profile_zoom_view, null, false);
@@ -77,8 +86,8 @@ public class FriendProfileActivity extends Activity {
         scrollView.setHeaderLayoutParams(localObject);
 
         // 我的朋友的页面忽略收藏和朋友两个Tab
-        View  viewFavourite = scrollView.getPullRootView().findViewById(R.id.btn_profile_favourite);
-        View  viewFriends = scrollView.getPullRootView().findViewById(R.id.btn_profile_friend);
+        View viewFavourite = scrollView.getPullRootView().findViewById(R.id.btn_profile_favourite);
+        View viewFriends = scrollView.getPullRootView().findViewById(R.id.btn_profile_friend);
         viewFavourite.setVisibility(View.GONE);
         viewFriends.setVisibility(View.GONE);
 
@@ -86,7 +95,7 @@ public class FriendProfileActivity extends Activity {
         btnSetting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FriendSettingActivity.startForResult(FriendProfileActivity.this,mProfile);
+                FriendSettingActivity.startForResult(FriendProfileActivity.this, mProfile);
             }
         });
         btnBack = (Button) scrollView.getPullRootView().findViewById(R.id.btn_bar_left);
@@ -103,7 +112,7 @@ public class FriendProfileActivity extends Activity {
         maitian.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                 FriendGrainActivity.start(FriendProfileActivity.this,mProfile);
+                FriendGrainActivity.start(FriendProfileActivity.this, mProfile);
             }
         });
 
@@ -138,8 +147,8 @@ public class FriendProfileActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==FriendSettingActivity.RESULT_CODE_FROM_FRIENDSETTING){
-            mProfile.user.remark= data.getStringExtra(TAG);
+        if (resultCode == FriendSettingActivity.RESULT_CODE_FROM_FRIENDSETTING) {
+            mProfile.user.remark = data.getStringExtra(TAG);
             nickName.setText(mProfile.user.remark);
         }
     }

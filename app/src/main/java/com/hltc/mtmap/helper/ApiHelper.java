@@ -143,6 +143,9 @@ public class ApiHelper {
     }
 
     public static void httpGetFriendProfile( final Context context,long id) {
+
+
+
         final ProgressDialog dialog = DialogManager.buildProgressDialog(context, "加载中...");
         dialog.show();
 

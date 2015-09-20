@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,16 +21,17 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.hltc.mtmap.R;
+import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.SingleEditActivity;
 import com.hltc.mtmap.activity.common.ImageViewerActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
+import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.DialogManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
@@ -166,12 +166,22 @@ public class GrainDetailActivity extends FragmentActivity {
                 share2WX();
                 break;
             case R.id.civ_grain_detail_portrait:
-                ApiHelper.httpGetFriendProfile(GrainDetailActivity.this, grainDetail.publisher.userId);
+                jump2UserProfile();
                 break;
             default:
                 break;
         }
     }
+
+    private void jump2UserProfile() {
+        if(grainDetail.publisher.userId == AppConfig.getAppConfig().getConfUsrUserId()){
+            MainActivity.startFromGrainDetailActivity(this);
+            AppManager.getAppManager().finishActivity(this);
+        }else{
+            ApiHelper.httpGetFriendProfile(GrainDetailActivity.this, grainDetail.publisher.userId);
+        }
+    }
+
     private void share2WX() {
         if(iwxapi==null)return;
         WXWebpageObject webpage = new WXWebpageObject();
@@ -276,6 +286,7 @@ public class GrainDetailActivity extends FragmentActivity {
                             if (isFavored) {
                                 Toast.makeText(GrainDetailActivity.this, "取消收藏成功", Toast.LENGTH_SHORT).show();
                                 isFavored = false;
+                                //DaoManager.getManager().daoSession.getMTMyFavouriteDao().insert()
                             } else {
                                 Toast.makeText(MyApplication.getContext(), "收藏成功", Toast.LENGTH_SHORT).show();
                                 isFavored = true;
