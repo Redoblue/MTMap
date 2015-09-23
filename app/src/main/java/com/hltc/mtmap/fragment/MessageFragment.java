@@ -19,7 +19,6 @@ import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.event.MessageEvent;
 import com.hltc.mtmap.util.DateUtils;
-import com.hltc.mtmap.util.GuideUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.markupartist.android.widget.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -34,10 +33,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MessageFragment extends Fragment {
 
     @InjectView(R.id.lv_message)
-    PullToRefreshListView lvMessage;
+    PullToRefreshListView pullToRefreshListView;
 
-    private List<MTMessage> mList;
-    private MessageAdapter mAdapter;
+    private List<MTMessage> mMessageList;
+    private MessageAdapter mMessageAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,10 +69,10 @@ public class MessageFragment extends Fragment {
     }
 
     private void initView() {
-        mList = DaoManager.getManager().getAllMessage();
-        mAdapter = new MessageAdapter();
-        lvMessage.setAdapter(mAdapter);
-        lvMessage.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
+        mMessageList = DaoManager.getManager().getAllMessage();
+        mMessageAdapter = new MessageAdapter();
+        pullToRefreshListView.setAdapter(mMessageAdapter);
+        pullToRefreshListView.setOnRefreshListener(new PullToRefreshListView.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 refreshList();
@@ -86,20 +85,21 @@ public class MessageFragment extends Fragment {
     }
 
     private void refreshList() {
-        mList = DaoManager.getManager().getAllMessage();
-        mAdapter.notifyDataSetChanged();
+        mMessageList = DaoManager.getManager().getAllMessage();
+        mMessageAdapter.notifyDataSetChanged();
+        pullToRefreshListView.onRefreshComplete();
     }
 
     private class MessageAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
-            return mList.size();
+            return mMessageList.size();
         }
 
         @Override
         public MTMessage getItem(int position) {
-            return mList.get(position);
+            return mMessageList.get(position);
         }
 
         @Override

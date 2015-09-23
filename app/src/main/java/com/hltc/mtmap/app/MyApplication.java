@@ -39,6 +39,7 @@ import com.umeng.message.entity.UMessage;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,6 +51,7 @@ public class MyApplication extends Application {
     public static final int TYPE_COMMENT = 2;
     public static final int TYPE_ADD_FRIEND = 3;
     public static final int TYPE_AGREE_REQUEST = 4;
+    private static final String TAG = "MyApplication";
 
     public static String signInStatus = "00"; // "00", "01", "10", "11" 第一位: 1 在线 0 离线  第二位： 1 登录 0 未登录
     //显示图片的配置
@@ -247,35 +249,51 @@ public class MyApplication extends Application {
                         String result = responseInfo.result;
                         if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                             Gson gson = new Gson();
-                            PraiseAndCommentInfo paci = gson.fromJson(result, PraiseAndCommentInfo.class);
-                            paci.type = msg.extra.get("type");
-                            //TODO 保存到数据库
-                            MTMessage message = toMTMessage(paci);
-                            DaoManager.getManager().daoSession.getMTMessageDao().insert(message);
+                            try {
+                                String data = new JSONObject(result).getString(ApiUtils.KEY_DATA);
+                                PraiseAndCommentInfo paci = gson.fromJson(data, PraiseAndCommentInfo.class);
+                                paci.type = msg.extra.get("type");
+                                //TODO 保存到数据库
+                                MTMessage message = toMTMessage(paci);
+                                if (message != null) {
+                                    long id = DaoManager.getManager().daoSession.getMTMessageDao().insert(message);
+                                    Log.i("MT",String.valueOf(id));
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
                         }
                     }
 
                     @Override
                     public void onFailure(HttpException e, String s) {
 
+                        Log.e(TAG, "获取评论消息失败");
                     }
                 });
     }
 
     private MTMessage toMTMessage(PraiseAndCommentInfo paci) {
-        MTMessage message = new MTMessage();
-        message.setType(paci.type);
-        message.setUserId(paci.user.userId);
-        message.setPortrait(paci.user.portrait);
-        message.setNickName(paci.user.nickName);
-        message.setRemark(paci.user.remark);
-        message.setGrainId(paci.grain.grainId);
-        message.setName(paci.grain.name);
-        message.setAddress(paci.grain.address);
-        message.setImage(paci.grain.image);
-        message.setText(paci.grain.text);
-        message.setCommentTxt(paci.commentTxt);
-        message.setCreateTime(paci.createTime);
+        MTMessage message = null;
+        try {
+            message = new MTMessage();
+            message.setType(paci.type);
+            message.setUserId(paci.user.userId);
+            message.setPortrait(paci.user.portrait);
+            message.setNickName(paci.user.nickName);
+            message.setRemark(paci.user.remark);
+            message.setGrainId(paci.grain.grainId);
+            message.setName(paci.grain.name);
+            message.setAddress(paci.grain.address);
+            message.setImage(paci.grain.image);
+            message.setText(paci.grain.text);
+            message.setCommentTxt(paci.commentTxt);
+            message.setCreateTime(paci.createTime);
+        } catch (Exception e) {
+            e.printStackTrace();
+            message = null;
+        }
         return message;
     }
 
