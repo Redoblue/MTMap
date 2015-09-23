@@ -122,6 +122,8 @@ public class ApiUtils {
     public static final String API_FRIEND_DELETE = URL_ROOT +"friend/delete.json";
     public static final String TIP_NET_EXCEPTION = "网络异常";
 
+    public static final String TIP_FAVOR_GRAIN_SUCCESS="收藏成功";
+    public static final String TIP_FAVOR_GRAIN_FAIL = "收藏失败";
 
     public static String getRequestVCodeUrl(int source) {
         return source == 0 ?

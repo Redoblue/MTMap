@@ -188,11 +188,12 @@ public class StringUtils {
         }
 
         for (int i = 0; i < str.length(); i++) {
-            if ((i >= 'a' && i <= 'z') || (i >= 'A' && i <= 'Z'))
+            char c = str.charAt(i);
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
                 charCount++;
-            if (i >= '0' && i <= '9')
+            if (c >= '0' && c <= '9')
                 numberCount++;
-            if (i == ' ') hasSpace = true;
+            if (c == ' ') hasSpace = true;
         }
 
         if (hasSpace) return PassWordFormat.HAS_SPACE;

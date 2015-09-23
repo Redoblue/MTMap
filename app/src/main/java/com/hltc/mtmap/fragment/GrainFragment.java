@@ -283,17 +283,22 @@ public class GrainFragment extends Fragment {
         }
 
         HttpUtils http = new HttpUtils();
-        http.send(HttpRequest.HttpMethod.POST, ApiUtils.URL_ROOT + ApiUtils.URL_FAVOR_GRAIN, params, new RequestCallBack<String>() {
+        http.send(HttpRequest.HttpMethod.POST,
+                ApiUtils.URL_ROOT + ApiUtils.URL_FAVOR_GRAIN,
+                params,
+                new RequestCallBack<String>() {
             @Override
             public void onSuccess(ResponseInfo<String> responseInfo) {
                 if (responseInfo.result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                     // 收藏成功
+                    ToastUtils.showShort(GrainFragment.this.getActivity(),ApiUtils.TIP_FAVOR_GRAIN_SUCCESS);
                 }
             }
 
             @Override
             public void onFailure(HttpException e, String s) {
                 // 收藏失败
+                ToastUtils.showShort(GrainFragment.this.getActivity(),ApiUtils.TIP_FAVOR_GRAIN_FAIL);
             }
         });
     }
