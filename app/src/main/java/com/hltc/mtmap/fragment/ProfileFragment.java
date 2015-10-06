@@ -80,11 +80,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private CircleImageView portraitCiv;
     private ImageView cover;
 
+    private ImageView ivRedTip;
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-//        EventBus.getDefault().register(this);
+        EventBus.getDefault().register(this);
+
         if (MainActivity.isVisitor) {
             View view = inflater.inflate(R.layout.window_remind_login, container, false);
             ImageView iv = (ImageView) view.findViewById(R.id.btn_remind_login);
@@ -105,6 +109,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    public void onEvent(BaseMessageEvent event) {
+        switch (event.action) {
+            case BaseMessageEvent.EVENT_FRIENTLIST_RED_ROT_SHOW:
+                ivRedTip.setVisibility(View.VISIBLE);
+                break;
+            case BaseMessageEvent.EVENT_FRIENTLIST_RED_ROT_HIDE:
+                ivRedTip.setVisibility(View.INVISIBLE);
+                break;
+            default:
+                break;
+        }
+    }
 
     @Override
     public void onStart() {
@@ -133,6 +149,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         scrollView.getPullRootView().findViewById(R.id.btn_profile_maitian).setOnClickListener(this);
         scrollView.getPullRootView().findViewById(R.id.btn_profile_favourite).setOnClickListener(this);
         scrollView.getPullRootView().findViewById(R.id.btn_profile_friend).setOnClickListener(this);
+
+        ivRedTip = (ImageView) scrollView.getPullRootView().findViewById(R.id.iv_red_tip_pro);
+
+        if (MyApplication.isShowRedTipPro) {
+            ivRedTip.setVisibility(View.VISIBLE);
+        } else {
+            ivRedTip.setVisibility(View.INVISIBLE);
+        }
 
         //编辑头像
         portraitCiv = (CircleImageView) scrollView.getPullRootView().findViewById(R.id.civ_profile_header_pic);

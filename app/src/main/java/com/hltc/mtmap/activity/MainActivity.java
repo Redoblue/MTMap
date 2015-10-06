@@ -9,9 +9,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.hltc.mtmap.R;
@@ -19,6 +21,7 @@ import com.hltc.mtmap.activity.publish.PublishActivity;
 import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.event.BaseMessageEvent;
 import com.hltc.mtmap.event.MessageEvent;
 import com.hltc.mtmap.fragment.GrainFragment;
 import com.hltc.mtmap.fragment.MapFragment;
@@ -28,6 +31,7 @@ import com.hltc.mtmap.fragment.PublishFragment;
 import com.hltc.mtmap.helper.DoubleClickExitHelper;
 import com.hltc.mtmap.task.SyncDataAsyncTask;
 import com.umeng.message.PushAgent;
+import com.umeng.message.UmengRegistrar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +63,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private static final int TAB_MESSAGE = 3;
     private static final int TAB_PRIVATE = 4;
     private static final String IS_FROM_GARINDETAIL_ACTIVITY = "is_from_gradindetail_activity";
+    private static final String TAG = "MainActivity";
     public static boolean isVisitor;
     public MyApplication application;
     @InjectView(R.id.tab_item_map)
@@ -71,6 +76,11 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     TextView tabMessage;
     @InjectView(R.id.tab_item_private)
     TextView tabPrivate;
+    @InjectView(R.id.iv_red_tip_pro)
+    ImageView ivRedTipPro;
+    @InjectView(R.id.iv_red_tip_msg)
+    ImageView ivRedTipMsg;
+
     private int[] ids = {
             R.id.tab_item_map,
             R.id.tab_item_grain,
@@ -98,17 +108,19 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         isVisitor = MyApplication.signInStatus.equals("10");
 
+
         initView();
         initPushAgent();
-
+        String device_token = UmengRegistrar.getRegistrationId(this);
         //同步数据
+        Log.i(TAG, device_token);
         new SyncDataAsyncTask().execute();
     }
 
 
-    public static void startFromGrainDetailActivity(Activity activity){
-        Intent intent = new Intent(activity,MainActivity.class);
-        intent.putExtra(IS_FROM_GARINDETAIL_ACTIVITY,true);
+    public static void startFromGrainDetailActivity(Activity activity) {
+        Intent intent = new Intent(activity, MainActivity.class);
+        intent.putExtra(IS_FROM_GARINDETAIL_ACTIVITY, true);
         activity.startActivity(intent);
     }
 
@@ -116,7 +128,32 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         setChioceItem(event.target);
     }
 
+
+    public void onEvent(BaseMessageEvent event) {
+
+        switch (event.action) {
+            case BaseMessageEvent.EVENT_FRIENTLIST_RED_ROT_SHOW:
+                ivRedTipPro.setVisibility(View.VISIBLE);
+                break;
+            case BaseMessageEvent.EVENT_FRIENTLIST_RED_ROT_HIDE:
+                ivRedTipPro.setVisibility(View.INVISIBLE);
+                break;
+            case BaseMessageEvent.EVENT_MESSAGE_CHANGE:
+                if(TAB_MESSAGE!=currentTabIndex)
+                ivRedTipMsg.setVisibility(View.VISIBLE);
+                break;
+            default:
+                break;
+        }
+    }
+
     private void initView() {
+        if (MyApplication.isShowRedTipPro) {
+            ivRedTipPro.setVisibility(View.VISIBLE);
+        } else {
+            ivRedTipPro.setVisibility(View.INVISIBLE);
+        }
+
         mDoubleClickExit = new DoubleClickExitHelper(this);
         fgManager = getSupportFragmentManager();
 
@@ -178,6 +215,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     public void setChioceItem(int index) {
+        if(index == TAB_MESSAGE)
+            ivRedTipMsg.setVisibility(View.INVISIBLE);
         FragmentTransaction transaction = fgManager.beginTransaction();
         clearChioce();
         hideFragments(transaction);
@@ -207,6 +246,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             case TAB_PUBLISH:
                 return new PublishFragment();
             case TAB_MESSAGE:
+                ivRedTipMsg.setVisibility(View.INVISIBLE);
                 return new MessageFragment();
             case TAB_PRIVATE:
                 return new ProfileFragment();
@@ -253,7 +293,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     protected void onResume() {
         super.onResume();
         Intent intent = getIntent();
-        if(intent.getBooleanExtra(IS_FROM_GARINDETAIL_ACTIVITY,false)){
+        if (intent.getBooleanExtra(IS_FROM_GARINDETAIL_ACTIVITY, false)) {
             setChioceItem(4);
         }
         if (isVisitor)

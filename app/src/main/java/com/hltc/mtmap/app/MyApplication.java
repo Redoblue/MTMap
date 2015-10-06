@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import com.hltc.mtmap.MTMessage;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.bean.LocalUserInfo;
+import com.hltc.mtmap.event.BaseMessageEvent;
 import com.hltc.mtmap.gmodel.PraiseAndCommentInfo;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
@@ -39,11 +40,12 @@ import com.umeng.message.entity.UMessage;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+
+import de.greenrobot.event.EventBus;
 
 public class MyApplication extends Application {
 
@@ -52,6 +54,8 @@ public class MyApplication extends Application {
     public static final int TYPE_ADD_FRIEND = 3;
     public static final int TYPE_AGREE_REQUEST = 4;
     private static final String TAG = "MyApplication";
+
+    public static boolean isShowRedTipPro = false;
 
     public static String signInStatus = "00"; // "00", "01", "10", "11" 第一位: 1 在线 0 离线  第二位： 1 登录 0 未登录
     //显示图片的配置
@@ -191,10 +195,11 @@ public class MyApplication extends Application {
                 httpGetMessageInfo(TYPE_COMMENT, msg);
                 break;
             case TYPE_ADD_FRIEND:
-                //TODO
-                break;
             case TYPE_AGREE_REQUEST:
-                //TODO
+                isShowRedTipPro = true;
+                BaseMessageEvent event = new BaseMessageEvent();
+                event.action = BaseMessageEvent.EVENT_FRIENTLIST_RED_ROT_SHOW;
+                EventBus.getDefault().post(event);
                 break;
         }
     }
@@ -207,7 +212,7 @@ public class MyApplication extends Application {
             return TYPE_COMMENT;
         else if (type.equals("add_friend"))
             return TYPE_ADD_FRIEND;
-        else if (type.equals("agree_request"))
+        else if (type.equals("agree_friend"))
             return TYPE_AGREE_REQUEST;
         else return -1;
     }
@@ -257,7 +262,10 @@ public class MyApplication extends Application {
                                 MTMessage message = toMTMessage(paci);
                                 if (message != null) {
                                     long id = DaoManager.getManager().daoSession.getMTMessageDao().insert(message);
-                                    Log.i("MT",String.valueOf(id));
+                                    BaseMessageEvent event = new BaseMessageEvent();
+                                    event.action = BaseMessageEvent.EVENT_MESSAGE_CHANGE;
+                                    EventBus.getDefault().post(event);
+                                    // Log.i("MT",String.valueOf(id));
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -278,6 +286,7 @@ public class MyApplication extends Application {
         MTMessage message = null;
         try {
             message = new MTMessage();
+            message.setId(System.currentTimeMillis());
             message.setType(paci.type);
             message.setUserId(paci.user.userId);
             message.setPortrait(paci.user.portrait);

@@ -36,6 +36,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:maxLength="8"
                     android:singleLine="true"
                     android:text="林佑威"
                     android:textColor="@color/green_main"

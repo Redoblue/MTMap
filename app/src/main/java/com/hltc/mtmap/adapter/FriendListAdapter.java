@@ -78,7 +78,7 @@ public class FriendListAdapter extends BaseAdapter implements SectionIndexer {
 
             view = LayoutInflater.from(mContext).inflate(R.layout.item_friend_list_folder, null);
             List friendList = DaoManager.getManager().getAllFriendStarus();
-            View redTipView = view.findViewById(R.id.iv_red_tip);
+            View redTipView = view.findViewById(R.id.iv_red_tip_pro);
             if (isShowTheRedTip(friendList)) {
                 redTipView.setVisibility(View.VISIBLE);
             } else {

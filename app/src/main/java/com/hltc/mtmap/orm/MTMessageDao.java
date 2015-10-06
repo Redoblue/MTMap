@@ -54,7 +54,7 @@ public class MTMessageDao extends AbstractDao<MTMessage, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'MTMESSAGE' (" + //
-                "'_id' INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ," + // 0: id
+                "'_id' INTEGER PRIMARY KEY  NOT NULL ," + // 0: id
                 "'TYPE' TEXT," + // 1: type
                 "'USER_ID' INTEGER," + // 2: userId
                 "'PORTRAIT' TEXT," + // 3: portrait

@@ -35,7 +35,7 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/icon_new_friend" />
             <ImageView
-                android:id="@+id/iv_red_tip"
+                android:id="@+id/iv_red_tip_pro"
                 android:visibility="gone"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"

@@ -7,6 +7,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,8 +19,10 @@ import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.event.MessageEvent;
+import com.hltc.mtmap.helper.ApiHelper;
 import com.hltc.mtmap.util.DateUtils;
 import com.hltc.mtmap.util.StringUtils;
+import com.lidroid.xutils.HttpUtils;
 import com.markupartist.android.widget.PullToRefreshListView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -76,6 +79,13 @@ public class MessageFragment extends Fragment {
             @Override
             public void onRefresh() {
                 refreshList();
+            }
+        });
+        pullToRefreshListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ApiHelper.httpGetGrainDetail(MessageFragment.this.getActivity(),mMessageList.get(position).getGrainId());
             }
         });
     }

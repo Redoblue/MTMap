@@ -15,6 +15,7 @@ import com.hltc.mtmap.R;
 import com.hltc.mtmap.adapter.FriendListAdapter;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.DaoManager;
+import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.bean.PhoneContact;
 import com.hltc.mtmap.event.BaseMessageEvent;
 import com.hltc.mtmap.gmodel.Friend;
@@ -51,7 +52,6 @@ public class FriendListActivity extends Activity {
     private PinyinComparator pinyinComparator;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,22 +65,24 @@ public class FriendListActivity extends Activity {
 
 
     public void onEvent(BaseMessageEvent event) {
-        if(event==null)return;
-        switch (event.action){
-            case BaseMessageEvent.EVENT_DELETE_USER:{
+        if (event == null) return;
+        switch (event.action) {
+            case BaseMessageEvent.EVENT_DELETE_USER: {
                 handleDeleteEvent(event);
                 break;
             }
-            case  BaseMessageEvent.EVENT_MODIFY_USER_NAME:
+            case BaseMessageEvent.EVENT_MODIFY_USER_NAME:
                 handleModifyUserNameEvent(event);
                 break;
-            default:break;
+            default:
+                break;
         }
     }
+
     private void handleModifyUserNameEvent(BaseMessageEvent event) {
         String newName = (String) event.tag;
-        for(MFriend friend : adapterList){
-            if(friend.getUserId()==event.userId){
+        for (MFriend friend : adapterList) {
+            if (friend.getUserId() == event.userId) {
                 friend.setRemark(newName);
             }
         }
@@ -88,8 +90,8 @@ public class FriendListActivity extends Activity {
     }
 
     private void handleDeleteEvent(BaseMessageEvent deleteFrientEvent) {
-        for(MFriend friend : adapterList){
-            if(friend.getUserId()==deleteFrientEvent.userId){
+        for (MFriend friend : adapterList) {
+            if (friend.getUserId() == deleteFrientEvent.userId) {
                 friend.delete();
                 adapterList.remove(friend);
             }
@@ -118,7 +120,13 @@ public class FriendListActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == FOLDER_NEW_FRIEND) {
-                    view.findViewById(R.id.iv_red_tip).setVisibility(View.GONE);
+
+                    MyApplication.isShowRedTipPro = false;
+                    BaseMessageEvent event = new BaseMessageEvent();
+                    event.action = BaseMessageEvent.EVENT_FRIENTLIST_RED_ROT_HIDE;
+                    EventBus.getDefault().post(event);
+
+                    view.findViewById(R.id.iv_red_tip_pro).setVisibility(View.GONE);
                     Intent intent = new Intent(FriendListActivity.this, FriendStatusActivity.class);
                     startActivity(intent);
                 } else {//点击了联系人

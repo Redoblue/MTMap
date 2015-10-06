@@ -49,17 +49,59 @@
             android:textColor="@color/white"
             android:textSize="10sp" />
 
-        <TextView
-            android:id="@+id/tab_item_message"
-            style="@style/item_tab"
-            android:drawableTop="@drawable/ic_tab_message_normal"
-            android:paddingLeft="20dp"
-            android:text="消息" />
 
-        <TextView
-            android:id="@+id/tab_item_private"
-            style="@style/item_tab"
-            android:drawableTop="@drawable/ic_tab_private_normal"
-            android:text="个人" />
+        <FrameLayout
+            android:paddingTop="6dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tab_item_message"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:textSize="10sp"
+                android:drawableTop="@drawable/ic_tab_message_normal"
+                android:paddingLeft="20dp"
+                android:text="消息" />
+            <ImageView
+                android:id="@+id/iv_red_tip_msg"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
+                android:visibility="gone"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:background="@drawable/shape_red_tip"
+                android:layout_gravity="top|right"
+                />
+        </FrameLayout>
+
+
+        <FrameLayout
+            android:paddingTop="6dp"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tab_item_private"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:textSize="10sp"
+                android:textColor="@color/dark_grey"
+                android:drawableTop="@drawable/ic_tab_private_normal"
+                android:text="个人" />
+            <ImageView
+                android:id="@+id/iv_red_tip_pro"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
+                android:visibility="visible"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:background="@drawable/shape_red_tip"
+                android:layout_gravity="top|right"
+                />
+        </FrameLayout>
+
     </LinearLayout>
 </LinearLayout>  

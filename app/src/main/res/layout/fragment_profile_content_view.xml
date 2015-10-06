@@ -109,16 +109,30 @@
 
     <TextView style="@style/separator" />
 
-    <Button
-        android:id="@+id/btn_profile_friend"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="@color/transparent"
-        android:gravity="center_vertical|start"
-        android:paddingLeft="40dp"
-        android:text="我的好友"
-        android:textColor="@color/profile_text"
-        android:textSize="16sp" />
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/btn_profile_friend"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@color/transparent"
+            android:gravity="center_vertical|start"
+            android:paddingLeft="40dp"
+            android:text="我的好友"
+            android:textColor="@color/profile_text"
+            android:textSize="16sp" />
+        <ImageView
+            android:id="@+id/iv_red_tip_pro"
+            android:layout_marginTop="5dp"
+            android:visibility="invisible"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:background="@drawable/shape_red_tip"
+            android:layout_gravity="top|right"
+            />s
+    </FrameLayout>
+
 
     <TextView style="@style/separator" />
 
