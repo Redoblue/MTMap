@@ -92,7 +92,7 @@ public class MyApplication extends Application {
 
     private void initPushAgent() {
         mPushAgent = PushAgent.getInstance(mContext);
-        mPushAgent.setDebugMode(true);
+        //mPushAgent.setDebugMode(true);
 
         UmengMessageHandler messageHandler = new UmengMessageHandler() {
             @Override

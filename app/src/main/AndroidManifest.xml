@@ -32,14 +32,15 @@
         <meta-data
             android:name="com.hltc.mtmap.wx_id"
             android:value="wx6831c4b59413080f"/>
-        <!--debug-->
- <!--       <meta-data
+  <!--      &lt;!&ndash;debug&ndash;&gt;
+        <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="7eb470af66a25631e2dc42dfba06866d" />-->
+
        <!-- release-->
         <meta-data
         android:name="com.amap.api.v2.apikey"
-        android:value="afec86da5f2e868d4386cfcd4b161516" />
+        android:value="c9ea18f8b581e57bc6341be734289fac" />
         <meta-data
             android:name="ServerAddress"
             android:value="www.maitianditu.com" />
