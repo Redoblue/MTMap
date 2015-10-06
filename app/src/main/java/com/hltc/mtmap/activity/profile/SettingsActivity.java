@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -30,12 +31,15 @@ import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.FileUtils;
 import com.hltc.mtmap.util.StringUtils;
 import com.hltc.mtmap.util.ToastUtils;
+import com.hltc.mtmap.util.WeChatUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
@@ -75,6 +79,7 @@ public class SettingsActivity extends Activity {
     Button btnSettingsAbout;
     @InjectView(R.id.btn_settings_logout)
     Button btnSettingsLogout;
+    private IWXAPI iwxapi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +88,22 @@ public class SettingsActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_settings);
         ButterKnife.inject(this);
+        registerWX();
     }
-
+    private void registerWX() {
+        ApplicationInfo appInfo = null;
+        try {
+            appInfo = this.getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (appInfo == null) {
+            return;
+        }
+        String appId = appInfo.metaData.getString("com.hltc.mtmap.wx_id");
+        iwxapi = WXAPIFactory.createWXAPI(this, appId, true);
+        iwxapi.registerApp(appId);
+    }
     @OnClick({R.id.btn_bar_left,
             R.id.btn_settings_set_nickname,
             R.id.btn_settings_change_passwd,
@@ -118,11 +137,7 @@ public class SettingsActivity extends Activity {
                 gotoMarket();
                 break;
             case R.id.btn_settings_recommend:
-                Intent sendIntent = new Intent();
-                sendIntent.setAction(Intent.ACTION_SEND);
-                sendIntent.setType("text/*");
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "大家快来用麦田地图吧！");
-                startActivity(sendIntent);
+                WeChatUtils.shareApp2WecharSession(this, iwxapi);
                 break;
             case R.id.btn_settings_about:
                 Intent intent1 = new Intent(this, AboutActivity.class);
@@ -131,7 +146,6 @@ public class SettingsActivity extends Activity {
             case R.id.btn_settings_logout:
                 AppUtils.logout();
                 clearData();
-//                Toast.makeText(this, "退出成功", Toast.LENGTH_SHORT).show();
                 Intent intent2 = new Intent(this, StartActivity.class);
                 startActivity(intent2);
                 AppManager.getAppManager().finishActivity(this);

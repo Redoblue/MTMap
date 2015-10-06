@@ -3,6 +3,8 @@ package com.hltc.mtmap.activity.publish;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
@@ -20,16 +22,24 @@ import com.hltc.mtmap.activity.profile.MyGrainActivity;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.bean.ParcelableGrain;
+import com.hltc.mtmap.gmodel.GrainDetail;
 import com.hltc.mtmap.helper.PhotoHelper;
 import com.hltc.mtmap.task.PublishAsyncTask;
 import com.hltc.mtmap.task.SyncDataAsyncTask;
 import com.hltc.mtmap.util.ApiUtils;
+import com.hltc.mtmap.util.ToastUtils;
+import com.hltc.mtmap.util.WeChatUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
 import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
+import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
+import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
+import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
@@ -50,6 +60,7 @@ import butterknife.OnClick;
  */
 public class DonePublishDialog extends Activity {
 
+    private static String TAG = "DonePublishDialog";
     @InjectView(R.id.btn_done_publish_home)
     TextView btnGoHome;
     @InjectView(R.id.btn_done_publish_maitian)
@@ -61,13 +72,18 @@ public class DonePublishDialog extends Activity {
 
     private PopupWindow shareWindow;
 
+    private IWXAPI iwxapi;
+    private boolean canShare = false;
+
+    private long grainId = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         AppManager.getAppManager().addActivity(this);
         setContentView(R.layout.dialog_done_publish);
-//        setFinishOnTouchOutside(false);
         ButterKnife.inject(this);
+        registerWX();
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
@@ -76,6 +92,21 @@ public class DonePublishDialog extends Activity {
 
         grain = getIntent().getParcelableExtra("GRAIN");
         httpPublish();
+    }
+
+    private void registerWX() {
+        ApplicationInfo appInfo = null;
+        try {
+            appInfo = this.getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (appInfo == null) {
+            return;
+        }
+        String appId = appInfo.metaData.getString("com.hltc.mtmap.wx_id");
+        iwxapi = WXAPIFactory.createWXAPI(this, appId, true);
+        iwxapi.registerApp(appId);
     }
 
     @OnClick({
@@ -105,6 +136,41 @@ public class DonePublishDialog extends Activity {
                 showPopwindow();
                 break;
         }
+    }
+
+    private View.OnClickListener shareListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+            if(!canShare){
+                ToastUtils.showShort(DonePublishDialog.this,"网络繁忙，请稍后再试");
+                return;
+            }
+            switch (v.getId()) {
+                case R.id.tv_publish_share_wechat:
+                    share2WechartFriends();
+                    break;
+                case R.id.tv_publish_share_circle:
+                    share2WechatTimeline();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    private void share2WechatTimeline() {
+        GrainDetail grainDetail = new GrainDetail();
+        grainDetail.text = grain.text;
+        grainDetail.grainId = grainId;
+        WeChatUtils.shareGrain2TimeLine(this, iwxapi, grainDetail);
+    }
+
+    private void share2WechartFriends() {
+        GrainDetail grainDetail = new GrainDetail();
+        grainDetail.text = grain.text;
+        grainDetail.grainId = grainId;
+        WeChatUtils.shareGrain2WechatSession(this, iwxapi, grainDetail);
     }
 
     private void showPopwindow() {
@@ -144,13 +210,7 @@ public class DonePublishDialog extends Activity {
         popItems.add(weibo);
 
         for (TextView tv : popItems) {
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    //TODO
-                    Toast.makeText(DonePublishDialog.this, "v.getTag():" + v.getTag(), Toast.LENGTH_SHORT).show();
-                }
-            });
+            tv.setOnClickListener(shareListener);
         }
 
         //popWindow消失监听方法
@@ -201,22 +261,33 @@ public class DonePublishDialog extends Activity {
                     @Override
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         String result = responseInfo.result;
-                        if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
-                            //同步麦粒
-                            SyncDataAsyncTask.httpSyncGrainNumber();
-                            SyncDataAsyncTask.httpSyncMyGrainData();
-                            // 上传图片
-                            if (PhotoHelper.larges.size() > 0) {
-                                new PublishAsyncTask().execute();
+                        try{
+                            if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
+                                JSONObject resultObject = new JSONObject(result);
+                                JSONObject dataJson = resultObject.getJSONObject("data");
+                                String granIdStr = dataJson.getString("grainId");
+                                grainId = Long.valueOf(granIdStr);
+                                canShare = true;
+                                //同步麦粒
+                                SyncDataAsyncTask.httpSyncGrainNumber();
+                                SyncDataAsyncTask.httpSyncMyGrainData();
+                                // 上传图片
+                                if (PhotoHelper.larges.size() > 0) {
+                                    new PublishAsyncTask().execute();
+                                }
+                            } else {
+                                Log.d("DonePublishDialog", result);
                             }
-                        } else {
-                            Log.d("DonePublishDialog", result);
+                        }catch (Exception e){
+                          Log.e(TAG,e.getMessage());
+
                         }
+
                     }
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-
+                        ToastUtils.showShort(DonePublishDialog.this, ApiUtils.TIP_NET_EXCEPTION);
                     }
                 });
     }

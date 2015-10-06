@@ -2,6 +2,8 @@ package com.hltc.mtmap.activity.profile;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -12,6 +14,10 @@ import android.widget.TextView;
 import com.hltc.mtmap.R;
 import com.hltc.mtmap.app.AppManager;
 import com.hltc.mtmap.event.BaseMessageEvent;
+import com.hltc.mtmap.gmodel.GrainDetail;
+import com.hltc.mtmap.util.WeChatUtils;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -32,6 +38,7 @@ public class AddFriendActivity extends Activity {
     @InjectView(R.id.tv_add_friend_invite)
     TextView tvSearchFriendInvite;
 
+    private IWXAPI iwxapi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,8 +47,22 @@ public class AddFriendActivity extends Activity {
         setContentView(R.layout.activity_add_friend);
         ButterKnife.inject(this);
         EventBus.getDefault().register(this);
+        registerWX();
     }
-
+    private void registerWX() {
+        ApplicationInfo appInfo = null;
+        try {
+            appInfo = this.getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (appInfo == null) {
+            return;
+        }
+        String appId = appInfo.metaData.getString("com.hltc.mtmap.wx_id");
+        iwxapi = WXAPIFactory.createWXAPI(this, appId, true);
+        iwxapi.registerApp(appId);
+    }
     public void onEvent(BaseMessageEvent event) {
         switch (event.action) {
             case BaseMessageEvent.EVENT_KILL_SELF:
@@ -67,7 +88,7 @@ public class AddFriendActivity extends Activity {
                 startActivity(intent);
                 break;
             case R.id.tv_add_friend_invite:
-                //TODO
+                WeChatUtils.shareApp2WecharSession(this,iwxapi);
                 break;
         }
     }

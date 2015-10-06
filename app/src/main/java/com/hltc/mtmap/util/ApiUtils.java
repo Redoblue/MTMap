@@ -124,6 +124,7 @@ public class ApiUtils {
 
     public static final String TIP_FAVOR_GRAIN_SUCCESS="收藏成功";
     public static final String TIP_FAVOR_GRAIN_FAIL = "收藏失败";
+    public static final String TIP_WX_NOT_SUPPORT = "微信版本不支持分享功能，请下载或者更新微信版本";
 
     public static String getRequestVCodeUrl(int source) {
         return source == 0 ?

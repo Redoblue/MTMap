@@ -3,7 +3,9 @@ package com.hltc.mtmap.activity.map;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -42,6 +44,7 @@ import com.hltc.mtmap.util.AMapUtils;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.DateUtils;
 import com.hltc.mtmap.util.StringUtils;
+import com.hltc.mtmap.util.ToastUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
 import com.lidroid.xutils.http.RequestParams;
@@ -120,6 +123,7 @@ public class GrainDetailActivity extends FragmentActivity {
         EventBus.getDefault().register(this);
         registerWX();
         initView();
+        getSignature();
     }
 
     private void registerWX() {
@@ -181,15 +185,39 @@ public class GrainDetailActivity extends FragmentActivity {
             ApiHelper.httpGetFriendProfile(GrainDetailActivity.this, grainDetail.publisher.userId);
         }
     }
-
+    public void getSignature() {//用来获取signa
+        PackageManager manager = getPackageManager();
+        PackageInfo packageInfo;
+        Signature[] signatures;
+        String signature="";
+        StringBuilder builder = new StringBuilder();
+            try {
+                /** 通过包管理器获得指定包名包含签名的包信息 **/
+                packageInfo = manager.getPackageInfo("com.hltc.mtmap", PackageManager.GET_SIGNATURES);
+                /******* 通过返回的包信息获得签名数组 *******/
+                signatures = packageInfo.signatures;
+                /******* 循环遍历签名数组拼接应用签名 *******/
+                for (Signature signatur : signatures) {
+                    Log.i(TAG,signatur.toCharsString());
+                    builder.append(signatur.toCharsString());
+                }
+                /************** 得到应用签名 **************/
+                signature = builder.toString();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        Log.i(TAG,signature);
+        return;
+    }
     private void share2WX() {
         if(iwxapi==null)return;
+        if(!iwxapi.isWXAppSupportAPI()){
+            ToastUtils.showShort(this,ApiUtils.TIP_WX_NOT_SUPPORT);
+        }
         WXWebpageObject webpage = new WXWebpageObject();
         webpage.webpageUrl = "http://www.maitianditu.com/maitian/v1/grain/share/"+String.valueOf(grainDetail.grainId);
         WXMediaMessage msg = new WXMediaMessage(webpage);
         msg.title = grainDetail.text;
-        Bitmap thumb = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-        //msg.thumbData = bmpToByteArray(thumb, true);
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = String.valueOf(System.currentTimeMillis());
         req.message = msg;
