@@ -18,6 +18,7 @@ import com.hltc.mtmap.activity.MainActivity;
 import com.hltc.mtmap.activity.start.StartActivity;
 import com.hltc.mtmap.app.DaoManager;
 import com.hltc.mtmap.app.MyApplication;
+import com.hltc.mtmap.event.BaseMessageEvent;
 import com.hltc.mtmap.event.MessageEvent;
 import com.hltc.mtmap.helper.ApiHelper;
 import com.hltc.mtmap.util.DateUtils;
@@ -71,6 +72,7 @@ public class MessageFragment extends Fragment {
         ButterKnife.reset(this);
     }
 
+
     private void initView() {
         mMessageList = DaoManager.getManager().getAllMessage();
         mMessageAdapter = new MessageAdapter();
@@ -85,13 +87,23 @@ public class MessageFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ApiHelper.httpGetGrainDetail(MessageFragment.this.getActivity(),mMessageList.get(position).getGrainId());
+                ApiHelper.httpGetGrainDetail(MessageFragment.this.getActivity(), mMessageList.get(position).getGrainId());
             }
         });
     }
 
     public void onEvent(MessageEvent event) {
         refreshList();
+    }
+
+    public void onEvent(BaseMessageEvent event){
+        switch (event.action){
+            case BaseMessageEvent.EVENT_MESSAGE_CHANGE:
+                refreshList();
+                break;
+            default:
+                break;
+        }
     }
 
     private void refreshList() {
@@ -147,8 +159,16 @@ public class MessageFragment extends Fragment {
             ImageLoader.getInstance().displayImage(getItem(position).getPortrait(),
                     holder.portrait, MyApplication.displayImageOptions);
             holder.time.setText(DateUtils.getFriendlyTime(getItem(position).getCreateTime()));
-            ImageLoader.getInstance().displayImage(getItem(position).getImage(),
-                    holder.image, MyApplication.displayImageOptions);
+
+            if(getItem(position).getImage() == null || getItem(position).getImage().length() ==0){
+                holder.image.setVisibility(View.GONE);
+            }else{
+                holder.image.setVisibility(View.VISIBLE);
+                ImageLoader.getInstance().displayImage(getItem(position).getImage(),
+                        holder.image, MyApplication.displayImageOptions);
+            }
+
+
             holder.comment.setText(getItem(position).getText());
             holder.address.setText(getItem(position).getAddress());
 

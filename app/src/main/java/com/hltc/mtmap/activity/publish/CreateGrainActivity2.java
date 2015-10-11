@@ -134,6 +134,7 @@ public class CreateGrainActivity2 extends Activity implements AMap.OnMapLoadedLi
 
     private PopupWindow photoWindow;
 
+    private AMapLocation aMapLocation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,6 +149,7 @@ public class CreateGrainActivity2 extends Activity implements AMap.OnMapLoadedLi
 
         mMapView.onCreate(savedInstanceState);
 
+
         initAmap();
         initView();
     }
@@ -156,6 +158,7 @@ public class CreateGrainActivity2 extends Activity implements AMap.OnMapLoadedLi
         if (mAmap == null) {
             mAmap = mMapView.getMap();
         }
+
 
         mAmap.setMyLocationEnabled(true);
         mAmap.setMyLocationType(AMap.LOCATION_TYPE_LOCATE);
@@ -230,8 +233,16 @@ public class CreateGrainActivity2 extends Activity implements AMap.OnMapLoadedLi
                     grain.isPublic = publicToggle.isChecked() ? "1" : "0";
                     grain.text = commentEditText.getText().toString().trim();
                 } else {
-                    // 未获取到位置
-                    //TODO
+                    grain.siteSource = "0";
+                    grain.siteId = "";
+                    grain.siteName = returnedValue;
+                    grain.siteAddress = aMapLocation.getDistrict();
+                    grain.sitePhone = "";
+                    grain.latitude = String.valueOf(aMapLocation.getLatitude());
+                    grain.longitude = String.valueOf(aMapLocation.getLongitude());
+                    grain.cityCode = aMapLocation.getCityCode();
+                    grain.isPublic = publicToggle.isChecked() ? "1" : "0";
+                    grain.text = commentEditText.getText().toString().trim();
                 }
 
                 Intent publishIntent = new Intent(this, DonePublishDialog.class);
@@ -276,10 +287,11 @@ public class CreateGrainActivity2 extends Activity implements AMap.OnMapLoadedLi
         addressButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (poiItems.isEmpty()) {
+         /*       if (poiItems.isEmpty()) {
                     Toast.makeText(CreateGrainActivity2.this, "再等一秒", Toast.LENGTH_SHORT).show();
+                    doSearchQuery();
                     return;
-                }
+                }*/
                 Intent autoCompleteIntent = new Intent(CreateGrainActivity2.this, CompleteAddressActivity.class);
                 autoCompleteIntent.putExtra("TITLE_LIST", (Serializable) poiTitles);
                 autoCompleteIntent.putExtra("OLD_CONTENT", addressButton.getText().toString());
@@ -380,6 +392,7 @@ public class CreateGrainActivity2 extends Activity implements AMap.OnMapLoadedLi
                 mElement.location = new LatLng(aMapLocation.getLatitude(), aMapLocation.getLongitude());
             mAmap.moveCamera(CameraUpdateFactory.newLatLngZoom(mElement.location, 15f));
             doSearchQuery(); // 第一次搜索
+            this.aMapLocation = aMapLocation;
         }
     }
 

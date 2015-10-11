@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -45,6 +47,9 @@ import com.lidroid.xutils.http.ResponseInfo;
 import com.lidroid.xutils.http.callback.RequestCallBack;
 import com.lidroid.xutils.http.client.HttpRequest;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.apache.http.entity.StringEntity;
 import org.apache.http.protocol.HTTP;
@@ -68,8 +73,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public static final int CAMERA_REQUEST_CODE = 1;
     public static final int RESULT_REQUEST_CODE = 2;
 
-    public static final int EDIT_NICKNAME_REQUEST_CODE = 3;
-    public static final int EDIT_SIGNATURE_REQUEST_CODE = 4;
 
     @InjectView(R.id.sv_profile)
     PullToZoomScrollViewEx scrollView;
@@ -169,9 +172,34 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 showDialog();
             }
         });
+
+        String imageUrl = AppConfig.getAppConfig()
+                .getConfUsrCoverImg();
+
         cover = (ImageView) scrollView.getPullRootView().findViewById(R.id.iv_profile_header_cover);
-        ImageLoader.getInstance().displayImage(AppConfig.getAppConfig()
-                .getConfUsrCoverImg(), cover, MyApplication.displayImageOptions);
+        ImageLoader.getInstance().displayImage(imageUrl, cover, MyApplication.displayImageOptions, new ImageLoadingListener() {
+            @Override
+            public void onLoadingStarted(String imageUri, View view) {
+
+            }
+
+            @Override
+            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+            }
+
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                ((ImageView)view).setImageDrawable(null);
+                ((ImageView)view).setBackground(new BitmapDrawable(loadedImage));
+            }
+
+            @Override
+            public void onLoadingCancelled(String imageUri, View view) {
+
+            }
+        });
+
         cover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -417,7 +445,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         String result = responseInfo.result;
                         if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                             AppConfig.getAppConfig().setConfUsrCoverImg(remote);
-                            cover.setImageDrawable(Drawable.createFromPath(path));
+                            cover.setImageDrawable(null);
+                            cover.setBackground(Drawable.createFromPath(path));
                             Toast.makeText(getActivity(), "背景更新成功", Toast.LENGTH_SHORT).show();
                             new Thread(new Runnable() {
                                 @Override

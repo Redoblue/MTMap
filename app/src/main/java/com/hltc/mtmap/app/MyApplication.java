@@ -92,7 +92,7 @@ public class MyApplication extends Application {
 
     private void initPushAgent() {
         mPushAgent = PushAgent.getInstance(mContext);
-        //mPushAgent.setDebugMode(true);
+        mPushAgent.setDebugMode(true);
 
         UmengMessageHandler messageHandler = new UmengMessageHandler() {
             @Override
@@ -111,8 +111,8 @@ public class MyApplication extends Application {
                 switch (msg.builder_id) {
                     case 1:
                         manageMessage(msg);//处理消息
-//                        return buildNotification(context, msg);
-                        return buildNotification2(msg, null);
+                       return buildNotification(context, msg);
+//                        return buildNotification(msg, null);
                     default:
                         //默认为0，若填写的builder_id并不存在，也使用默认。
                         return super.getNotification(context, msg);
@@ -159,7 +159,7 @@ public class MyApplication extends Application {
         //FLAG_NO_CLEAR      该通知不能被状态栏的清除按钮给清除掉
         //FLAG_ONGOING_EVENT 通知放置在正在运行
         //FLAG_INSISTENT     是否一直进行，比如音乐一直播放，知道用户响应
-//        notification.flags |= Notification.FLAG_ONGOING_EVENT; // 将此通知放到通知栏的"Ongoing"即"正在运行"组中
+        //notification.flags |= Notification.FLAG_ONGOING_EVENT; // 将此通知放到通知栏的"Ongoing"即"正在运行"组中
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 //        notification.flags |= Notification.FLAG_SHOW_LIGHTS;
         //DEFAULT_ALL     使用所有默认值，比如声音，震动，闪屏等等
@@ -258,14 +258,12 @@ public class MyApplication extends Application {
                                 String data = new JSONObject(result).getString(ApiUtils.KEY_DATA);
                                 PraiseAndCommentInfo paci = gson.fromJson(data, PraiseAndCommentInfo.class);
                                 paci.type = msg.extra.get("type");
-                                //TODO 保存到数据库
                                 MTMessage message = toMTMessage(paci);
                                 if (message != null) {
                                     long id = DaoManager.getManager().daoSession.getMTMessageDao().insert(message);
                                     BaseMessageEvent event = new BaseMessageEvent();
                                     event.action = BaseMessageEvent.EVENT_MESSAGE_CHANGE;
                                     EventBus.getDefault().post(event);
-                                    // Log.i("MT",String.valueOf(id));
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -276,7 +274,6 @@ public class MyApplication extends Application {
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-
                         Log.e(TAG, "获取评论消息失败");
                     }
                 });

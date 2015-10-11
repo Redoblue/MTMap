@@ -350,6 +350,7 @@ public class CreateGrainActivity extends Activity implements AMap.OnMapLoadedLis
     @Override
     public void onMapLoaded() {
         Log.d("Publish", "onMapLoader");
+
         //加载完地图进入上次最后地点
         if (!StringUtils.isEmpty(MapFragment.mMapInfo.getLatitude())) {
             LatLng latLng = new LatLng(StringUtils.toDouble(
