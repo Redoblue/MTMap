@@ -360,7 +360,7 @@ public class GrainDetailActivity extends FragmentActivity {
                             try {
                                 JSONObject json = new JSONObject(responseInfo.result).getJSONObject("data");
                                 GrainDetail.Comment comment = new GrainDetail.Comment();
-                                comment.cid = json.getLong("commentId");
+                                comment.cid = json.getLong("cid");
                                 comment.nickName = AppConfig.getAppConfig().getConfUsrNickName();
                                 comment.userId = AppConfig.getAppConfig().getConfUsrUserId();
                                 comment.portrait = AppConfig.getAppConfig().getConfUsrPortrait();
