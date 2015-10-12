@@ -30,6 +30,7 @@ import com.hltc.mtmap.fragment.ProfileFragment;
 import com.hltc.mtmap.fragment.PublishFragment;
 import com.hltc.mtmap.helper.DoubleClickExitHelper;
 import com.hltc.mtmap.task.SyncDataAsyncTask;
+import com.umeng.analytics.MobclickAgent;
 import com.umeng.message.PushAgent;
 import com.umeng.message.UmengRegistrar;
 
@@ -111,9 +112,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         initView();
         initPushAgent();
-       String device_token = UmengRegistrar.getRegistrationId(this);
+   /*    String device_token = UmengRegistrar.getRegistrationId(this);
         //同步数据
-        Log.i(TAG, device_token);
+        Log.i(TAG, device_token);*/
         new SyncDataAsyncTask().execute();
     }
 
@@ -292,6 +293,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
+        MobclickAgent.onResume(this);
         Intent intent = getIntent();
         if (intent.getBooleanExtra(IS_FROM_GARINDETAIL_ACTIVITY, false)) {
             setChioceItem(4);
@@ -305,6 +307,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     @Override
     public void onDestroy() {
         super.onDestroy();
+        MobclickAgent.onPause(this);
         AppManager.getAppManager().finishActivity(this);
         EventBus.getDefault().unregister(this);
     }

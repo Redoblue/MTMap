@@ -28,4 +28,5 @@
     <string name="delete">删除</string>
     <string name="tip_ignore_grain">确定删除此记录么?\n(删除的记录以后不会显示\n在附近的推荐中)</string>
     <string name="tip_added">已添加</string>
+    <string name="grain">麦粒</string>
 </resources>

@@ -57,6 +57,7 @@ import butterknife.OnClick;
 
 public class GrainFragment extends Fragment {
 
+    private static final String TAG = "GrainFragment";
     @InjectView(R.id.btn_grain_ignore)
     Button btnGrainIgnore;
     @InjectView(R.id.btn_grain_favourite)
@@ -176,16 +177,11 @@ public class GrainFragment extends Fragment {
                 }
                 break;
             case R.id.btn_grain_favourite:
-                if (ivGrainCover.getVisibility() != View.VISIBLE) {
-                    if (!MainActivity.isVisitor) {
-                        httpFavorGrain(mSwipeItems.get(0).grainId);
-                    }
-                    httpReadGrain(mSwipeItems.get(0).grainId);
-                    viewGrainSwipe.getTopCardListener().selectRight();
-                }
+                viewGrainSwipe.getTopCardListener().selectRight();
                 break;
         }
     }
+
 
     @Override
     public void onDestroyView() {
@@ -268,6 +264,7 @@ public class GrainFragment extends Fragment {
     }
 
     private void httpFavorGrain(long grainId) {
+        Log.i(TAG,grainId+"'");
         RequestParams params = new RequestParams();
         params.addHeader("Content-Type", "application/json");
         JSONObject json = new JSONObject();

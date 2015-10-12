@@ -29,6 +29,15 @@
         android:text="Message" />
 
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/notification_text"
+        android:layout_marginLeft="10dp"
+        android:visibility="gone"
+        android:layout_toRightOf="@+id/notification_large_icon"
+        android:text="(嘿嘿，偷偷听告诉你，我是自定义的)"
+        android:textSize="10dp" />
 
     <ImageView
         android:id="@+id/notification_small_icon"

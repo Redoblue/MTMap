@@ -316,7 +316,7 @@ public class MyFavouritesActivity extends Activity {
             TextView time = holder.getView(R.id.tv_item_my_maitian_time);
             String date = DateUtils.getFriendlyTime(mtMyGrain.getCreateTime());
             time.setText(date);
-            time.setTextSize(AMapUtils.dp2px(MyApplication.getContext(), 30 / date.length()));
+            //time.setTextSize(AMapUtils.dp2px(MyApplication.getContext(), 30 / date.length()));
         }
     }
 }

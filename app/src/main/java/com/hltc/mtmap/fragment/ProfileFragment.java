@@ -185,13 +185,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
+                ((ImageView)view).setBackgroundResource(R.drawable. pic_profile_cover);
             }
 
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 ((ImageView)view).setImageDrawable(null);
-                ((ImageView)view).setBackground(new BitmapDrawable(loadedImage));
+                ((ImageView)view).setBackgroundDrawable(new BitmapDrawable(loadedImage));
             }
 
             @Override
@@ -446,7 +446,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                         if (result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                             AppConfig.getAppConfig().setConfUsrCoverImg(remote);
                             cover.setImageDrawable(null);
-                            cover.setBackground(Drawable.createFromPath(path));
+                            cover.setBackgroundDrawable(Drawable.createFromPath(path));
+                            //cover.setBackground(Drawable.createFromPath(path));
                             Toast.makeText(getActivity(), "背景更新成功", Toast.LENGTH_SHORT).show();
                             new Thread(new Runnable() {
                                 @Override
@@ -459,6 +460,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
                     @Override
                     public void onFailure(HttpException e, String s) {
+                        cover.setBackgroundResource(R.drawable.pic_profile_cover);
                         Toast.makeText(getActivity(), "背景更新失败", Toast.LENGTH_SHORT).show();
                     }
                 });
