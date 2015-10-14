@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ import com.hltc.mtmap.app.AppConfig;
 import com.hltc.mtmap.app.MyApplication;
 import com.hltc.mtmap.app.OssManager;
 import com.hltc.mtmap.gmodel.SwipeGrain;
+import com.hltc.mtmap.helper.ApiHelper;
 import com.hltc.mtmap.util.ApiUtils;
 import com.hltc.mtmap.util.AppUtils;
 import com.hltc.mtmap.util.FileUtils;
@@ -101,6 +103,12 @@ public class GrainFragment extends Fragment {
         mSwipeItems = new ArrayList<>();
         mSwipeAdapter = new SwipeViewAdapter(getActivity(), mSwipeItems, R.layout.item_grain_card);
         viewGrainSwipe.setAdapter(mSwipeAdapter);
+        viewGrainSwipe.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ApiHelper.httpGetGrainDetail(getActivity(),mSwipeItems.get(position).grainId);
+            }
+        });
         if (AppUtils.isNetworkConnected(getActivity())) {
             httpLoadData(); //首次加载数据
         } else {
@@ -393,8 +401,13 @@ public class GrainFragment extends Fragment {
         }
 
         @Override
-        public void convert(CommonViewHolder holder, SwipeGrain swipeGrainItem) {
-            holder.setText(R.id.tv_item_grain_card_comment, swipeGrainItem.text)
+        public void convert(CommonViewHolder holder, final SwipeGrain swipeGrainItem) {
+            String text = new String(swipeGrainItem.text);
+            if(text.length() > 46){
+              text = text.substring(0,46);
+                text+="...";
+            }
+            holder.setText(R.id.tv_item_grain_card_comment, text)
                     .setSwipeImage(R.id.iv_item_grain_card_image, swipeGrainItem.image)
                     .setPortraitImage(R.id.civ_item_grain_card_portrait, swipeGrainItem.portraitSmall); //用户头像
         }

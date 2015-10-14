@@ -124,7 +124,7 @@ public class MyGrainActivity extends Activity {
             public void onMenuItemClick(int position, SwipeMenu menu, int index) {
                 MTMyGrain mg = mList.get(position);
                 switch (index) {
-                    case 1:
+                    case 0:
                         httpDeleteGrain(mg);
                         break;
                 }
@@ -185,7 +185,7 @@ public class MyGrainActivity extends Activity {
                     public void onSuccess(ResponseInfo<String> responseInfo) {
                         if (responseInfo.result.contains(ApiUtils.KEY_SUCCESS)) {  //验证成功
                             if (mList.remove(mg))
-                                mAdapter.notifyDataSetChanged();
+                                mAdapter.update(mList);
                             refreshHint();
                             DaoManager.getManager().daoSession.getMTMyGrainDao().deleteByKey(mg.getGrainId());
                         }
@@ -193,7 +193,7 @@ public class MyGrainActivity extends Activity {
 
                     @Override
                     public void onFailure(HttpException e, String s) {
-                        // 收藏失败
+                        Toast.makeText(MyGrainActivity.this,getString(R.string.tip_delete_fail),Toast.LENGTH_SHORT).show();
                     }
                 });
     }

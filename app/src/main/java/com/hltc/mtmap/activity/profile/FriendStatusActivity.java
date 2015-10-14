@@ -124,13 +124,11 @@ public class FriendStatusActivity extends Activity {
                             if (farther.getBoolean(ApiUtils.KEY_SUCCESS)) {
                                 updateStatusInDb(adapterList.get(index), STATUS_ACCEPTED);
                                 adapterList.get(index).setStatus(STATUS_ACCEPTED);
-                                adapter.notifyDataSetChanged();
+                                adapter.update(adapterList);
                                 SyncDataAsyncTask.httpSyncFriendData();
                             } else {
                                 String errorMsg = farther.getString(ApiUtils.KEY_ERROR_MESSAGE);
                                 if (errorMsg != null) {
-                                    // 登录失败
-                                    // TODO 没有验证错误码
                                     ToastUtils.showShort(FriendStatusActivity.this, errorMsg);
                                 }
                             }
