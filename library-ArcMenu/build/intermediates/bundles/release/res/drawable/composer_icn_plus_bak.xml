@@ -4,4 +4,4 @@
     <item android:drawable="@drawable/composer_icn_plus_pressed" android:state_pressed="true"/>
     <item android:drawable="@drawable/composer_icn_plus_normal"/>
 
-</selector><!-- From: file:/F:/liubsh/android/project/MTMap/MTMap/library-ArcMenu/src/main/res/drawable/composer_icn_plus_bak.xml -->
+</selector><!-- From: file:/D:/workspace/MTMap/MTMap/library-ArcMenu/src/main/res/drawable/composer_icn_plus_bak.xml -->

@@ -112,9 +112,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
         initView();
         initPushAgent();
-   /*    String device_token = UmengRegistrar.getRegistrationId(this);
+       String device_token = UmengRegistrar.getRegistrationId(this);
         //同步数据
-        Log.i(TAG, device_token);*/
+        Log.i(TAG, device_token);
         new SyncDataAsyncTask().execute();
     }
 

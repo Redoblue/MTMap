@@ -87,7 +87,7 @@ public class MessageFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ApiHelper.httpGetGrainDetail(MessageFragment.this.getActivity(), mMessageList.get(position).getGrainId());
+                ApiHelper.httpGetGrainDetail(MessageFragment.this.getActivity(), mMessageList.get(position-1).getGrainId());
             }
         });
     }

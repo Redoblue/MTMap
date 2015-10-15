@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/F:/liubsh/android/project/MTMap/MTMap/library-PullToRefresh/src/main/res/values-zh-rTW/strings.xml -->
+    <!-- From: file:/D:/workspace/MTMap/MTMap/library-PullToRefresh/src/main/res/values-zh-rTW/strings.xml -->
     <eat-comment/>
     <string name="pull_to_refresh_pull_label">下拉刷新</string>
     <string name="pull_to_refresh_refreshing_label">載入中</string>
