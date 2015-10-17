@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/D:/workspace/MTMap/MTMap/library-ArcMenu/src/main/res/values/attrs.xml -->
+    <!-- From: file:/F:/liubsh/android/project/MTMap/MTMap/library-ArcMenu/src/main/res/values/attrs.xml -->
     <eat-comment/>
     <attr format="dimension|reference" name="childSize"/>
     <attr format="float|reference" name="fromDegrees"/>
